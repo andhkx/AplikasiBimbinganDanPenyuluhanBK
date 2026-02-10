@@ -1,0 +1,528 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Kelola Konseling - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+    
+    .filter-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .konseling-table-dhika {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    .status-selector-dhika {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+    
+    .status-btn-dhika {
+        padding: 8px 20px;
+        border-radius: 10px;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #64748b;
+        font-weight: 500;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .status-btn-dhika:hover,
+    .status-btn-dhika.active-dhika {
+        border-color: var(--primary-dhika);
+        background: var(--primary-dhika);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .action-buttons-dhika {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .btn-sm-dhika {
+        padding: 5px 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+    
+    .empty-state-dhika {
+        text-align: center;
+        padding: 60px 20px;
+        color: #94a3b8;
+    }
+    
+    .empty-state-dhika i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    .search-box-dhika {
+        position: relative;
+    }
+    
+    .search-box-dhika i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+    
+    .search-box-dhika input {
+        padding-left: 45px;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+    }
+    
+    .pagination-dhika .page-link {
+        border-radius: 8px;
+        margin: 0 3px;
+        border: none;
+        color: var(--primary-dhika);
+    }
+    
+    .pagination-dhika .page-item.active .page-link {
+        background: var(--primary-dhika);
+        color: white;
+    }
+    
+    .highlight-new-dhika {
+        animation: highlightPulse 2s infinite;
+        border-left: 5px solid #f59e0b !important;
+    }
+    
+    @keyframes highlightPulse {
+        0%, 100% { box-shadow: 0 3px 10px rgba(245, 158, 11, 0.1); }
+        50% { box-shadow: 0 3px 20px rgba(245, 158, 11, 0.3); }
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-clipboard-list me-2"></i>Kelola Konseling
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Kelola pengajuan konseling dari siswa dan lakukan tindakan yang diperlukan
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                    {{ session.nama }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-card-dhika" data-aos="fade-up">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-filter me-2 text-primary"></i>Filter Konseling
+                </h5>
+                <div class="status-selector-dhika">
+                    <div class="status-btn-dhika active-dhika" data-status="all">
+                        Semua ({{ konseling_list|length }})
+                    </div>
+                    <div class="status-btn-dhika" data-status="pending">
+                        Pending ({{ konseling_list|selectattr('status', 'equalto', 'pending')|list|length }})
+                    </div>
+                    <div class="status-btn-dhika" data-status="disetujui">
+                        Disetujui ({{ konseling_list|selectattr('status', 'equalto', 'disetujui')|list|length }})
+                    </div>
+                    <div class="status-btn-dhika" data-status="selesai">
+                        Selesai ({{ konseling_list|selectattr('status', 'equalto', 'selesai')|list|length }})
+                    </div>
+                    <div class="status-btn-dhika" data-status="ditolak">
+                        Ditolak ({{ konseling_list|selectattr('status', 'equalto', 'ditolak')|list|length }})
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="search-box-dhika">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInputDhika" class="form-control" 
+                           placeholder="Cari berdasarkan nama siswa, kelas, atau jenis...">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Konseling -->
+    <div class="konseling-table-dhika" data-aos="fade-up" data-aos-delay="100">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="konselingTableDhika">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Siswa</th>
+                        <th>Kelas</th>
+                        <th>Jenis</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Status</th>
+                        <th style="width: 200px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if konseling_list %}
+                        {% for konseling in konseling_list %}
+                        <tr class="konseling-row-dhika 
+                            {% if konseling.status == 'pending' %}highlight-new-dhika{% endif %}" 
+                            data-status="{{ konseling.status }}"
+                            data-search="{{ konseling.nama_siswa|lower }} {{ konseling.kelas|lower }} {{ konseling.jenis|lower }}">
+                            <td class="fw-bold">#{{ konseling.id_konseling }}</td>
+                            <td>
+                                <div class="fw-bold">{{ konseling.nama_siswa }}</div>
+                                <small class="text-muted">{{ konseling.jurusan }}</small>
+                            </td>
+                            <td class="fw-bold">{{ konseling.kelas }}</td>
+                            <td>
+                                <span class="badge bg-info bg-opacity-10 text-info">
+                                    {{ konseling.jenis }}
+                                </span>
+                            </td>
+                            <td>{{ konseling.tanggal|format_tanggal_dhika }}</td>
+                            <td>{{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</td>
+                            <td>
+                                <span class="badge-dhika bg-{{ konseling.status|status_badge_dhika }}">
+                                    {{ konseling.status|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons-dhika">
+                                    <!-- Tombol Detail -->
+                                    <button type="button" class="btn btn-outline-primary btn-sm-dhika"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#detailModal{{ konseling.id_konseling }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    
+                                    <!-- Tombol Edit Status (kecuali selesai/ditolak) -->
+                                    {% if konseling.status != 'selesai' and konseling.status != 'ditolak' %}
+                                    <button type="button" class="btn btn-outline-warning btn-sm-dhika"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#statusModal{{ konseling.id_konseling }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    {% endif %}
+                                    
+                                    <!-- Tombol Hasil (hanya untuk disetujui) -->
+                                    {% if konseling.status == 'disetujui' %}
+                                    <button type="button" class="btn btn-outline-success btn-sm-dhika"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#hasilModal{{ konseling.id_konseling }}">
+                                        <i class="fas fa-check-circle"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Modal Detail -->
+                        <div class="modal fade" id="detailModal{{ konseling.id_konseling }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header gradient-bg-dhika text-white">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Detail Konseling #{{ konseling.id_konseling }}
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>ID Konseling:</strong> {{ konseling.id_konseling }}</p>
+                                                <p><strong>Siswa:</strong> {{ konseling.nama_siswa }}</p>
+                                                <p><strong>Kelas:</strong> {{ konseling.kelas }}</p>
+                                                <p><strong>Jurusan:</strong> {{ konseling.jurusan }}</p>
+                                                <p><strong>Jenis:</strong> {{ konseling.jenis }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}</p>
+                                                <p><strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</p>
+                                                <p><strong>Status:</strong> 
+                                                    <span class="badge-dhika bg-{{ konseling.status|status_badge_dhika }}">
+                                                        {{ konseling.status|upper }}
+                                                    </span>
+                                                </p>
+                                                <p><strong>Diajukan pada:</strong> {{ konseling.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <p><strong>Alasan Konseling:</strong></p>
+                                        <div class="bg-light p-3 rounded mb-3">
+                                            {{ konseling.alasan|default('-', true) }}
+                                        </div>
+                                        {% if konseling.hasil %}
+                                        <p><strong>Hasil Konseling:</strong></p>
+                                        <div class="bg-light p-3 rounded">
+                                            {{ konseling.hasil }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Tutup
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Modal Update Status -->
+                        <div class="modal fade" id="statusModal{{ konseling.id_konseling }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form action="{{ url_for('update_konseling_dhika', id_konseling=konseling.id_konseling) }}" method="POST">
+                                        <div class="modal-header gradient-bg-dhika text-white">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-edit me-2"></i>
+                                                Update Status #{{ konseling.id_konseling }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Pilih Status Baru</label>
+                                                <select name="status_dhika" class="form-select" required>
+                                                    <option value="pending" {% if konseling.status == 'pending' %}selected{% endif %}>Pending</option>
+                                                    <option value="disetujui" {% if konseling.status == 'disetujui' %}selected{% endif %}>Disetujui</option>
+                                                    <option value="ditolak" {% if konseling.status == 'ditolak' %}selected{% endif %}>Ditolak</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Catatan (Opsional)</label>
+                                                <textarea name="catatan_dhika" class="form-control" rows="3" 
+                                                          placeholder="Berikan catatan jika diperlukan..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times me-1"></i>Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save me-1"></i>Simpan Status
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Modal Isi Hasil -->
+                        <div class="modal fade" id="hasilModal{{ konseling.id_konseling }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form action="{{ url_for('update_konseling_dhika', id_konseling=konseling.id_konseling) }}" method="POST">
+                                        <div class="modal-header gradient-bg-dhika text-white">
+                                            <h5 class="modal-title">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Isi Hasil Konseling #{{ konseling.id_konseling }}
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="status_dhika" value="selesai">
+                                            
+                                            <div class="mb-4">
+                                                <p><strong>Siswa:</strong> {{ konseling.nama_siswa }}</p>
+                                                <p><strong>Jenis:</strong> {{ konseling.jenis }}</p>
+                                                <p><strong>Alasan:</strong> {{ konseling.alasan }}</p>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Hasil Konseling</label>
+                                                <textarea name="hasil_dhika" class="form-control" rows="8" 
+                                                          placeholder="Tuliskan hasil sesi konseling secara detail...">{{ konseling.hasil or '' }}</textarea>
+                                                <small class="text-muted">
+                                                    Jelaskan poin-poin penting yang dibahas, solusi yang diberikan, dan rekomendasi untuk siswa.
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Tindak Lanjut</label>
+                                                <textarea name="tindak_lanjut_dhika" class="form-control" rows="3" 
+                                                          placeholder="Rencana tindak lanjut jika diperlukan..."></textarea>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Evaluasi</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="evaluasi_dhika" value="baik" id="evalBaik{{ konseling.id_konseling }}" checked>
+                                                    <label class="form-check-label" for="evalBaik{{ konseling.id_konseling }}">
+                                                        Baik - Masalah terselesaikan dengan baik
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="evaluasi_dhika" value="perlu_tindak_lanjut" id="evalTindak{{ konseling.id_konseling }}">
+                                                    <label class="form-check-label" for="evalTindak{{ konseling.id_konseling }}">
+                                                        Perlu Tindak Lanjut - Masih memerlukan bantuan
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="evaluasi_dhika" value="rujukan" id="evalRujuk{{ konseling.id_konseling }}">
+                                                    <label class="form-check-label" for="evalRujuk{{ konseling.id_konseling }}">
+                                                        Perlu Rujukan - Membutuhkan bantuan khusus
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="fas fa-times me-1"></i>Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-check me-1"></i>Selesaikan Konseling
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state-dhika">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h5 class="fw-bold mb-3">Belum Ada Konseling</h5>
+                                <p class="text-muted mb-4">
+                                    Belum ada siswa yang mengajukan konseling kepada Anda.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if konseling_list %}
+        <div class="p-4 border-top">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-dhika justify-content-center mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Summary Card -->
+    <div class="row mt-4">
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="glass-card-dhika p-4 text-center">
+                <i class="fas fa-clock fa-2x text-warning mb-3"></i>
+                <h3 class="fw-bold">{{ konseling_list|selectattr('status', 'equalto', 'pending')|list|length }}</h3>
+                <p class="text-muted mb-0">Menunggu Persetujuan</p>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="glass-card-dhika p-4 text-center">
+                <i class="fas fa-calendar-check fa-2x text-primary mb-3"></i>
+                <h3 class="fw-bold">{{ konseling_list|selectattr('status', 'equalto', 'disetujui')|list|length }}</h3>
+                <p class="text-muted mb-0">Jadwal Mendatang</p>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="glass-card-dhika p-4 text-center">
+                <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                <h3 class="fw-bold">{{ konseling_list|selectattr('status', 'equalto', 'selesai')|list|length }}</h3>
+                <p class="text-muted mb-0">Selesai Ditangani</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    // Filter by status
+    document.querySelectorAll('.status-btn-dhika').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('.status-btn-dhika').forEach(b => b.classList.remove('active-dhika'));
+            this.classList.add('active-dhika');
+            
+            // Filter table rows
+            const status = this.dataset.status;
+            const rows = document.querySelectorAll('.konseling-row-dhika');
+            
+            rows.forEach(row => {
+                if (status === 'all' || row.dataset.status === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchInputDhika');
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.konseling-row-dhika');
+        
+        rows.forEach(row => {
+            const searchData = row.dataset.search;
+            if (searchData.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Auto-refresh every 30 seconds for new pending requests
+    setInterval(() => {
+        const pendingRows = document.querySelectorAll('.konseling-row-dhika[data-status="pending"]');
+        pendingRows.forEach(row => {
+            row.classList.add('highlight-new-dhika');
+            setTimeout(() => row.classList.remove('highlight-new-dhika'), 1000);
+        });
+    }, 30000);
+</script>
+{% endblock %}

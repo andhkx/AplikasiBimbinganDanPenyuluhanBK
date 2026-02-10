@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title_dhika %}BK SMK Negeri 2 Cimahi{% endblock %}</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-dhika: #667eea;
+            --secondary-dhika: #764ba2;
+            --success-dhika: #10b981;
+            --info-dhika: #3b82f6;
+            --warning-dhika: #f59e0b;
+            --danger-dhika: #ef4444;
+            --light-dhika: #f8fafc;
+            --dark-dhika: #1e293b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card-dhika {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        }
+        
+        .sidebar-dhika {
+            width: 280px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .nav-link-dhika {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-link-dhika:hover,
+        .nav-link-dhika.active-dhika {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-link-dhika i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .main-content-dhika {
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar-dhika {
+                transform: translateX(-100%);
+            }
+            .main-content-dhika {
+                margin-left: 0;
+            }
+        }
+        
+        .stat-card-dhika {
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card-dhika:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card-dhika::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .stat-icon-dhika {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number-dhika {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label-dhika {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .btn-dhika {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            border: none;
+        }
+        
+        .btn-primary-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table-dhika {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-dhika thead {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            color: white;
+        }
+        
+        .table-dhika th {
+            border: none;
+            padding: 15px;
+            font-weight: 500;
+        }
+        
+        .table-dhika td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+        
+        .badge-dhika {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .avatar-dhika {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .notification-badge-dhika {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger-dhika);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+    </style>
+    
+    {% block style_dhika %}{% endblock %}
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with message, category = get_flash_dhika() %}
+        {% if message %}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <i class="bi bi-{{ 'check-circle-fill text-success' if category == 'success' else 'exclamation-triangle-fill text-danger' }} me-2"></i>
+                        <strong class="me-auto">BK System</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Sidebar -->
+    <div class="sidebar-dhika d-none d-lg-block">
+        <div class="p-4">
+            <div class="text-center mb-5">
+                <div class="mb-3">
+                    <i class="fas fa-user-graduate fa-3x text-white"></i>
+                </div>
+                <h4 class="text-white mb-0">BK SYSTEM</h4>
+                <p class="text-white-50 mb-0">SMK Negeri 2 Cimahi</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <div class="avatar-dhika bg-white text-primary mx-auto d-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h6 class="text-white mb-0">{{ session.get('nama', 'User') }}</h6>
+                <small class="text-white-50">{{ session.get('role', '').capitalize() }}</small>
+            </div>
+            
+            <hr class="bg-white-50 my-4">
+            
+            <nav class="nav flex-column">
+                {% if session.get('role') == 'siswa' %}
+                    <a href="{{ url_for('dashboard_siswa_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_siswa_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-comments"></i> Konseling Saya
+                    </a>
+                    <a href="{{ url_for('chat_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-comment-dots"></i> Chat
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                    
+                {% elif session.get('role') == 'guru' %}
+                    <a href="{{ url_for('dashboard_guru_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_guru_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-clipboard-list"></i> Daftar Konseling
+                    </a>
+                    <a href="{{ url_for('data_guru_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'data_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-chalkboard-teacher"></i> Data Guru
+                    </a>
+                    <a href="{{ url_for('data_siswa_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-user-graduate"></i> Data Siswa
+                    </a>
+                    <a href="{{ url_for('chat_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-clipboard-list"></i> Chat
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" 
+                       class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-file-alt"></i> Laporan
+                    </a>
+                {% endif %}
+                
+                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+            
+            <div class="position-absolute bottom-0 start-0 end-0 p-4">
+                <div class="text-center text-white-50">
+                    <small>&copy; 2026 SMK Negeri 2 Cimahi</small><br>
+                    <small>Andhika Andriana Putra - XI RPL A</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Header -->
+    <nav class="navbar navbar-dark gradient-bg-dhika d-lg-none">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-user-graduate me-2"></i>
+                BK System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar -->
+    <div class="offcanvas offcanvas-start gradient-bg-dhika" tabindex="-1" id="sidebarMobile">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white">BK System</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Same sidebar content for mobile -->
+            <div class="text-center mb-4">
+                <div class="avatar-dhika bg-white text-primary mx-auto d-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h6 class="text-white mb-0">{{ session.get('nama', 'User') }}</h6>
+                <small class="text-white-50">{{ session.get('role', '').capitalize() }}</small>
+            </div>
+            
+            <hr class="bg-white-50 my-4">
+            
+            <nav class="nav flex-column">
+                {% if session.get('role') == 'siswa' %}
+                    <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-comments"></i> Konseling Saya
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                    
+                {% elif session.get('role') == 'guru' %}
+                    <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-clipboard-list"></i> Daftar Konseling
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika">
+                        <i class="fas fa-file-alt"></i> Laporan
+                    </a>
+                {% endif %}
+                
+                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content-dhika">
+        {% block content_dhika %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Auto-dismiss flash messages
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.hide();
+            });
+        }, 5000);
+        
+        // Theme toggle
+        const themeToggle = document.createElement('button');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        themeToggle.className = 'btn btn-light btn-sm position-fixed bottom-3 end-3 rounded-circle shadow';
+        themeToggle.style.width = '50px';
+        themeToggle.style.height = '50px';
+        themeToggle.style.zIndex = '1000';
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const theme = html.getAttribute('data-bs-theme');
+            html.setAttribute('data-bs-theme', theme === 'dark' ? 'light' : 'dark');
+            themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
+        
+        document.body.appendChild(themeToggle);
+    </script>
+    
+    {% block script_dhika %}{% endblock %}
+</body>
+</html>
