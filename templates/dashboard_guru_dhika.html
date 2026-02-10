@@ -1,0 +1,567 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Dashboard Guru - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+    
+    .stat-card-guru-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+    
+    .stat-card-guru-dhika:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .stat-card-guru-dhika::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(40%, -40%);
+    }
+    
+    .stat-card-guru-dhika .icon-box-dhika {
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .stat-card-guru-dhika.total .icon-box-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .stat-card-guru-dhika.pending .icon-box-dhika {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .stat-card-guru-dhika.approved .icon-box-dhika {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stat-card-guru-dhika.done .icon-box-dhika {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .stat-card-guru-dhika h3 {
+        font-size: 42px;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+    }
+    
+    .stat-card-guru-dhika p {
+        color: #666;
+        margin: 5px 0 0 0;
+        font-size: 15px;
+    }
+    
+    .stat-card-guru-dhika .trend-dhika {
+        font-size: 13px;
+        color: #50C878;
+        margin-top: 10px;
+    }
+    
+    .stat-card-guru-dhika .trend-dhika i {
+        margin-right: 5px;
+    }
+    
+    .chart-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+    
+    .chart-card-dhika h4 {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .activity-item-dhika {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-left: 3px solid #667eea;
+        margin-bottom: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+    
+    .activity-item-dhika:hover {
+        background: #e9ecef;
+        padding-left: 20px;
+    }
+    
+    .activity-icon-dhika {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 18px;
+        color: white;
+    }
+    
+    .activity-icon-dhika.login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .activity-icon-dhika.konseling {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .activity-icon-dhika.user {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .activity-icon-dhika.chat {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .activity-content-dhika h6 {
+        margin: 0 0 5px 0;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .activity-content-dhika small {
+        color: #666;
+    }
+    
+    .quick-link-dhika {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        border: 2px solid transparent;
+        height: 100%;
+    }
+    
+    .quick-link-dhika:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .quick-link-dhika i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .quick-link-dhika h5 {
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .quick-link-dhika p {
+        color: #666;
+        font-size: 13px;
+        margin: 8px 0 0 0;
+    }
+    
+    .system-health-dhika {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .system-health-dhika .status-dhika {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #50C878;
+        margin-right: 10px;
+        animation: pulse-dhika 2s infinite;
+    }
+    
+    @keyframes pulse-dhika {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .today-schedule-dhika {
+        background: linear-gradient(135deg, #fdf6e3 0%, #f5e6ca 100%);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 5px solid #f59e0b;
+    }
+    
+    .today-schedule-dhika h6 {
+        color: #92400e;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .schedule-item-dhika {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .schedule-time-dhika {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .schedule-name-dhika {
+        color: #666;
+    }
+    
+    .badge-status-dhika {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .badge-pending-dhika {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+    
+    .badge-approved-dhika {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .badge-done-dhika {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .badge-cancelled-dhika {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .empty-state-dhika {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+    
+    .empty-state-dhika i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.3;
+    }
+    
+    .info-card-dhika {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard Guru BK
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Selamat datang, {{ guru.nama }}! Kelola layanan BK dengan optimal.
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                    {{ guru.nama.split(',')[0] }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistik Utama -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card-guru-dhika total">
+                <div class="icon-box-dhika">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>{{ stats.total if stats and stats.total else 0 }}</h3>
+                <p>Total Konseling</p>
+                <div class="trend-dhika">
+                    <i class="fas fa-arrow-up"></i> +{{ stats.total if stats and stats.total else 0 }} total
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card-guru-dhika pending">
+                <div class="icon-box-dhika">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>{{ stats.pending if stats and stats.pending else 0 }}</h3>
+                <p>Menunggu Persetujuan</p>
+                <div class="trend-dhika">
+                    {% if stats and stats.pending and stats.pending > 0 %}
+                    <i class="fas fa-exclamation-circle text-warning"></i> Perlu tindakan
+                    {% else %}
+                    <i class="fas fa-check-circle text-success"></i> Semua tertangani
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card-guru-dhika approved">
+                <div class="icon-box-dhika">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>{{ stats.disetujui if stats and stats.disetujui else 0 }}</h3>
+                <p>Jadwal Mendatang</p>
+                <div class="trend-dhika">
+                    <i class="fas fa-calendar-alt"></i> {{ stats.disetujui if stats and stats.disetujui else 0 }} sesi
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stat-card-guru-dhika done">
+                <div class="icon-box-dhika">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>{{ stats.selesai if stats and stats.selesai else 0 }}</h3>
+                <p>Selesai Ditangani</p>
+                <div class="trend-dhika">
+                    {% if stats and stats.total and stats.selesai %}
+                    <i class="fas fa-chart-line"></i> {{ ((stats.selesai/stats.total)*100)|round|int if stats.total > 0 else 0 }}% selesai
+                    {% else %}
+                    <i class="fas fa-chart-line"></i> 0% selesai
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Baris 2: Quick Links & Today's Schedule -->
+    <div class="row mb-4">
+        <!-- Quick Links -->
+        <div class="col-lg-8 mb-4">
+            <div class="chart-card-dhika" data-aos="fade-right">
+                <h4><i class="fas fa-bolt text-warning me-2"></i>Akses Cepat</h4>
+                <div class="row">
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('konseling_guru_dhika') }}" class="text-decoration-none">
+                            <div class="quick-link-dhika">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h5>Kelola Konseling</h5>
+                                <p>Lihat & tindak lanjuti pengajuan</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('laporan_dhika') }}" class="text-decoration-none">
+                            <div class="quick-link-dhika">
+                                <i class="fas fa-chart-bar"></i>
+                                <h5>Laporan</h5>
+                                <p>Statistik & analisis data</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="#" class="text-decoration-none">
+                            <div class="quick-link-dhika">
+                                <i class="fas fa-calendar-plus"></i>
+                                <h5>Jadwal Saya</h5>
+                                <p>Kelola agenda konseling</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('chat_dhika') }}" class="text-decoration-none">
+                            <div class="quick-link-dhika">
+                                <i class="fas fa-comments"></i>
+                                <h5>Chat</h5>
+                                <p>Komunikasi dengan siswa</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- System Health -->
+                <div class="info-card-dhika">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-heartbeat text-danger me-2"></i>Status Sistem
+                    </h6>
+                    <div class="system-health-dhika">
+                        <div class="d-flex align-items-center">
+                            <div class="status-dhika"></div>
+                            <strong>Database</strong>
+                        </div>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                    <div class="system-health-dhika">
+                        <div class="d-flex align-items-center">
+                            <div class="status-dhika"></div>
+                            <strong>Server</strong>
+                        </div>
+                        <span class="badge bg-success">Running</span>
+                    </div>
+                    <div class="system-health-dhika">
+                        <div class="d-flex align-items-center">
+                            <div class="status-dhika"></div>
+                            <strong>Last Backup</strong>
+                        </div>
+                        <small class="text-muted">{{ now.strftime('%d %b %Y %H:%M') }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Today's Schedule -->
+        <div class="col-lg-4 mb-4">
+            <div class="chart-card-dhika" data-aos="fade-left">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-calendar-day text-primary me-2"></i>Jadwal Hari Ini
+                    </h4>
+                    <span class="badge bg-primary">{{ today.strftime('%d %b %Y') }}</span>
+                </div>
+                
+                {% if konseling_hari_ini and konseling_hari_ini|length > 0 %}
+                    {% for konseling in konseling_hari_ini %}
+                    <div class="today-schedule-dhika">
+                        <h6>{{ konseling.nama_siswa }} - {{ konseling.kelas }}</h6>
+                        <div class="schedule-item-dhika">
+                            <div>
+                                <div class="schedule-time-dhika">{{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</div>
+                                <div class="schedule-name-dhika">{{ konseling.jenis }}</div>
+                            </div>
+                            <div>
+                                <span class="badge-status-dhika 
+                                    {% if konseling.status == 'pending' %}badge-pending-dhika
+                                    {% elif konseling.status == 'disetujui' %}badge-approved-dhika
+                                    {% elif konseling.status == 'selesai' %}badge-done-dhika
+                                    {% else %}badge-cancelled-dhika{% endif %}">
+                                    {{ konseling.status }}
+                                </span>
+                            </div>
+                        </div>
+                        {% if konseling.alasan %}
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-comment me-1"></i>
+                            {{ konseling.alasan[:60] }}{% if konseling.alasan|length > 60 %}...{% endif %}
+                        </small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state-dhika">
+                        <i class="fas fa-calendar-times"></i>
+                        <h6 class="fw-bold mb-2">Tidak Ada Jadwal</h6>
+                        <p class="mb-0">Tidak ada jadwal konseling hari ini</p>
+                    </div>
+                {% endif %}
+                
+                <!-- Jenis Konseling Stats -->
+                <div class="mt-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-chart-pie text-info me-2"></i>Distribusi Jenis
+                    </h6>
+                    {% if jenis_stats and jenis_stats|length > 0 %}
+                        {% for jenis in jenis_stats %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>{{ jenis.jenis }}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="progress" style="width: 100px; height: 8px;">
+                                    {% set percentage = (jenis.jumlah/stats.total*100) if stats and stats.total and stats.total > 0 else 0 %}
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ percentage }}%; 
+                                                background: {% if loop.index == 1 %}#667eea
+                                                          {% elif loop.index == 2 %}#f093fb
+                                                          {% elif loop.index == 3 %}#4facfe
+                                                          {% else %}#43e97b{% endif %};">
+                                    </div>
+                                </div>
+                                <span class="ms-2 fw-bold">{{ jenis.jumlah }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">Belum ada data jenis konseling</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Baris 3: Recent Activity & Charts -->
+    <div class="row">
+        <!-- Recent Activity -->
+        <div class="col-lg-8 mb-4">
+            <div class="chart-card-dhika" data-aos="fade-up" data-aos-delay="100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">
+                        <i class="fas fa-history text-info me-2"></i>Aktivitas Terbaru
+                    </h4>
+                    <a href="#" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-history me-1"></i>Lihat Semua
+                    </a>
+                </div>
+                
+                <div class="activity-item-dhika">
+                    <div class="activity-icon-dhika login">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div class="activity-content-dhika">
+                        <h6>Anda login ke sistem</h6>
+                        <small>{{ now.strftime('%d %b %Y %H:%M') }}</small>
+                    </div>
+                </div>
+                
+               
