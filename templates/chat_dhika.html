@@ -1,0 +1,615 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Chat - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .chat-container-dhika {
+        display: flex;
+        height: calc(100vh - 200px);
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chat-sidebar-dhika {
+        width: 350px;
+        border-right: 1px solid #e2e8f0;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .chat-header-dhika {
+        padding: 25px;
+        border-bottom: 1px solid #e2e8f0;
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        color: white;
+    }
+    
+    .search-chat-dhika {
+        padding: 20px;
+        border-bottom: 1px solid #e2e8f0;
+        background: white;
+    }
+    
+    .search-box-dhika {
+        position: relative;
+    }
+    
+    .search-box-dhika i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+    
+    .search-box-dhika input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .search-box-dhika input:focus {
+        outline: none;
+        border-color: var(--primary-dhika);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+    
+    .chat-list-dhika {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    
+    .chat-item-dhika {
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 10px;
+        background: white;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .chat-item-dhika:hover {
+        border-color: var(--primary-dhika);
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .chat-item-dhika.active-dhika {
+        border-color: var(--primary-dhika);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+    
+    .chat-avatar-dhika {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .chat-info-dhika {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .chat-name-dhika {
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .chat-preview-dhika {
+        font-size: 0.85rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .chat-time-dhika {
+        font-size: 0.75rem;
+        color: #94a3b8;
+        text-align: right;
+    }
+    
+    .chat-unread-dhika {
+        width: 20px;
+        height: 20px;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+    
+    .chat-main-dhika {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .chat-main-header-dhika {
+        padding: 20px 30px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+    }
+    
+    .chat-user-info-dhika {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .chat-status-dhika {
+        font-size: 0.8rem;
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .chat-status-dhika::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulseStatus 2s infinite;
+    }
+    
+    @keyframes pulseStatus {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .chat-messages-dhika {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .message-dhika {
+        max-width: 70%;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .message-dhika.sent-dhika {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+    
+    .message-dhika.received-dhika {
+        align-self: flex-start;
+    }
+    
+    .message-avatar-dhika {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+        align-self: flex-end;
+        margin-bottom: 5px;
+    }
+    
+    .message-content-dhika {
+        background: white;
+        padding: 15px;
+        border-radius: 18px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+    
+    .message-dhika.sent-dhika .message-content-dhika {
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+    
+    .message-dhika.received-dhika .message-content-dhika {
+        background: white;
+        color: #1e293b;
+        border-bottom-left-radius: 5px;
+    }
+    
+    .message-text-dhika {
+        margin-bottom: 5px;
+        line-height: 1.5;
+    }
+    
+    .message-time-dhika {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        text-align: right;
+    }
+    
+    .chat-input-dhika {
+        padding: 20px 30px;
+        border-top: 1px solid #e2e8f0;
+        background: white;
+    }
+    
+    .input-group-chat-dhika {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .chat-textarea-dhika {
+        flex: 1;
+        padding: 15px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 15px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        resize: none;
+        min-height: 60px;
+        max-height: 120px;
+        transition: all 0.3s;
+    }
+    
+    .chat-textarea-dhika:focus {
+        outline: none;
+        border-color: var(--primary-dhika);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    }
+    
+    .btn-send-dhika {
+        padding: 0 30px;
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        align-self: flex-end;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn-send-dhika:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn-send-dhika:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    .chat-tools-dhika {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .chat-tool-dhika {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: white;
+    }
+    
+    .chat-tool-dhika:hover {
+        border-color: var(--primary-dhika);
+        color: var(--primary-dhika);
+        transform: translateY(-2px);
+    }
+    
+    .empty-chat-dhika {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: #94a3b8;
+        padding: 40px;
+        text-align: center;
+    }
+    
+    .empty-chat-dhika i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    .typing-indicator-dhika {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        align-self: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .typing-dot-dhika {
+        width: 8px;
+        height: 8px;
+        background: #94a3b8;
+        border-radius: 50%;
+        animation: typingDot 1.4s infinite;
+    }
+    
+    .typing-dot-dhika:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot-dhika:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typingDot {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-5px); }
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika mb-4" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-comments me-2"></i>Chat BK
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Berkomunikasi dengan {{ 'siswa' if session.role == 'guru' else 'guru BK' }} secara langsung
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-{{ 'user-graduate' if session.role == 'siswa' else 'chalkboard-teacher' }} me-2"></i>
+                    {{ session.nama }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container-dhika" data-aos="fade-up">
+        <!-- Sidebar -->
+        <div class="chat-sidebar-dhika">
+            <div class="chat-header-dhika">
+                <h4 class="fw-bold mb-0">
+                    <i class="fas fa-comment-dots me-2"></i>Percakapan
+                </h4>
+            </div>
+            
+            <div class="search-chat-dhika">
+                <div class="search-box-dhika">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchChatDhika" placeholder="Cari percakapan...">
+                </div>
+            </div>
+            
+            <div class="chat-list-dhika" id="chatListDhika">
+                <!-- Chat items will be populated by JavaScript -->
+                <div class="chat-item-dhika active-dhika" data-user-id="GR0001">
+                    <div class="chat-avatar-dhika">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="chat-info-dhika">
+                        <div class="chat-name-dhika">Dra. Siti Aminah, M.Pd</div>
+                        <div class="chat-preview-dhika">Baik, silahkan ajukan jadwal melalui sistem</div>
+                    </div>
+                    <div class="chat-time-dhika">10:30</div>
+                    <div class="chat-unread-dhika">3</div>
+                </div>
+                
+                <div class="chat-item-dhika" data-user-id="GR0002">
+                    <div class="chat-avatar-dhika">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="chat-info-dhika">
+                        <div class="chat-name-dhika">Drs. Bambang Sudrajat</div>
+                        <div class="chat-preview-dhika">Jadwal konseling kamu sudah disetujui</div>
+                    </div>
+                    <div class="chat-time-dhika">Kemarin</div>
+                    <div class="chat-unread-dhika">1</div>
+                </div>
+                
+                {% if session.role == 'guru' %}
+                <div class="chat-item-dhika" data-user-id="SI0001">
+                    <div class="chat-avatar-dhika">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="chat-info-dhika">
+                        <div class="chat-name-dhika">Andhika Andriana Putra</div>
+                        <div class="chat-preview-dhika">Selamat pagi Bu, saya ingin konsultasi</div>
+                    </div>
+                    <div class="chat-time-dhika">09:15</div>
+                </div>
+                
+                <div class="chat-item-dhika" data-user-id="SI0002">
+                    <div class="chat-avatar-dhika">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="chat-info-dhika">
+                        <div class="chat-name-dhika">Siti Nurhaliza</div>
+                        <div class="chat-preview-dhika">Terima kasih atas bimbingannya</div>
+                    </div>
+                    <div class="chat-time-dhika">Senin</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="chat-main-dhika" id="chatMainDhika">
+            <!-- Default empty state -->
+            <div class="empty-chat-dhika">
+                <i class="fas fa-comment-slash"></i>
+                <h4 class="fw-bold mb-3">Pilih Percakapan</h4>
+                <p class="mb-4">
+                    Pilih percakapan dari daftar di samping untuk mulai mengobrol
+                </p>
+                <div class="text-muted small">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Chat hanya aktif pada jam 07:00-16:00 hari sekolah
+                </div>
+            </div>
+            
+            <!-- Chat with user (hidden by default) -->
+            <div id="activeChatDhika" style="display: none;">
+                <!-- Chat Header -->
+                <div class="chat-main-header-dhika">
+                    <div class="chat-user-info-dhika">
+                        <div class="chat-avatar-dhika" id="activeChatAvatarDhika">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1" id="activeChatNameDhika">Nama User</h5>
+                            <div class="chat-status-dhika" id="activeChatStatusDhika">Online</div>
+                        </div>
+                    </div>
+                    <div class="chat-tools-dhika">
+                        <div class="chat-tool-dhika" title="Info">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="chat-tool-dhika" title="Lampiran">
+                            <i class="fas fa-paperclip"></i>
+                        </div>
+                        <div class="chat-tool-dhika" title="Lainnya">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messages -->
+                <div class="chat-messages-dhika" id="chatMessagesDhika">
+                    <!-- Messages will be populated by JavaScript -->
+                    <div class="message-dhika received-dhika">
+                        <div class="message-avatar-dhika">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="message-content-dhika">
+                            <div class="message-text-dhika">Halo, ada yang bisa saya bantu?</div>
+                            <div class="message-time-dhika">10:30</div>
+                        </div>
+                    </div>
+                    
+                    <div class="message-dhika sent-dhika">
+                        <div class="message-avatar-dhika">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="message-content-dhika">
+                            <div class="message-text-dhika">Selamat pagi Bu, saya ingin berkonsultasi tentang tugas akhir saya</div>
+                            <div class="message-time-dhika">10:32</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Typing Indicator -->
+                <div class="typing-indicator-dhika" id="typingIndicatorDhika" style="display: none;">
+                    <div class="typing-dot-dhika"></div>
+                    <div class="typing-dot-dhika"></div>
+                    <div class="typing-dot-dhika"></div>
+                    <span id="typingTextDhika">Sedang mengetik...</span>
+                </div>
+                
+                <!-- Input Area -->
+                <div class="chat-input-dhika">
+                    <div class="input-group-chat-dhika">
+                        <textarea class="chat-textarea-dhika" id="messageInputDhika" 
+                                  placeholder="Ketik pesan di sini..." rows="1"></textarea>
+                        <button class="btn-send-dhika" id="sendBtnDhika">
+                            <i class="fas fa-paper-plane"></i> Kirim
+                        </button>
+                    </div>
+                    <div class="chat-tools-dhika">
+                        <div class="chat-tool-dhika" title="Emoji">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="chat-tool-dhika" title="Gambar">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="chat-tool-dhika" title="Dokumen">
+                            <i class="fas fa-file"></i>
+                        </div>
+                        <div class="chat-tool-dhika" title="Rekam Suara">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Card -->
+    <div class="row mt-4">
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="glass-card-dhika p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-info-circle text-primary me-2"></i>Panduan Chat
+                </h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Chat hanya untuk keperluan konseling
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Gunakan bahasa yang sopan dan formal
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Jam operasional: 07:00 - 16:00
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Balasan biasanya dalam 1x24 jam
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="glass-card-dhika p-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-shield-alt text-success me-2"></i>Keamanan Ch
