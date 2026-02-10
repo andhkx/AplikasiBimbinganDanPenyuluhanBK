@@ -1,0 +1,626 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Data Siswa - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+    
+    .data-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .search-box-dhika {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .search-box-dhika i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 2;
+    }
+    
+    .search-box-dhika input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+    
+    .search-box-dhika input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1);
+    }
+    
+    .filter-buttons-dhika {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+    
+    .filter-btn-dhika {
+        padding: 8px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: white;
+        color: #64748b;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-btn-dhika:hover,
+    .filter-btn-dhika.active-dhika {
+        border-color: #3b82f6;
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .table-container-dhika {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .table-dhika {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .table-dhika thead {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+    }
+    
+    .table-dhika th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 500;
+        font-size: 14px;
+        border: none;
+    }
+    
+    .table-dhika td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        font-size: 14px;
+    }
+    
+    .table-dhika tbody tr:hover {
+        background: #f8fafc;
+    }
+    
+    .badge-kelas-dhika {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .badge-rpl-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .badge-animasi-dhika {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+    
+    .badge-kimia-dhika {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+    }
+    
+    .badge-meka-dhika {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+    }
+    
+    .badge-dkv-dhika {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: white;
+    }
+    
+    .badge-permesinan-dhika {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+    }
+    
+    .avatar-student-dhika {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .stat-card-mini-dhika {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    
+    .stat-card-mini-dhika:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card-mini-dhika h3 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 5px 0;
+    }
+    
+    .stat-card-mini-dhika p {
+        color: #64748b;
+        font-size: 13px;
+        margin: 0;
+    }
+    
+    .empty-state-dhika {
+        text-align: center;
+        padding: 50px 20px;
+        color: #94a3b8;
+    }
+    
+    .empty-state-dhika i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    .export-buttons-dhika {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+    
+    .action-buttons-dhika {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .btn-action-sm-dhika {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-view-dhika {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .btn-chat-dhika {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .btn-history-dhika {
+        background: #fef3c7;
+        color: #92400e;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-user-graduate me-2"></i>Data Siswa
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Kelola dan pantau data seluruh siswa di SMKN 2 Cimahi
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-users me-2"></i>
+                    {{ siswa_list|length }} Siswa
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistik Ringkas -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>{{ siswa_list|length }}</h3>
+                <p>Total Siswa</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>{{ kelas_stats|length }}</h3>
+                <p>Jumlah Kelas</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>{{ jurusan_stats|length }}</h3>
+                <p>Program Jurusan</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>0</h3>
+                <p>Aktif Konseling</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter & Search -->
+    <div class="data-card-dhika mb-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="search-box-dhika">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchStudentDhika" placeholder="Cari siswa berdasarkan nama, NIS, atau kelas...">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="export-buttons-dhika">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-file-excel me-2"></i>Export Excel
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="printDataDhika()">
+                        <i class="fas fa-print me-2"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Kelas -->
+        <div class="filter-buttons-dhika">
+            <div class="filter-btn-dhika active-dhika" data-filter="all">Semua</div>
+            {% for kelas in kelas_stats %}
+            <div class="filter-btn-dhika" data-filter="kelas-{{ kelas.kelas|lower|replace(' ', '') }}">
+                {{ kelas.kelas }} ({{ kelas.jumlah }})
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Filter Jurusan -->
+        <div class="filter-buttons-dhika">
+            {% for jurusan in jurusan_stats %}
+            <div class="filter-btn-dhika" data-filter="jurusan-{{ jurusan.jurusan|lower }}">
+                {{ jurusan.jurusan }} ({{ jurusan.jumlah }})
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Tabel Data Siswa -->
+    <div class="data-card-dhika" data-aos="fade-up" data-aos-delay="200">
+        <div class="table-container-dhika">
+            <table class="table-dhika" id="studentTableDhika">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 60px;">Avatar</th>
+                        <th>Nama Siswa</th>
+                        <th>NIS</th>
+                        <th>Kelas</th>
+                        <th>Jurusan</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th style="width: 120px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if siswa_list %}
+                        {% for siswa in siswa_list %}
+                        <tr class="student-row-dhika"
+                            data-kelas="kelas-{{ siswa.kelas|lower|replace(' ', '') }}"
+                            data-jurusan="jurusan-{{ siswa.jurusan|lower }}"
+                            data-search="{{ siswa.nama|lower }} {{ siswa.nis|lower }} {{ siswa.kelas|lower }} {{ siswa.jurusan|lower }}">
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <div class="avatar-student-dhika">
+                                    {{ siswa.nama.split(' ')[0][0] }}{{ siswa.nama.split(' ')[1][0] if siswa.nama.split(' ')|length > 1 else siswa.nama[1] }}
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ siswa.nama }}</strong>
+                                <br>
+                                <small class="text-muted">ID: {{ siswa.id_siswa }}</small>
+                            </td>
+                            <td>
+                                <code>{{ siswa.nis }}</code>
+                            </td>
+                            <td>
+                                <span class="badge-kelas-dhika badge-rpl-dhika">
+                                    {{ siswa.kelas }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-kelas-dhika 
+                                    {% if siswa.jurusan == 'RPL' %}badge-rpl-dhika
+                                    {% elif siswa.jurusan == 'Animasi' %}badge-animasi-dhika
+                                    {% elif siswa.jurusan == 'Kimia' %}badge-kimia-dhika
+                                    {% elif siswa.jurusan == 'Mekatronika' %}badge-meka-dhika
+                                    {% elif siswa.jurusan == 'DKV' %}badge-dkv-dhika
+                                    {% else %}badge-permesinan-dhika{% endif %}">
+                                    {{ siswa.jurusan }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if siswa.email %}
+                                <a href="mailto:{{ siswa.email }}" class="text-decoration-none">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    {{ siswa.email }}
+                                </a>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <code>{{ siswa.username }}</code>
+                            </td>
+                            <td>
+                                <div class="action-buttons-dhika">
+                                    <button class="btn-action-sm-dhika btn-view-dhika" 
+                                            title="Lihat Detail"
+                                            onclick="viewStudentDhika('{{ siswa.id_siswa }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-action-sm-dhika btn-chat-dhika"
+                                            title="Kirim Pesan"
+                                            onclick="chatStudentDhika('{{ siswa.id_siswa }}')">
+                                        <i class="fas fa-comment"></i>
+                                    </button>
+                                    <button class="btn-action-sm-dhika btn-history-dhika"
+                                            title="Riwayat Konseling"
+                                            onclick="historyStudentDhika('{{ siswa.id_siswa }}')">
+                                        <i class="fas fa-history"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state-dhika">
+                                <i class="fas fa-user-slash"></i>
+                                <h5 class="fw-bold mb-3">Data Siswa Tidak Tersedia</h5>
+                                <p class="mb-0">Belum ada data siswa yang terdaftar dalam sistem.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if siswa_list and siswa_list|length > 10 %}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted">
+                Menampilkan 1-10 dari {{ siswa_list|length }} siswa
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Statistik Detail -->
+    <div class="row mt-4">
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="data-card-dhika">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>Distribusi Per Kelas
+                </h5>
+                <div class="row">
+                    {% for kelas in kelas_stats %}
+                    <div class="col-6 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>{{ kelas.kelas }}</span>
+                            <span class="fw-bold">{{ kelas.jumlah }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            {% set percentage = (kelas.jumlah/siswa_list|length*100) if siswa_list|length > 0 else 0 %}
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ percentage }}%; 
+                                        background: {% if loop.index == 1 %}#667eea
+                                                  {% elif loop.index == 2 %}#f093fb
+                                                  {% elif loop.index == 3 %}#4facfe
+                                                  {% else %}#43e97b{% endif %};">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="data-card-dhika">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-chart-pie text-success me-2"></i>Distribusi Per Jurusan
+                </h5>
+                <div class="row">
+                    {% for jurusan in jurusan_stats %}
+                    <div class="col-6 mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>{{ jurusan.jurusan }}</span>
+                            <span class="fw-bold">{{ jurusan.jumlah }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            {% set percentage = (jurusan.jumlah/siswa_list|length*100) if siswa_list|length > 0 else 0 %}
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ percentage }}%; 
+                                        background: {% if jurusan.jurusan == 'RPL' %}#667eea
+                                                  {% elif jurusan.jurusan == 'Animasi' %}#f093fb
+                                                  {% elif jurusan.jurusan == 'Kimia' %}#4facfe
+                                                  {% elif jurusan.jurusan == 'Mekatronika' %}#43e97b
+                                                  {% elif jurusan.jurusan == 'DKV' %}#fa709a
+                                                  {% else %}#a8edea{% endif %};">
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    // Filter by kelas/jurusan
+    document.querySelectorAll('.filter-btn-dhika').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('.filter-btn-dhika').forEach(b => b.classList.remove('active-dhika'));
+            this.classList.add('active-dhika');
+            
+            // Filter table rows
+            const filter = this.dataset.filter;
+            const rows = document.querySelectorAll('.student-row-dhika');
+            
+            rows.forEach(row => {
+                const kelas = row.dataset.kelas;
+                const jurusan = row.dataset.jurusan;
+                
+                if (filter === 'all' || filter === kelas || filter === jurusan) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchStudentDhika');
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.student-row-dhika');
+        
+        rows.forEach(row => {
+            const searchData = row.dataset.search;
+            if (searchData.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Student actions
+    function viewStudentDhika(studentId) {
+        Swal.fire({
+            title: 'Detail Siswa',
+            html: `Loading detail siswa ${studentId}...`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Lihat Konseling',
+            cancelButtonText: 'Tutup'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to student's konseling history
+                window.location.href = `/konseling/guru?student=${studentId}`;
+            }
+        });
+    }
+    
+    function chatStudentDhika(studentId) {
+        window.location.href = `/chat?to=${studentId}`;
+    }
+    
+    function historyStudentDhika(studentId) {
+        // In a real app, this would fetch student's konseling history
+        Swal.fire({
+            title: 'Riwayat Konseling',
+            html: `Menampilkan riwayat konseling siswa ${studentId}`,
+            icon: 'info'
+        });
+    }
+    
+    function printDataDhika() {
+        // Create a print-friendly version
+        const printContent = document.getElementById('studentTableDhika').outerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Data Siswa - SMKN 2 Cimahi</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th { background: #3b82f6; color: white; padding: 10px; }
+                        td { padding: 8px; border-bottom: 1px solid #ddd; }
+                        h1 { color: #1d4ed8; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Data Siswa SMKN 2 Cimahi</h1>
+                    <p>Dicetak pada: ${new Date().toLocaleDateString('id-ID')}</p>
+                    ${printContent}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+</script>
+{% endblock %}
