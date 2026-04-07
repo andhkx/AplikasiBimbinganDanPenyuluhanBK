@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BK SMKN 2 Cimahi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-circles-dhika {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .circle-dhika {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            animation: floatCircle 8s ease-in-out infinite;
+        }
+
+        .circle-dhika:nth-child(1) { width: 300px; height: 300px; top: -80px; left: -80px; animation-delay: 0s; }
+        .circle-dhika:nth-child(2) { width: 200px; height: 200px; top: 60%; right: -60px; animation-delay: 2s; }
+        .circle-dhika:nth-child(3) { width: 150px; height: 150px; bottom: -50px; left: 30%; animation-delay: 4s; }
+        .circle-dhika:nth-child(4) { width: 100px; height: 100px; top: 20%; right: 20%; animation-delay: 1s; }
+
+        @keyframes floatCircle {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .login-card-dhika {
+            background: rgba(255,255,255,0.97);
+            border-radius: 28px;
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            animation: cardIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .login-card-dhika::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            border-radius: 28px 28px 0 0;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200%;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .logo-wrap-dhika {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon-dhika {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2rem; color: white;
+            box-shadow: 0 8px 24px rgba(102,126,234,0.35);
+        }
+
+        .logo-wrap-dhika h2 {
+            font-size: 1.6rem; font-weight: 700;
+            color: #1e293b; margin-bottom: 4px;
+        }
+
+        .logo-wrap-dhika p {
+            color: #64748b; font-size: 0.875rem;
+        }
+
+        .role-tabs-dhika {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 28px;
+            gap: 4px;
+        }
+
+        .role-tab-dhika {
+            flex: 1; padding: 10px 8px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex; align-items: center;
+            justify-content: center; gap: 6px;
+        }
+
+        .role-tab-dhika.active-dhika {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .alert-login-dhika {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+            display: flex; align-items: center; gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-error-dhika { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .alert-success-dhika { background: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
+
+        .field-wrap-dhika {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .field-icon-dhika {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8; font-size: 1rem;
+            pointer-events: none;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+
+        .field-input-dhika {
+            width: 100%;
+            padding: 13px 46px 13px 46px;
+            border: 2px solid #e2e8f0;
+            border-radius: 13px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            transition: all 0.25s;
+            color: #1e293b;
+        }
+
+        .field-input-dhika:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
+        }
+
+        .field-input-dhika:focus + .field-icon-dhika,
+        .field-wrap-dhika:focus-within .field-icon-dhika {
+            color: #667eea;
+        }
+
+        .toggle-pw-dhika {
+            position: absolute;
+            right: 14px; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none;
+            color: #94a3b8; cursor: pointer;
+            padding: 4px; font-size: 1rem;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+
+        .toggle-pw-dhika:hover { color: #667eea; }
+
+        .field-label-dhika {
+            font-size: 0.82rem; font-weight: 600;
+            color: #475569; margin-bottom: 6px;
+            display: block;
+        }
+
+        .login-btn-dhika {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none; border-radius: 13px;
+            color: white; font-size: 1rem;
+            font-weight: 600; font-family: 'Poppins', sans-serif;
+            cursor: pointer; margin-top: 8px;
+            transition: all 0.25s;
+            position: relative; overflow: hidden;
+        }
+
+        .login-btn-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+        }
+
+        .login-btn-dhika:active { transform: translateY(0); }
+
+        .login-btn-dhika:disabled {
+            opacity: 0.7; cursor: not-allowed; transform: none;
+        }
+
+        .divider-dhika {
+            display: flex; align-items: center; gap: 12px;
+            margin: 22px 0 16px;
+            color: #94a3b8; font-size: 0.8rem;
+        }
+
+        .divider-dhika::before, .divider-dhika::after {
+            content: ''; flex: 1;
+            height: 1px; background: #e2e8f0;
+        }
+
+        .info-demo-dhika {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.8rem; color: #64748b;
+        }
+
+        .info-demo-dhika strong { color: #475569; }
+
+        .login-footer-dhika {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.78rem; color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-circles-dhika">
+        <div class="circle-dhika"></div>
+        <div class="circle-dhika"></div>
+        <div class="circle-dhika"></div>
+        <div class="circle-dhika"></div>
+    </div>
+
+    <div class="login-card-dhika">
+        <div class="logo-wrap-dhika">
+            <div class="logo-icon-dhika">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <h2>BK SYSTEM</h2>
+            <p>SMK Negeri 2 Cimahi</p>
+        </div>
+
+        {% with message, category = get_flash_dhika() %}
+            {% if message %}
+            <div class="alert-login-dhika alert-{{ category }}-dhika">
+                <i class="fas fa-{{ 'exclamation-circle' if category == 'error' else 'check-circle' }}"></i>
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="role-tabs-dhika">
+            <button class="role-tab-dhika active-dhika" data-role="siswa" type="button">
+                <i class="fas fa-user-graduate"></i> Siswa
+            </button>
+            <button class="role-tab-dhika" data-role="guru" type="button">
+                <i class="fas fa-chalkboard-teacher"></i> Guru BK
+            </button>
+        </div>
+
+        <form method="POST" action="{{ url_for('login_dhika') }}" id="loginFormDhika">
+            <input type="hidden" name="role_dhika" id="roleInputDhika" value="siswa">
+
+            <div class="field-wrap-dhika">
+                <label class="field-label-dhika">Username</label>
+                <div style="position:relative;">
+                    <i class="fas fa-user field-icon-dhika"></i>
+                    <input type="text" name="username_dhika" id="usernameDhika"
+                           class="field-input-dhika" placeholder="Masukkan username" required autofocus>
+                </div>
+            </div>
+
+            <div class="field-wrap-dhika">
+                <label class="field-label-dhika">Password</label>
+                <div style="position:relative;">
+                    <i class="fas fa-lock field-icon-dhika"></i>
+                    <input type="password" name="password_dhika" id="passwordDhika"
+                           class="field-input-dhika" placeholder="Masukkan password" required>
+                    <button type="button" class="toggle-pw-dhika" id="togglePwDhika" tabindex="-1">
+                        <i class="fas fa-eye" id="pwIconDhika"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn-dhika" id="loginBtnDhika">
+                <i class="fas fa-sign-in-alt me-2"></i>Masuk ke Sistem
+            </button>
+        </form>
+
+        <div class="divider-dhika">atau</div>
+
+        <a href="/register"
+           class="login-btn-dhika d-block text-center text-decoration-none mb-4"
+           style="background:white;color:#667eea;border:2px solid #667eea;font-size:0.9rem;">
+            <i class="fas fa-user-plus me-2"></i>Daftar Akun Baru (Siswa)
+        </a>
+
+        <div class="divider-dhika">Info Akun Demo</div>
+
+        <div class="info-demo-dhika">
+            <div><strong>Siswa:</strong> siswa001 &nbsp;|&nbsp; password: siswa123</div>
+            <div style="margin-top:4px;"><strong>Guru BK:</strong> guru_bk1 &nbsp;|&nbsp; password: guru123</div>
+        </div>
+
+        <div class="login-footer-dhika">
+            &copy; 2026 Andhika Andriana Putra &mdash; XI RPL A
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.role-tab-dhika').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.role-tab-dhika').forEach(function(b) {
+                    b.classList.remove('active-dhika');
+                });
+                this.classList.add('active-dhika');
+                document.getElementById('roleInputDhika').value = this.dataset.role;
+            });
+        });
+
+        document.getElementById('togglePwDhika').addEventListener('click', function() {
+            var input = document.getElementById('passwordDhika');
+            var icon = document.getElementById('pwIconDhika');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        });
+
+        document.getElementById('loginFormDhika').addEventListener('submit', function() {
+            var btn = document.getElementById('loginBtnDhika');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sedang masuk...';
+            btn.disabled = true;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title_dhika %}BK SMK Negeri 2 Cimahi{% endblock %}</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-dhika: #667eea;
+            --secondary-dhika: #764ba2;
+            --success-dhika: #10b981;
+            --info-dhika: #3b82f6;
+            --warning-dhika: #f59e0b;
+            --danger-dhika: #ef4444;
+            --light-dhika: #f8fafc;
+            --dark-dhika: #1e293b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card-dhika {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        }
+        
+        .sidebar-dhika {
+            width: 280px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .nav-link-dhika {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 5px 15px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-link-dhika:hover,
+        .nav-link-dhika.active-dhika {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-link-dhika i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .main-content-dhika {
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar-dhika {
+                transform: translateX(-100%);
+            }
+            .main-content-dhika {
+                margin-left: 0;
+            }
+        }
+        
+        .stat-card-dhika {
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card-dhika:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card-dhika::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .stat-icon-dhika {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number-dhika {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label-dhika {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .btn-dhika {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            border: none;
+        }
+        
+        .btn-primary-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table-dhika {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-dhika thead {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            color: white;
+        }
+        
+        .table-dhika th {
+            border: none;
+            padding: 15px;
+            font-weight: 500;
+        }
+        
+        .table-dhika td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+        
+        .badge-dhika {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .avatar-dhika {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .notification-badge-dhika {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger-dhika);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        /* Fix modal z-index - lebih tinggi dari semua elemen */
+        .modal         { z-index: 1060 !important; }
+        .modal-backdrop{ z-index: 1059 !important; }
+        .modal-dialog  { z-index: 1061 !important; }
+        .modal-content { z-index: 1062 !important; position: relative; }
+        /* Pastikan elemen dalam modal bisa diklik */
+        .modal-body, .modal-footer, .modal-header {
+            position: relative;
+            z-index: 1063 !important;
+        }
+        .modal select, .modal textarea, .modal input,
+        .modal button, .modal .btn {
+            position: relative;
+            z-index: 1064 !important;
+            pointer-events: auto !important;
+        }
+        /* Fix backdrop offcanvas */
+        .offcanvas-backdrop { z-index: 1040 !important; }
+        @media (max-width: 480px) {
+            .main-content-dhika { padding: 12px; }
+            .page-header-dhika { padding: 16px 18px !important; border-radius: 14px !important; margin-bottom: 16px !important; }
+            .page-header-dhika h1, .page-header-dhika h4 { font-size: 1.15rem !important; margin-bottom: 4px !important; }
+            .page-header-dhika p { font-size: 0.78rem !important; }
+            .glass-card-dhika { padding: 14px !important; border-radius: 14px; }
+            .table th, .table td { font-size: 0.78rem !important; padding: 8px 6px !important; }
+            .badge { font-size: 0.7rem !important; }
+            h1 { font-size: 1.2rem !important; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content-dhika { padding: 14px; }
+            .page-header-dhika { padding: 18px 20px; border-radius: 16px; }
+            .modal-dialog { margin: 8px; }
+            .modal-content { border-radius: 16px; }
+            .modal-body { padding: 16px; }
+            .form-control, .form-select { font-size: 0.875rem; }
+            h1 { font-size: 1.4rem; }
+            h4 { font-size: 1.1rem; }
+        }
+
+
+        .bk-topbar-dhika {
+            position: sticky; top: 0; z-index: 999;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex; align-items: center;
+            padding: 10px 14px; gap: 10px;
+            box-shadow: 0 2px 12px rgba(102,126,234,0.3);
+        }
+
+        .bk-topbar-brand-dhika {
+            flex: 1; color: white; text-decoration: none;
+            font-weight: 600; font-size: 0.95rem;
+        }
+
+        .bk-topbar-btn-dhika {
+            background: rgba(255,255,255,0.15); border: none; color: white;
+            border-radius: 10px; width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; flex-shrink: 0;
+        }
+
+        .bk-notif-dot-dhika {
+            position: absolute; top: 4px; right: 4px;
+            width: 8px; height: 8px; background: #ef4444;
+            border-radius: 50%; border: 1.5px solid white;
+        }
+
+        .bk-notif-popup-dhika {
+            position: fixed; top: 58px; right: 10px; left: 10px;
+            background: white; border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+            z-index: 1100; overflow: hidden;
+            animation: popDown 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @keyframes popDown {
+            from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .bk-notif-header-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            color: white; padding: 14px 18px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; font-size: 0.9rem;
+        }
+
+        .bk-notif-list-dhika { max-height: 320px; overflow-y: auto; }
+
+        .bk-notif-item-dhika {
+            padding: 13px 16px; border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+
+        .bk-notif-item-dhika:last-child { border-bottom: none; }
+
+        .bk-notif-icon-dhika {
+            width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.75rem;
+        }
+
+        .bk-notif-text-dhika { font-size: 0.82rem; color: #1e293b; font-weight: 500; }
+        .bk-notif-time-dhika { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+        .bk-notif-loading-dhika { padding: 24px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
+
+        .bk-bottomnav-dhika {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; z-index: 998;
+            display: flex; align-items: center;
+            padding: 6px 8px 10px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            border-top: 1px solid #f1f5f9;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
+
+        .bk-bn-item-dhika {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-decoration: none; color: #94a3b8;
+            font-size: 0.62rem; font-weight: 500;
+            padding: 4px 2px; gap: 3px; transition: color 0.2s;
+            min-width: 0;
+        }
+
+        .bk-bn-item-dhika i { font-size: 1.15rem; }
+        .bk-bn-item-dhika.active { color: var(--primary-dhika); }
+        .bk-bn-item-dhika.active i { color: var(--primary-dhika); }
+
+        .bk-bn-center-dhika { position: relative; }
+
+        .bk-bn-center-icon-dhika {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem;
+            box-shadow: 0 4px 14px rgba(102,126,234,0.5);
+            margin-top: -16px;
+        }
+
+        .bk-bn-center-dhika span { margin-top: 2px; }
+
+        @media (max-width: 991.98px) {
+            .main-content-dhika { padding-bottom: 80px; }
+        }
+
+        @media (min-width: 992px) {
+            .main-content-dhika { margin-left: 280px; }
+        }
+    </style>
+    
+    {% block style_dhika %}{% endblock %}
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with message, category = get_flash_dhika() %}
+        {% if message %}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <i class="bi bi-{{ 'check-circle-fill text-success' if category == 'success' else 'exclamation-triangle-fill text-danger' }} me-2"></i>
+                        <strong class="me-auto">BK System</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Sidebar -->
+    <div class="sidebar-dhika d-none d-lg-block">
+        <div class="p-4">
+            <div class="text-center mb-5">
+                <div class="mb-3">
+                    <i class="fas fa-user-graduate fa-3x text-white"></i>
+                </div>
+                <h4 class="text-white mb-0">BK SYSTEM</h4>
+                <p class="text-white-50 mb-0">SMK Negeri 2 Cimahi</p>
+            </div>
+            
+            <div class="text-center mb-4">
+                <div class="avatar-dhika bg-white text-primary mx-auto d-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h6 class="text-white mb-0">{{ session.get('nama', 'User') }}</h6>
+                <small class="text-white-50">{{ session.get('role', '').capitalize() }}</small>
+            </div>
+            
+            <hr class="bg-white-50 my-4">
+            
+            <nav class="nav flex-column">
+                {% if session.get('role') == 'Siswa' %}
+                    <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-comments"></i> Konseling Saya
+                    </a>
+                    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-comment-dots"></i> Chat
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </a>
+                {% elif session.get('role') == 'Guru BK' %}
+                    <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-clipboard-list"></i> Kelola Konseling
+                    </a>
+                    <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-user-graduate"></i> Data Siswa
+                    </a>
+                    <a href="{{ url_for('data_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_guru_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-chalkboard-teacher"></i> Data Guru
+                    </a>
+                    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-comment-dots"></i> Chat
+                    </a>
+                    <a href="{{ url_for('pelanggaran_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-exclamation-triangle"></i> Pelanggaran
+                    </a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-file-alt"></i> Laporan
+                    </a>
+                    <a href="{{ url_for('manajemen_akun_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'manajemen_akun_dhika' %}active-dhika{% endif %}">
+                        <i class="fas fa-users-cog"></i> Manajemen Akun
+                    </a>
+                {% endif %}
+                <hr style="border-color:rgba(255,255,255,0.2);margin:10px 0;">
+                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika" style="color:#fca5a5;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+            
+            <div class="position-absolute bottom-0 start-0 end-0 p-4">
+                <div class="text-center text-white-50">
+                    <small>&copy; 2026 SMK Negeri 2 Cimahi</small><br>
+                    <small>Andhika Andriana Putra - XI RPL A</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bk-topbar-dhika d-lg-none">
+        <button type="button" onclick="history.back()" class="bk-topbar-btn-dhika">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <a href="#" class="bk-topbar-brand-dhika">
+            <i class="fas fa-user-graduate me-1"></i>BK System
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="bk-topbar-btn-dhika position-relative" id="btnNotifDhika" onclick="toggleNotifDhika()">
+                <i class="fas fa-bell"></i>
+                <span class="bk-notif-dot-dhika" id="notifDotDhika" style="display:none;"></span>
+            </button>
+            <button class="bk-topbar-btn-dhika" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <div id="notifPopupDhika" class="bk-notif-popup-dhika" style="display:none;">
+        <div class="bk-notif-header-dhika">
+            <span><i class="fas fa-bell me-2"></i>Notifikasi</span>
+            <button onclick="toggleNotifDhika()" style="background:none;border:none;color:#64748b;font-size:1.1rem;cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="notifListDhika" class="bk-notif-list-dhika">
+            <div class="bk-notif-loading-dhika">
+                <i class="fas fa-spinner fa-spin"></i> Memuat...
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar -->
+    <div class="offcanvas offcanvas-start gradient-bg-dhika" tabindex="-1" id="sidebarMobile" data-bs-scroll="false" data-bs-backdrop="true">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white">BK System</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Same sidebar content for mobile -->
+            <div class="text-center mb-4">
+                <div class="avatar-dhika bg-white text-primary mx-auto d-flex align-items-center justify-content-center mb-2" 
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h6 class="text-white mb-0">{{ session.get('nama', 'User') }}</h6>
+                <small class="text-white-50">{{ session.get('role', '').capitalize() }}</small>
+            </div>
+            
+            <hr class="bg-white-50 my-4">
+            
+            <nav class="nav flex-column">
+                {% if session.get('role') == 'Siswa' %}
+                    <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika"><i class="fas fa-comments"></i> Konseling Saya</a>
+                    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika"><i class="fas fa-comment-dots"></i> Chat</a>
+                    <a href="{{ url_for('pelanggaran_saya_dhika') }}" class="nav-link-dhika"><i class="fas fa-exclamation-triangle"></i> Pelanggaran Saya</a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika"><i class="fas fa-chart-bar"></i> Laporan</a>
+                {% elif session.get('role') == 'Guru BK' %}
+                    <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika"><i class="fas fa-clipboard-list"></i> Kelola Konseling</a>
+                    <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika"><i class="fas fa-user-graduate"></i> Data Siswa</a>
+                    <a href="{{ url_for('data_guru_dhika') }}" class="nav-link-dhika"><i class="fas fa-chalkboard-teacher"></i> Data Guru</a>
+                    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika"><i class="fas fa-comment-dots"></i> Chat</a>
+                    <a href="{{ url_for('pelanggaran_dhika') }}" class="nav-link-dhika"><i class="fas fa-exclamation-triangle"></i> Pelanggaran</a>
+                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika"><i class="fas fa-file-alt"></i> Laporan</a>
+                    <a href="{{ url_for('manajemen_akun_dhika') }}" class="nav-link-dhika"><i class="fas fa-users-cog"></i> Manajemen Akun</a>
+                {% endif %}
+                <hr style="border-color:rgba(255,255,255,0.2);margin:10px 15px;">
+                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika" style="color:#fca5a5;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </div>
+    </div>
+
+
+    {% if session.get('logged_in') and session.get('role') == 'Siswa' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_siswa_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('pelanggaran_saya_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_saya_dhika' %}active{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Pelanggaran</span>
+        </a>
+        <a href="{{ url_for('konseling_siswa_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active{% endif %}">
+            <div class="bk-bn-center-icon-dhika">
+                <i class="fas fa-comments"></i>
+            </div>
+            <span>Konseling</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('laporan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_dhika' %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i>
+            <span>Statistik</span>
+        </a>
+    </nav>
+    {% endif %}
+
+    {% if session.get('logged_in') and session.get('role') == 'Guru BK' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_guru_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('pelanggaran_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Pelanggaran</span>
+        </a>
+        <a href="{{ url_for('konseling_guru_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active{% endif %}">
+            <div class="bk-bn-center-icon-dhika">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <span>Konseling</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}">
+            <i class="fas fa-comment-dots"></i>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('manajemen_akun_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'manajemen_akun_dhika' %}active{% endif %}">
+            <i class="fas fa-users-cog"></i>
+            <span>Akun</span>
+        </a>
+    </nav>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-content-dhika">
+        {% block content_dhika %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        var notifLoaded = false;
+
+        function toggleNotifDhika() {
+            var popup = document.getElementById('notifPopupDhika');
+            if (popup.style.display === 'none' || popup.style.display === '') {
+                popup.style.display = 'block';
+                if (!notifLoaded) loadNotifDhika();
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function loadNotifDhika() {
+            fetch('/notifikasi')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    notifLoaded = true;
+                    var list = document.getElementById('notifListDhika');
+                    if (!data.length) {
+                        list.innerHTML = '<div class="bk-notif-loading-dhika">Tidak ada notifikasi</div>';
+                        return;
+                    }
+                    document.getElementById('notifDotDhika').style.display = 'block';
+                    list.innerHTML = data.map(function(n) {
+                        return '<div class="bk-notif-item-dhika">'
+                            + '<div class="bk-notif-icon-dhika"><i class="fas fa-bell"></i></div>'
+                            + '<div><div class="bk-notif-text-dhika">' + n.aktivitas + '</div>'
+                            + '<div class="bk-notif-time-dhika">' + n.waktu + '</div></div>'
+                            + '</div>';
+                    }).join('');
+                })
+                .catch(function() {
+                    document.getElementById('notifListDhika').innerHTML =
+                        '<div class="bk-notif-loading-dhika">Gagal memuat notifikasi</div>';
+                });
+        }
+
+        document.addEventListener('click', function(e) {
+            var popup = document.getElementById('notifPopupDhika');
+            var btn = document.getElementById('btnNotifDhika');
+            if (popup && btn && !popup.contains(e.target) && !btn.contains(e.target)) {
+                popup.style.display = 'none';
+            }
+        });
+        
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.hide();
+            });
+        }, 5000);
+        
+        const themeToggle = document.createElement('button');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        themeToggle.className = 'btn btn-light btn-sm position-fixed bottom-3 end-3 rounded-circle shadow';
+        themeToggle.style.width = '50px';
+        themeToggle.style.height = '50px';
+        themeToggle.style.zIndex = '1000';
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const theme = html.getAttribute('data-bs-theme');
+            html.setAttribute('data-bs-theme', theme === 'dark' ? 'light' : 'dark');
+            themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
+        
+        document.body.appendChild(themeToggle);
+    </script>
+    
+    <script>
+        const sidebarMobile = document.getElementById('sidebarMobile');
+        if (sidebarMobile) {
+            sidebarMobile.addEventListener('hidden.bs.offcanvas', function() {
+                document.querySelectorAll('.offcanvas-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('offcanvas-open', 'modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
+        }
+
+        document.addEventListener('show.bs.modal', function(e) {
+            document.querySelectorAll('.offcanvas-backdrop').forEach(el => el.remove());
+            const offcanvasEl = document.getElementById('sidebarMobile');
+            if (offcanvasEl) {
+                const bsOffcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl);
+                if (bsOffcanvas) bsOffcanvas.hide();
+            }
+        });
+
+        document.addEventListener('hidden.bs.modal', function() {
+            if (!document.querySelector('.modal.show')) {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        });
+    </script>
+    {% block script_dhika %}{% endblock %}
+</body>
+</html>

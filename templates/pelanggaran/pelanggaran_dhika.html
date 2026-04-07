@@ -1,0 +1,328 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Pelanggaran Siswa - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: white;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(239,68,68,0.3);
+    }
+
+    .card-pel-dhika {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .card-pel-header-dhika {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+
+    .card-pel-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 0.95rem; }
+
+    .form-pel-dhika { padding: 22px; }
+
+    .form-pel-dhika label { font-size: 0.82rem; font-weight: 600; color: #475569; margin-bottom: 5px; display: block; }
+
+    .form-pel-dhika select,
+    .form-pel-dhika input,
+    .form-pel-dhika textarea {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 11px;
+        font-size: 0.875rem;
+        font-family: 'Poppins', sans-serif;
+        background: #f8fafc;
+        transition: border 0.2s;
+    }
+
+    .form-pel-dhika select:focus,
+    .form-pel-dhika input:focus,
+    .form-pel-dhika textarea:focus {
+        outline: none;
+        border-color: #ef4444;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+    }
+
+    .btn-pel-dhika {
+        padding: 10px 22px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white; border: none;
+        border-radius: 11px; font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.875rem;
+        cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-pel-dhika:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239,68,68,0.4); }
+
+    .btn-reset-dhika {
+        padding: 8px 18px;
+        background: #f1f5f9; color: #64748b;
+        border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.82rem; font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        cursor: pointer; transition: all 0.2s;
+    }
+
+    .btn-reset-dhika:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+    .status-poin-dhika {
+        padding: 3px 10px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 600;
+    }
+
+    .sp-aman { background: #d1fae5; color: #065f46; }
+    .sp-peringatan { background: #fef3c7; color: #92400e; }
+    .sp-1 { background: #ffedd5; color: #9a3412; }
+    .sp-2 { background: #fee2e2; color: #991b1b; }
+    .sp-3 { background: #fecaca; color: #7f1d1d; font-weight: 700; }
+
+    .kat-ringan { background: #d1fae5; color: #065f46; }
+    .kat-sedang { background: #fef3c7; color: #92400e; }
+    .kat-berat { background: #ffedd5; color: #9a3412; }
+    .kat-sangat { background: #fee2e2; color: #991b1b; }
+
+    .poin-bar-dhika {
+        height: 6px; background: #f1f5f9; border-radius: 6px; overflow: hidden; margin-top: 4px;
+    }
+
+    .poin-fill-dhika { height: 100%; border-radius: 6px; transition: width 0.4s; }
+
+    .table th { font-size: 0.8rem; font-weight: 600; color: #475569; background: #f8fafc; }
+    .table td { font-size: 0.845rem; vertical-align: middle; }
+
+    .empty-pel-dhika { text-align: center; padding: 40px; color: #94a3b8; }
+    .empty-pel-dhika i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+
+    .poin-badge-dhika {
+        font-size: 1.1rem; font-weight: 700;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-exclamation-triangle me-2"></i>Pelanggaran Siswa</h4>
+                <p class="mb-0 opacity-75">Kelola dan catat pelanggaran siswa</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
+                    <i class="fas fa-chalkboard-teacher me-1"></i>{{ session.nama }}
+                </span>
+                <form action="{{ url_for('pelanggaran_reset_dhika') }}" method="POST"
+                      onsubmit="return confirm('Reset semua poin semester ini?')">
+                    <button type="submit" class="btn-reset-dhika">
+                        <i class="fas fa-redo me-1"></i>Reset Semester
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card-pel-dhika" data-aos="fade-right">
+                <div class="card-pel-header-dhika">
+                    <h5><i class="fas fa-plus-circle me-2 text-danger"></i>Input Pelanggaran</h5>
+                </div>
+                <div class="form-pel-dhika">
+                    <form action="{{ url_for('pelanggaran_input_dhika') }}" method="POST">
+
+                        <div class="mb-3">
+                            <label>Pilih Siswa</label>
+                            <select name="siswa_id_dhika" required>
+                                <option value="" disabled selected>-- Pilih Siswa --</option>
+                                {% for s in siswa_list %}
+                                <option value="{{ s.id_siswa }}">{{ s.nama }} ({{ s.kelas }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Jenis Pelanggaran</label>
+                            <select name="pelanggaran_id_dhika" required>
+                                <option value="" disabled selected>-- Pilih Pelanggaran --</option>
+                                <optgroup label="Ringan">
+                                    {% for p in [('Terlambat',1),('Tidak memakai atribut lengkap',2),('Rambut tidak rapi',3)] %}
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Tanggal</label>
+                            <input type="date" name="tanggal_dhika" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label>Keterangan (Opsional)</label>
+                            <textarea name="keterangan_dhika" rows="3" placeholder="Deskripsi kejadian..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-pel-dhika w-100">
+                            <i class="fas fa-save me-2"></i>Simpan Pelanggaran
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="card-pel-dhika" data-aos="fade-left">
+                <div class="card-pel-header-dhika">
+                    <h5><i class="fas fa-users me-2 text-danger"></i>Status Poin Siswa</h5>
+                    <span class="badge bg-danger px-3 py-2" style="font-size:0.78rem;">{{ siswa_list|length }} siswa</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3">Nama</th>
+                                <th>Kelas</th>
+                                <th>Poin</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for s in siswa_list %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-semibold">{{ s.nama }}</div>
+                                    <small class="text-muted">{{ s.jurusan }}</small>
+                                </td>
+                                <td>{{ s.kelas }}</td>
+                                <td>
+                                    <div class="poin-badge-dhika
+                                        {% if (s.total_poin or 0) > 100 %}text-danger
+                                        {% elif (s.total_poin or 0) > 50 %}text-warning
+                                        {% else %}text-success{% endif %}">
+                                        {{ s.total_poin or 0 }}
+                                    </div>
+                                    <div class="poin-bar-dhika">
+                                        <div class="poin-fill-dhika"
+                                             style="width:{{ [((s.total_poin or 0) / 200 * 100)|int, 100]|min }}%;
+                                                    background:{% if (s.total_poin or 0) > 100 %}#ef4444{% elif (s.total_poin or 0) > 50 %}#f59e0b{% else %}#10b981{% endif %};">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-poin-dhika
+                                        {% if s.status_poin == 'Aman' %}sp-aman
+                                        {% elif s.status_poin == 'Peringatan' %}sp-peringatan
+                                        {% elif s.status_poin == 'SP1' %}sp-1
+                                        {% elif s.status_poin == 'SP2' %}sp-2
+                                        {% else %}sp-3{% endif %}">
+                                        {{ s.status_poin }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('pelanggaran_siswa_detail_dhika', siswa_id=s.id_siswa) }}"
+                                       class="btn btn-outline-danger btn-sm" style="border-radius:8px;font-size:0.78rem;">
+                                        <i class="fas fa-eye me-1"></i>Detail
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-pel-dhika" data-aos="fade-up">
+                <div class="card-pel-header-dhika">
+                    <h5><i class="fas fa-history me-2 text-danger"></i>Riwayat Terbaru</h5>
+                </div>
+                {% if riwayat_terbaru %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3">Siswa</th>
+                                <th>Pelanggaran</th>
+                                <th>Kategori</th>
+                                <th>Poin</th>
+                                <th>Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in riwayat_terbaru %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-semibold">{{ r.nama_siswa }}</div>
+                                    <small class="text-muted">{{ r.kelas }}</small>
+                                </td>
+                                <td>{{ r.nama_pelanggaran }}</td>
+                                <td>
+                                    <span class="status-poin-dhika
+                                        {% if r.kategori == 'Ringan' %}sp-aman
+                                        {% elif r.kategori == 'Sedang' %}sp-peringatan
+                                        {% elif r.kategori == 'Berat' %}sp-1
+                                        {% else %}sp-3{% endif %}">
+                                        {{ r.kategori }}
+                                    </span>
+                                </td>
+                                <td class="fw-bold text-danger">+{{ r.poin }}</td>
+                                <td style="font-size:0.82rem;">{{ r.tanggal|format_tanggal_dhika }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-pel-dhika">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>Belum ada riwayat pelanggaran</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    fetch('/pelanggaran/list-pelanggaran')
+        .then(r => r.json())
+        .then(data => {
+            const sel = document.querySelector('select[name="pelanggaran_id_dhika"]');
+            sel.innerHTML = '<option value="" disabled selected>-- Pilih Pelanggaran --</option>';
+            const groups = {};
+            data.forEach(p => {
+                if (!groups[p.kategori]) groups[p.kategori] = [];
+                groups[p.kategori].push(p);
+            });
+            Object.keys(groups).forEach(kat => {
+                const og = document.createElement('optgroup');
+                og.label = kat;
+                groups[kat].forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id_pelanggaran;
+                    opt.textContent = p.nama_pelanggaran + ' (+' + p.poin + ' poin)';
+                    og.appendChild(opt);
+                });
+                sel.appendChild(og);
+            });
+        })
+        .catch(() => {});
+
+    document.querySelector('input[name="tanggal_dhika"]').value = new Date().toISOString().split('T')[0];
+</script>
+{% endblock %}
