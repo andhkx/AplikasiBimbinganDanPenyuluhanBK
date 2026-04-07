@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: bk-app-dhika
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn appBK_dhika:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
