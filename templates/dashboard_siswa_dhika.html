@@ -1,0 +1,568 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Dashboard Siswa - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .student-stat-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s;
+        height: 100%;
+    }
+    
+    .student-stat-card-dhika:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    
+    .student-stat-card-dhika::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(40%, -40%);
+    }
+    
+    .student-stat-card-dhika .student-icon-dhika {
+        width: 70px;
+        height: 70px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin-bottom: 15px;
+        color: white;
+    }
+    
+    .student-stat-card-dhika.total .student-icon-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .student-stat-card-dhika.pending .student-icon-dhika {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .student-stat-card-dhika.approved .student-icon-dhika {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .student-stat-card-dhika.done .student-icon-dhika {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .student-stat-card-dhika h3 {
+        font-size: 42px;
+        font-weight: 700;
+        color: #333;
+        margin: 0;
+    }
+    
+    .student-stat-card-dhika p {
+        color: #666;
+        margin: 5px 0 0 0;
+        font-size: 15px;
+    }
+    
+    .student-stat-card-dhika .student-trend-dhika {
+        font-size: 13px;
+        color: #50C878;
+        margin-top: 10px;
+    }
+    
+    .student-stat-card-dhika .student-trend-dhika i {
+        margin-right: 5px;
+    }
+    
+    .student-chart-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+    
+    .student-chart-card-dhika h4 {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .student-activity-dhika {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-left: 3px solid #667eea;
+        margin-bottom: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+    
+    .student-activity-dhika:hover {
+        background: #e9ecef;
+        padding-left: 20px;
+    }
+    
+    .student-activity-icon-dhika {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 18px;
+        color: white;
+    }
+    
+    .student-activity-icon-dhika.login {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .student-activity-icon-dhika.konseling {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .student-activity-icon-dhika.chat {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .student-activity-icon-dhika.alert {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .student-activity-content-dhika h6 {
+        margin: 0 0 5px 0;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .student-activity-content-dhika small {
+        color: #666;
+    }
+    
+    .student-quick-link-dhika {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        border: 2px solid transparent;
+        height: 100%;
+    }
+    
+    .student-quick-link-dhika:hover {
+        transform: translateY(-5px);
+        border-color: #667eea;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .student-quick-link-dhika i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .student-quick-link-dhika h5 {
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+    
+    .student-quick-link-dhika p {
+        color: #666;
+        font-size: 13px;
+        margin: 8px 0 0 0;
+    }
+    
+    .student-schedule-dhika {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 5px solid #2196f3;
+    }
+    
+    .student-schedule-dhika h6 {
+        color: #0d47a1;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .student-schedule-item-dhika {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .student-schedule-time-dhika {
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .student-schedule-name-dhika {
+        color: #666;
+    }
+    
+    .student-badge-status-dhika {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .student-badge-pending-dhika {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+    
+    .student-badge-approved-dhika {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .student-badge-done-dhika {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .student-badge-cancelled-dhika {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .student-empty-state-dhika {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+    
+    .student-empty-state-dhika i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        opacity: 0.3;
+    }
+    
+    .student-info-card-dhika {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-radius: 15px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+    
+    .student-emergency-btn-dhika {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        border: none;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        animation: student-pulse-dhika 2s infinite;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    @keyframes student-pulse-dhika {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .student-profile-card-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        margin-bottom: 20px;
+    }
+    
+    .student-profile-avatar-dhika {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: 0 auto 15px;
+    }
+    
+    .student-upcoming-dhika {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border-left: 5px solid #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-home me-2"></i>Dashboard Siswa
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Selamat datang, {{ siswa.nama }}! Kelola konseling Anda dengan mudah.
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-user-graduate me-2"></i>
+                    {{ siswa.nama.split(' ')[0] }}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistik Siswa -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="student-stat-card-dhika total">
+                <div class="student-icon-dhika">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>{{ stats.total if stats and stats.total else 0 }}</h3>
+                <p>Total Konseling</p>
+                <div class="student-trend-dhika">
+                    <i class="fas fa-history"></i> Semua waktu
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="student-stat-card-dhika pending">
+                <div class="student-icon-dhika">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3>{{ stats.pending if stats and stats.pending else 0 }}</h3>
+                <p>Menunggu Persetujuan</p>
+                <div class="student-trend-dhika">
+                    {% if stats and stats.pending and stats.pending > 0 %}
+                    <i class="fas fa-hourglass-half text-warning"></i> Dalam proses
+                    {% else %}
+                    <i class="fas fa-check-circle text-success"></i> Semua ditanggapi
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="student-stat-card-dhika approved">
+                <div class="student-icon-dhika">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>{{ stats.disetujui if stats and stats.disetujui else 0 }}</h3>
+                <p>Disetujui</p>
+                <div class="student-trend-dhika">
+                    <i class="fas fa-calendar-alt"></i> {{ stats.disetujui if stats and stats.disetujui else 0 }} sesi
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="student-stat-card-dhika done">
+                <div class="student-icon-dhika">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>{{ stats.selesai if stats and stats.selesai else 0 }}</h3>
+                <p>Selesai</p>
+                <div class="student-trend-dhika">
+                    {% if stats and stats.total and stats.selesai %}
+                    <i class="fas fa-chart-line"></i> {{ ((stats.selesai/stats.total)*100)|round|int if stats.total > 0 else 0 }}% terselesaikan
+                    {% else %}
+                    <i class="fas fa-chart-line"></i> 0% terselesaikan
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Emergency Button -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <button class="student-emergency-btn-dhika" onclick="studentEmergencyDhika()">
+                <i class="fas fa-exclamation-triangle me-2"></i>Butuh Bantuan Mendesak?
+            </button>
+        </div>
+    </div>
+    
+    <!-- Baris 2: Profile & Quick Links -->
+    <div class="row mb-4">
+        <!-- Profile & Schedule -->
+        <div class="col-lg-4 mb-4">
+            <div class="student-profile-card-dhika" data-aos="fade-right">
+                <div class="student-profile-avatar-dhika">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h5 class="text-center mb-2">{{ siswa.nama }}</h5>
+                <p class="text-center opacity-75 mb-0">
+                    <i class="fas fa-graduation-cap me-2"></i>{{ siswa.kelas }} - {{ siswa.jurusan }}
+                </p>
+            </div>
+            
+            <!-- Upcoming Schedule -->
+            <div class="student-chart-card-dhika" data-aos="fade-right" data-aos-delay="100">
+                <h4><i class="fas fa-calendar-alt text-primary me-2"></i>Konseling Mendatang</h4>
+                
+                {% if konseling_terbaru %}
+                    {% set upcoming = konseling_terbaru|selectattr('status', 'equalto', 'disetujui')|list %}
+                    {% if upcoming and upcoming|length > 0 %}
+                        {% for konseling in upcoming[:3] %}
+                        <div class="student-upcoming-dhika">
+                            <h6>{{ konseling.nama_guru }}</h6>
+                            <div class="student-schedule-item-dhika">
+                                <div>
+                                    <div class="student-schedule-time-dhika">{{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</div>
+                                    <div class="student-schedule-name-dhika">{{ konseling.tanggal|format_tanggal_dhika }}</div>
+                                </div>
+                                <div>
+                                    <span class="student-badge-status-dhika student-badge-approved-dhika">
+                                        {{ konseling.jenis }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="student-empty-state-dhika">
+                            <i class="fas fa-calendar-times"></i>
+                            <h6 class="fw-bold mb-2">Tidak Ada Jadwal</h6>
+                            <p class="mb-0">Belum ada jadwal konseling mendatang</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="student-empty-state-dhika">
+                        <i class="fas fa-calendar-times"></i>
+                        <h6 class="fw-bold mb-2">Tidak Ada Jadwal</h6>
+                        <p class="mb-0">Belum ada jadwal konseling mendatang</p>
+                    </div>
+                {% endif %}
+                
+                <!-- Tips Card -->
+                <div class="student-info-card-dhika">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>Tips Konseling
+                    </h6>
+                    <p class="mb-0">
+                        "Persiapkan pertanyaan sebelum konseling agar sesi lebih efektif. 
+                        Jujur dan terbuka untuk hasil terbaik."
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Links & Recent Activity -->
+        <div class="col-lg-8 mb-4">
+            <div class="student-chart-card-dhika" data-aos="fade-left">
+                <h4><i class="fas fa-bolt text-warning me-2"></i>Akses Cepat</h4>
+                <div class="row">
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('konseling_siswa_dhika') }}" class="text-decoration-none">
+                            <div class="student-quick-link-dhika">
+                                <i class="fas fa-calendar-plus"></i>
+                                <h5>Ajukan Konseling</h5>
+                                <p>Buat janji konseling baru</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('chat_dhika') }}" class="text-decoration-none">
+                            <div class="student-quick-link-dhika">
+                                <i class="fas fa-comments"></i>
+                                <h5>Chat Guru BK</h5>
+                                <p>Kirim pesan langsung</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('konseling_siswa_dhika') }}" class="text-decoration-none">
+                            <div class="student-quick-link-dhika">
+                                <i class="fas fa-history"></i>
+                                <h5>Riwayat</h5>
+                                <p>Lihat konseling sebelumnya</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <a href="{{ url_for('laporan_dhika') }}" class="text-decoration-none">
+                            <div class="student-quick-link-dhika">
+                                <i class="fas fa-chart-bar"></i>
+                                <h5>Statistik</h5>
+                                <p>Lihat perkembangan Anda</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Recent Konseling -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="mb-0">
+                            <i class="fas fa-history text-info me-2"></i>Konseling Terbaru
+                        </h4>
+                        <a href="{{ url_for('konseling_siswa_dhika') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-list me-1"></i>Lihat Semua
+                        </a>
+                    </div>
+                    
+                    {% if konseling_terbaru and konseling_terbaru|length > 0 %}
+                        {% for konseling in konseling_terbaru[:3] %}
+                        <div class="student-activity-dhika">
+                            <div class="student-activity-icon-dhika konseling">
+                                {% if konseling.status == 'pending' %}
+                                    <i class="fas fa-clock"></i>
+                                {% elif konseling.status == 'disetujui' %}
+                                    <i class="fas fa-calendar-check"></i>
+                                {% elif konseling.status == 'selesai' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% else %}
+                                    <i class="fas fa-times-circle"></i>
+                                {% endif %}
+                            </div>
+                            <div class="student-activity-content-dhika">
+                                <h6>Konseling dengan {{ konseling.nama_guru }}</h6>
+                                <small>
+                                    {{ konseling.tanggal|format_tanggal_dhika }} - 
+                                    <span class="badge bg-{{ konseling.status|status_badge_dhika }} ms-2">
+                                        {{ konseling.status|upper }}
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="st

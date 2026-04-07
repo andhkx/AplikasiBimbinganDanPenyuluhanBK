@@ -1,0 +1,761 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Data Guru BK - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    }
+    
+    .data-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    
+    .search-box-dhika {
+        position: relative;
+        margin-bottom: 25px;
+    }
+    
+    .search-box-dhika i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 2;
+    }
+    
+    .search-box-dhika input {
+        width: 100%;
+        padding: 12px 15px 12px 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+    
+    .search-box-dhika input:focus {
+        outline: none;
+        border-color: #8b5cf6;
+        box-shadow: 0 5px 15px rgba(139, 92, 246, 0.1);
+    }
+    
+    .filter-buttons-dhika {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 25px;
+    }
+    
+    .filter-btn-dhika {
+        padding: 8px 20px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        background: white;
+        color: #64748b;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .filter-btn-dhika:hover,
+    .filter-btn-dhika.active-dhika {
+        border-color: #8b5cf6;
+        background: #8b5cf6;
+        color: white;
+    }
+    
+    .table-container-dhika {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .table-dhika {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .table-dhika thead {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+    }
+    
+    .table-dhika th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 500;
+        font-size: 14px;
+        border: none;
+    }
+    
+    .table-dhika td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        font-size: 14px;
+    }
+    
+    .table-dhika tbody tr:hover {
+        background: #f8fafc;
+    }
+    
+    .badge-status-dhika {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .badge-active-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+    
+    .badge-busy-dhika {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+    
+    .badge-offline-dhika {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        color: white;
+    }
+    
+    .avatar-teacher-dhika {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .workload-card-dhika {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+    }
+    
+    .workload-card-dhika:hover {
+        transform: translateX(5px);
+        background: #f1f5f9;
+    }
+    
+    .workload-card-dhika h6 {
+        margin: 0 0 5px 0;
+        color: #1e293b;
+    }
+    
+    .workload-progress-dhika {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .progress-dhika {
+        flex: 1;
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+    
+    .progress-bar-dhika {
+        height: 100%;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-radius: 3px;
+    }
+    
+    .workload-count-dhika {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+    }
+    
+    .stat-card-mini-dhika {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    
+    .stat-card-mini-dhika:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card-mini-dhika h3 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 5px 0;
+    }
+    
+    .stat-card-mini-dhika p {
+        color: #64748b;
+        font-size: 13px;
+        margin: 0;
+    }
+    
+    .empty-state-dhika {
+        text-align: center;
+        padding: 50px 20px;
+        color: #94a3b8;
+    }
+    
+    .empty-state-dhika i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+    
+    .export-buttons-dhika {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+    
+    .action-buttons-dhika {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .btn-action-sm-dhika {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-view-dhika {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .btn-chat-dhika {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .btn-schedule-dhika {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .availability-indicator-dhika {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .availability-dot-dhika {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+    
+    .dot-online-dhika {
+        background: #10b981;
+        animation: pulseOnline 2s infinite;
+    }
+    
+    @keyframes pulseOnline {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    .dot-offline-dhika {
+        background: #6b7280;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-chalkboard-teacher me-2"></i>Data Guru BK
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Kelola dan pantau data guru Bimbingan dan Konseling
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-users me-2"></i>
+                    {{ guru_list|length }} Guru BK
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistik Ringkas -->
+    <div class="row mb-4" data-aos="fade-up">
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>{{ guru_list|length }}</h3>
+                <p>Total Guru BK</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                <h3>{{ beban_kerja|selectattr('total_konseling', 'gt', 0)|list|length }}</h3>
+                <p>Aktif Menangani</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                {% set total_konseling = beban_kerja|sum(attribute='total_konseling') %}
+                <h3>{{ total_konseling }}</h3>
+                <p>Total Konseling</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stat-card-mini-dhika">
+                {% set total_selesai = beban_kerja|sum(attribute='selesai') %}
+                {% set completion_rate = (total_selesai/total_konseling*100)|round|int if total_konseling > 0 else 0 %}
+                <h3>{{ completion_rate }}%</h3>
+                <p>Tingkat Penyelesaian</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Beban Kerja Guru -->
+    <div class="data-card-dhika mb-4" data-aos="fade-up" data-aos-delay="100">
+        <h4 class="fw-bold mb-3">
+            <i class="fas fa-chart-line text-primary me-2"></i>Beban Kerja Guru BK
+        </h4>
+        
+        <div class="row">
+            {% for guru in beban_kerja %}
+            <div class="col-md-6 mb-3">
+                <div class="workload-card-dhika">
+                    <h6>{{ guru.nama }}</h6>
+                    <div class="workload-progress-dhika">
+                        <div class="progress-dhika">
+                            {% set progress = (guru.selesai/guru.total_konseling*100) if guru.total_konseling > 0 else 0 %}
+                            <div class="progress-bar-dhika" style="width: {{ progress }}%;"></div>
+                        </div>
+                        <div class="workload-count-dhika">
+                            {{ guru.selesai }}/{{ guru.total_konseling }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            {{ guru.pending }} menunggu
+                        </small>
+                        <small class="text-muted">
+                            {{ progress|round|int }}% selesai
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Filter & Search -->
+    <div class="data-card-dhika mb-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="search-box-dhika">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchTeacherDhika" placeholder="Cari guru berdasarkan nama, NIP, atau email...">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="export-buttons-dhika">
+                    <button class="btn btn-outline-primary" onclick="exportDataDhika()">
+                        <i class="fas fa-file-excel me-2"></i>Export Excel
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="printDataDhika()">
+                        <i class="fas fa-print me-2"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filter Status -->
+        <div class="filter-buttons-dhika">
+            <div class="filter-btn-dhika active-dhika" data-filter="all">Semua</div>
+            <div class="filter-btn-dhika" data-filter="active">Aktif</div>
+            <div class="filter-btn-dhika" data-filter="busy">Sibuk</div>
+            <div class="filter-btn-dhika" data-filter="available">Tersedia</div>
+        </div>
+    </div>
+    
+    <!-- Tabel Data Guru -->
+    <div class="data-card-dhika" data-aos="fade-up" data-aos-delay="300">
+        <div class="table-container-dhika">
+            <table class="table-dhika" id="teacherTableDhika">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">#</th>
+                        <th style="width: 60px;">Avatar</th>
+                        <th>Nama Guru</th>
+                        <th>NIP</th>
+                        <th>Email</th>
+                        <th>Username</th>
+                        <th>Status</th>
+                        <th>Beban Kerja</th>
+                        <th style="width: 120px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if guru_list %}
+                        {% for guru in guru_list %}
+                        {% set guru_workload = beban_kerja|selectattr('nama', 'equalto', guru.nama)|first %}
+                        <tr class="teacher-row-dhika"
+                            data-search="{{ guru.nama|lower }} {{ guru.nip|lower }} {{ guru.email|lower }}"
+                            data-status="{% if guru_workload and guru_workload.pending > 5 %}busy{% elif guru_workload and guru_workload.total_konseling == 0 %}available{% else %}active{% endif %}">
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <div class="avatar-teacher-dhika">
+                                    {{ guru.nama.split(' ')[0][0] }}{{ guru.nama.split(' ')[1][0] if guru.nama.split(' ')|length > 1 else guru.nama[1] }}
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ guru.nama }}</strong>
+                                <br>
+                                <small class="text-muted">ID: {{ guru.id_guru }}</small>
+                            </td>
+                            <td>
+                                <code>{{ guru.nip }}</code>
+                            </td>
+                            <td>
+                                <a href="mailto:{{ guru.email }}" class="text-decoration-none">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    {{ guru.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <code>{{ guru.username }}</code>
+                            </td>
+                            <td>
+                                <div class="availability-indicator-dhika">
+                                    <div class="availability-dot-dhika 
+                                        {% if guru_workload and guru_workload.pending > 5 %}dot-offline-dhika
+                                        {% else %}dot-online-dhika{% endif %}">
+                                    </div>
+                                    <span class="badge-status-dhika 
+                                        {% if guru_workload and guru_workload.pending > 5 %}badge-busy-dhika
+                                        {% elif guru_workload and guru_workload.total_konseling == 0 %}badge-offline-dhika
+                                        {% else %}badge-active-dhika{% endif %}">
+                                        {% if guru_workload and guru_workload.pending > 5 %}Sibuk
+                                        {% elif guru_workload and guru_workload.total_konseling == 0 %}Tersedia
+                                        {% else %}Aktif{% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if guru_workload %}
+                                <div class="workload-progress-dhika">
+                                    <div class="progress-dhika">
+                                        {% set progress = (guru_workload.selesai/guru_workload.total_konseling*100) if guru_workload.total_konseling > 0 else 0 %}
+                                        <div class="progress-bar-dhika" style="width: {{ progress }}%;"></div>
+                                    </div>
+                                    <div class="workload-count-dhika">
+                                        {{ guru_workload.selesai }}/{{ guru_workload.total_konseling }}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <span class="text-muted">Belum ada</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="action-buttons-dhika">
+                                    <button class="btn-action-sm-dhika btn-view-dhika" 
+                                            title="Lihat Detail"
+                                            onclick="viewTeacherDhika('{{ guru.id_guru }}')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-action-sm-dhika btn-chat-dhika"
+                                            title="Kirim Pesan"
+                                            onclick="chatTeacherDhika('{{ guru.id_guru }}')">
+                                        <i class="fas fa-comment"></i>
+                                    </button>
+                                    <button class="btn-action-sm-dhika btn-schedule-dhika"
+                                            title="Lihat Jadwal"
+                                            onclick="scheduleTeacherDhika('{{ guru.id_guru }}')">
+                                        <i class="fas fa-calendar"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state-dhika">
+                                <i class="fas fa-user-slash"></i>
+                                <h5 class="fw-bold mb-3">Data Guru Tidak Tersedia</h5>
+                                <p class="mb-0">Belum ada data guru BK yang terdaftar dalam sistem.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if guru_list and guru_list|length > 10 %}
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted">
+                Menampilkan 1-10 dari {{ guru_list|length }} guru
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Performance Summary -->
+    <div class="row mt-4">
+        <div class="col-md-12 mb-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="data-card-dhika">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-trophy text-warning me-2"></i>Rekap Performa Guru BK
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Guru BK</th>
+                                <th>Total Konseling</th>
+                                <th>Selesai</th>
+                                <th>Pending</th>
+                                <th>Tingkat Penyelesaian</th>
+                                <th>Rata-rata Waktu</th>
+                                <th>Kepuasan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for guru in beban_kerja %}
+                            <tr>
+                                <td>
+                                    <strong>{{ guru.nama }}</strong>
+                                </td>
+                                <td>{{ guru.total_konseling }}</td>
+                                <td>{{ guru.selesai }}</td>
+                                <td>
+                                    {% if guru.pending > 0 %}
+                                    <span class="badge bg-warning">{{ guru.pending }}</span>
+                                    {% else %}
+                                    <span class="badge bg-success">0</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="workload-progress-dhika">
+                                        <div class="progress-dhika">
+                                            {% set progress = (guru.selesai/guru.total_konseling*100) if guru.total_konseling > 0 else 0 %}
+                                            <div class="progress-bar-dhika" style="width: {{ progress }}%;"></div>
+                                        </div>
+                                        <div class="workload-count-dhika">
+                                            {{ progress|round|int }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if guru.total_konseling > 0 %}
+                                    {{ (guru.total_konseling / (guru.selesai + 1))|round|int }} hari
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set satisfaction = [85, 90, 78, 92, 88]|random %}
+                                    <span class="badge {% if satisfaction >= 85 %}bg-success{% elif satisfaction >= 70 %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ satisfaction }}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    // Filter by status
+    document.querySelectorAll('.filter-btn-dhika').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('.filter-btn-dhika').forEach(b => b.classList.remove('active-dhika'));
+            this.classList.add('active-dhika');
+            
+            // Filter table rows
+            const filter = this.dataset.filter;
+            const rows = document.querySelectorAll('.teacher-row-dhika');
+            
+            rows.forEach(row => {
+                const status = row.dataset.status;
+                
+                if (filter === 'all' || filter === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchTeacherDhika');
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.teacher-row-dhika');
+        
+        rows.forEach(row => {
+            const searchData = row.dataset.search;
+            if (searchData.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Teacher actions
+    function viewTeacherDhika(teacherId) {
+        Swal.fire({
+            title: 'Detail Guru BK',
+            html: `Loading detail guru ${teacherId}...`,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Lihat Jadwal',
+            cancelButtonText: 'Tutup'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to teacher's schedule
+                window.location.href = `/konseling/guru?teacher=${teacherId}`;
+            }
+        });
+    }
+    
+    function chatTeacherDhika(teacherId) {
+        window.location.href = `/chat?to=${teacherId}`;
+    }
+    
+    function scheduleTeacherDhika(teacherId) {
+        Swal.fire({
+            title: 'Jadwal Guru',
+            html: `Menampilkan jadwal konseling guru ${teacherId}`,
+            icon: 'info'
+        });
+    }
+    
+    function exportDataDhika() {
+        Swal.fire({
+            title: 'Export Data',
+            text: 'Data guru BK akan diexport ke format Excel.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Export',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Simulate export
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Data berhasil diexport.',
+                    icon: 'success',
+                    timer: 1500
+                });
+                
+                // In real app, this would trigger file download
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = '#'; // In real app: '/data/guru/export'
+                    link.download = `data_guru_bk_${new Date().toISOString().slice(0,10)}.xlsx`;
+                    link.click();
+                }, 1000);
+            }
+        });
+    }
+    
+    function printDataDhika() {
+        // Create a print-friendly version
+        const printContent = document.getElementById('teacherTableDhika').outerHTML;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Data Guru BK - SMKN 2 Cimahi</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th { background: #8b5cf6; color: white; padding: 10px; }
+                        td { padding: 8px; border-bottom: 1px solid #ddd; }
+                        h1 { color: #7c3aed; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Data Guru BK SMKN 2 Cimahi</h1>
+                    <p>Dicetak pada: ${new Date().toLocaleDateString('id-ID')}</p>
+                    ${printContent}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+    
+    // Auto-refresh status every 30 seconds
+    setInterval(() => {
+        document.querySelectorAll('.availability-dot-dhika').forEach(dot => {
+            dot.classList.add('dot-online-dhika');
+            setTimeout(() => dot.classList.remove('dot-online-dhika'), 1000);
+        });
+    }, 30000);
+</script>
+{% endblock %}

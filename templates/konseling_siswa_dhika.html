@@ -1,0 +1,389 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Ajukan Konseling - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .form-card-dhika {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+    
+    .form-label-dhika {
+        font-weight: 600;
+        color: var(--dark-dhika);
+        margin-bottom: 8px;
+    }
+    
+    .form-control-dhika, .form-select-dhika {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control-dhika:focus, .form-select-dhika:focus {
+        border-color: var(--primary-dhika);
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .konseling-card-dhika {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 5px solid var(--primary-dhika);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+    }
+    
+    .konseling-card-dhika:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .status-badge-dhika {
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+    
+    .status-pending-dhika {
+        background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 100%);
+        color: #78350f;
+    }
+    
+    .status-disetujui-dhika {
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        color: white;
+    }
+    
+    .status-selesai-dhika {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+    }
+    
+    .status-ditolak-dhika {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+    }
+    
+    .action-btn-dhika {
+        padding: 8px 20px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: none;
+    }
+    
+    .empty-state-dhika {
+        text-align: center;
+        padding: 50px 20px;
+        color: #94a3b8;
+    }
+    
+    .empty-state-dhika i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-comments me-2"></i>Ajukan Konseling
+                </h1>
+                <p class="mb-0 opacity-75">
+                    Ajukan konseling dengan guru BK sesuai kebutuhan Anda
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-light text-dark fs-6 px-3 py-2">
+                    <i class="fas fa-user-graduate me-2"></i>
+                    {{ session.nama }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Form Pengajuan -->
+        <div class="col-lg-5 mb-4" data-aos="fade-right">
+            <div class="form-card-dhika">
+                <h4 class="fw-bold mb-4 text-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Form Pengajuan Baru
+                </h4>
+                
+                <form action="{{ url_for('ajukan_konseling_dhika') }}" method="POST">
+                    <!-- Pilih Guru -->
+                    <div class="mb-4">
+                        <label class="form-label-dhika">
+                            <i class="fas fa-user-tie me-2"></i>Pilih Guru BK
+                        </label>
+                        <select name="guru_id_dhika" class="form-select form-select-dhika" required>
+                            <option value="" selected disabled>-- Pilih Guru BK --</option>
+                            {% if guru_list %}
+                                {% for guru in guru_list %}
+                                    <option value="{{ guru.id_guru }}">{{ guru.nama }}</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="" disabled>Tidak ada guru tersedia</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    <!-- Jenis Konseling -->
+                    <div class="mb-4">
+                        <label class="form-label-dhika">
+                            <i class="fas fa-list-alt me-2"></i>Jenis Konseling
+                        </label>
+                        <select name="jenis_dhika" class="form-select form-select-dhika" required>
+                            <option value="" selected disabled>-- Pilih Jenis --</option>
+                            <option value="Pribadi">Pribadi</option>
+                            <option value="Sosial">Sosial</option>
+                            <option value="Karir">Karir</option>
+                            <option value="Belajar">Belajar</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Tanggal & Waktu -->
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label-dhika">
+                                <i class="fas fa-calendar me-2"></i>Tanggal
+                            </label>
+                            <input type="date" name="tanggal_dhika" class="form-control form-control-dhika" 
+                                   min="{{ now.strftime('%Y-%m-%d') }}" required>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label-dhika">
+                                <i class="fas fa-clock me-2"></i>Jam Mulai
+                            </label>
+                            <input type="time" name="jam_mulai_dhika" class="form-control form-control-dhika" 
+                                   min="07:00" max="16:00" required>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <label class="form-label-dhika">
+                                <i class="fas fa-clock me-2"></i>Jam Selesai
+                            </label>
+                            <input type="time" name="jam_selesai_dhika" class="form-control form-control-dhika" 
+                                   min="07:00" max="16:00" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Alasan -->
+                    <div class="mb-4">
+                        <label class="form-label-dhika">
+                            <i class="fas fa-comment-dots me-2"></i>Alasan Konseling
+                        </label>
+                        <textarea name="alasan_dhika" class="form-control form-control-dhika" 
+                                  rows="4" placeholder="Ceritakan alasan Anda mengajukan konseling..." 
+                                  required></textarea>
+                        <small class="text-muted mt-2 d-block">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Jelaskan secara jelas dan detail untuk membantu guru BK memahami kebutuhan Anda
+                        </small>
+                    </div>
+                    
+                    <!-- Tombol Submit -->
+                    <button type="submit" class="btn btn-primary-dhika w-100 py-3 fw-bold">
+                        <i class="fas fa-paper-plane me-2"></i>Ajukan Konseling
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Info Box -->
+            <div class="glass-card-dhika p-4 mt-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-lightbulb text-warning me-2"></i>Tips Konseling
+                </h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Pilih waktu yang tepat sesuai jadwal Anda
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Jelaskan masalah dengan jelas dan jujur
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Persiapkan pertanyaan yang ingin diajukan
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Datang tepat waktu pada hari konseling
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Daftar Konseling -->
+        <div class="col-lg-7" data-aos="fade-left">
+            <div class="form-card-dhika">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0 text-primary">
+                        <i class="fas fa-history me-2"></i>Riwayat Konseling Saya
+                    </h4>
+                    <span class="badge bg-primary px-3 py-2">
+                        {{ konseling_list|length }} Konseling
+                    </span>
+                </div>
+                
+                {% if konseling_list %}
+                    {% for konseling in konseling_list %}
+                    <div class="konseling-card-dhika">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="d-flex align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0 me-3">{{ konseling.nama_guru }}</h6>
+                                    <span class="status-badge-dhika 
+                                        {% if konseling.status == 'pending' %}status-pending-dhika
+                                        {% elif konseling.status == 'disetujui' %}status-disetujui-dhika
+                                        {% elif konseling.status == 'selesai' %}status-selesai-dhika
+                                        {% else %}status-ditolak-dhika{% endif %}">
+                                        {{ konseling.status|upper }}
+                                    </span>
+                                </div>
+                                <p class="mb-2">
+                                    <i class="fas fa-tag me-2 text-muted"></i>
+                                    <strong>Jenis:</strong> {{ konseling.jenis }}
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-calendar-day me-2 text-muted"></i>
+                                    <strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-clock me-2 text-muted"></i>
+                                    <strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button type="button" class="btn btn-outline-primary action-btn-dhika mb-2 w-100" 
+                                        data-bs-toggle="modal" data-bs-target="#detailModal{{ konseling.id_konseling }}">
+                                    <i class="fas fa-eye me-1"></i>Detail
+                                </button>
+                                
+                                {% if konseling.status == 'pending' %}
+                                <form action="{{ url_for('delete_konseling_dhika', id_konseling=konseling.id_konseling) }}" 
+                                      method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-danger action-btn-dhika w-100"
+                                            onclick="return confirm('Yakin ingin membatalkan konseling ini?')">
+                                        <i class="fas fa-times me-1"></i>Batal
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Modal Detail -->
+                        <div class="modal fade" id="detailModal{{ konseling.id_konseling }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header gradient-bg-dhika text-white">
+                                        <h5 class="modal-title">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            Detail Konseling #{{ konseling.id_konseling }}
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>ID Konseling:</strong> {{ konseling.id_konseling }}</p>
+                                                <p><strong>Guru BK:</strong> {{ konseling.nama_guru }}</p>
+                                                <p><strong>Jenis:</strong> {{ konseling.jenis }}</p>
+                                                <p><strong>Status:</strong> 
+                                                    <span class="badge-dhika bg-{{ konseling.status|status_badge_dhika }}">
+                                                        {{ konseling.status|upper }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}</p>
+                                                <p><strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</p>
+                                                <p><strong>Diajukan pada:</strong> {{ konseling.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <p><strong>Alasan Konseling:</strong></p>
+                                        <div class="bg-light p-3 rounded">
+                                            {{ konseling.alasan|default('-', true) }}
+                                        </div>
+                                        {% if konseling.hasil %}
+                                        <hr>
+                                        <p><strong>Hasil Konseling:</strong></p>
+                                        <div class="bg-light p-3 rounded">
+                                            {{ konseling.hasil }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Tutup
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state-dhika">
+                        <i class="fas fa-comments"></i>
+                        <h5 class="fw-bold mb-3">Belum Ada Konseling</h5>
+                        <p class="text-muted mb-4">
+                            Anda belum mengajukan konseling. Silahkan isi form di samping untuk mengajukan konseling pertama Anda.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    // Set tanggal minimal ke hari ini
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="tanggal_dhika"]').min = today;
+    
+    // Validasi jam
+    const jamMulai = document.querySelector('input[name="jam_mulai_dhika"]');
+    const jamSelesai = document.querySelector('input[name="jam_selesai_dhika"]');
+    
+    jamMulai.addEventListener('change', function() {
+        jamSelesai.min = this.value;
+    });
+    
+    // Form submission animation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengajukan...';
+        submitBtn.disabled = true;
+    });
+</script>
+{% endblock %}
