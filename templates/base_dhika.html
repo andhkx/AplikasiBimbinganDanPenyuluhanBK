@@ -212,7 +212,6 @@
             justify-content: center;
             font-size: 0.7rem;
         }
-<<<<<<< HEAD
         /* Fix modal z-index - lebih tinggi dari semua elemen */
         .modal         { z-index: 1060 !important; }
         .modal-backdrop{ z-index: 1059 !important; }
@@ -363,8 +362,6 @@
         @media (min-width: 992px) {
             .main-content-dhika { margin-left: 280px; }
         }
-=======
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
     </style>
     
     {% block style_dhika %}{% endblock %}
@@ -411,7 +408,6 @@
             <hr class="bg-white-50 my-4">
             
             <nav class="nav flex-column">
-<<<<<<< HEAD
                 {% if session.get('role') == 'Siswa' %}
                     <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-dhika{% endif %}">
                         <i class="fas fa-home"></i> Dashboard
@@ -453,54 +449,6 @@
                 {% endif %}
                 <hr style="border-color:rgba(255,255,255,0.2);margin:10px 0;">
                 <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika" style="color:#fca5a5;">
-=======
-                {% if session.get('role') == 'siswa' %}
-                    <a href="{{ url_for('dashboard_siswa_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('konseling_siswa_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-comments"></i> Konseling Saya
-                    </a>
-                    <a href="{{ url_for('chat_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-comment-dots"></i> Chat
-                    </a>
-                    <a href="{{ url_for('laporan_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-chart-bar"></i> Laporan
-                    </a>
-                    
-                {% elif session.get('role') == 'guru' %}
-                    <a href="{{ url_for('dashboard_guru_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('konseling_guru_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-clipboard-list"></i> Daftar Konseling
-                    </a>
-                    <a href="{{ url_for('data_guru_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'data_guru_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-chalkboard-teacher"></i> Data Guru
-                    </a>
-                    <a href="{{ url_for('data_siswa_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-user-graduate"></i> Data Siswa
-                    </a>
-                    <a href="{{ url_for('chat_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-clipboard-list"></i> Chat
-                    </a>
-                    <a href="{{ url_for('laporan_dhika') }}" 
-                       class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}">
-                        <i class="fas fa-file-alt"></i> Laporan
-                    </a>
-                {% endif %}
-                
-                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika text-danger">
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </nav>
@@ -514,7 +462,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
     <nav class="bk-topbar-dhika d-lg-none">
         <button type="button" onclick="history.back()" class="bk-topbar-btn-dhika">
             <i class="fas fa-arrow-left"></i>
@@ -529,22 +476,10 @@
             </button>
             <button class="bk-topbar-btn-dhika" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
                 <i class="fas fa-bars"></i>
-=======
-    <!-- Mobile Header -->
-    <nav class="navbar navbar-dark gradient-bg-dhika d-lg-none">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-user-graduate me-2"></i>
-                BK System
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
-                <span class="navbar-toggler-icon"></span>
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
             </button>
         </div>
     </nav>
 
-<<<<<<< HEAD
     <div id="notifPopupDhika" class="bk-notif-popup-dhika" style="display:none;">
         <div class="bk-notif-header-dhika">
             <span><i class="fas fa-bell me-2"></i>Notifikasi</span>
@@ -561,10 +496,6 @@
 
     <!-- Mobile Sidebar -->
     <div class="offcanvas offcanvas-start gradient-bg-dhika" tabindex="-1" id="sidebarMobile" data-bs-scroll="false" data-bs-backdrop="true">
-=======
-    <!-- Mobile Sidebar -->
-    <div class="offcanvas offcanvas-start gradient-bg-dhika" tabindex="-1" id="sidebarMobile">
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
         <div class="offcanvas-header">
             <h5 class="offcanvas-title text-white">BK System</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -583,7 +514,6 @@
             <hr class="bg-white-50 my-4">
             
             <nav class="nav flex-column">
-<<<<<<< HEAD
                 {% if session.get('role') == 'Siswa' %}
                     <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika"><i class="fas fa-home"></i> Dashboard</a>
                     <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika"><i class="fas fa-comments"></i> Konseling Saya</a>
@@ -602,39 +532,12 @@
                 {% endif %}
                 <hr style="border-color:rgba(255,255,255,0.2);margin:10px 15px;">
                 <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika" style="color:#fca5a5;">
-=======
-                {% if session.get('role') == 'siswa' %}
-                    <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-comments"></i> Konseling Saya
-                    </a>
-                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-chart-bar"></i> Laporan
-                    </a>
-                    
-                {% elif session.get('role') == 'guru' %}
-                    <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-clipboard-list"></i> Daftar Konseling
-                    </a>
-                    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika">
-                        <i class="fas fa-file-alt"></i> Laporan
-                    </a>
-                {% endif %}
-                
-                <a href="{{ url_for('logout_dhika') }}" class="nav-link-dhika text-danger">
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </a>
             </nav>
         </div>
     </div>
 
-<<<<<<< HEAD
 
     {% if session.get('logged_in') and session.get('role') == 'Siswa' %}
     <nav class="bk-bottomnav-dhika d-lg-none">
@@ -690,8 +593,6 @@
     </nav>
     {% endif %}
 
-=======
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
     <!-- Main Content -->
     <div class="main-content-dhika">
         {% block content_dhika %}{% endblock %}
@@ -703,7 +604,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
-<<<<<<< HEAD
         AOS.init({ duration: 800, once: true });
 
         var notifLoaded = false;
@@ -751,15 +651,6 @@
             }
         });
         
-=======
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: true
-        });
-        
-        // Auto-dismiss flash messages
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
         setTimeout(() => {
             const toasts = document.querySelectorAll('.toast');
             toasts.forEach(toast => {
@@ -768,10 +659,6 @@
             });
         }, 5000);
         
-<<<<<<< HEAD
-=======
-        // Theme toggle
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
         const themeToggle = document.createElement('button');
         themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
         themeToggle.className = 'btn btn-light btn-sm position-fixed bottom-3 end-3 rounded-circle shadow';
@@ -789,7 +676,6 @@
         document.body.appendChild(themeToggle);
     </script>
     
-<<<<<<< HEAD
     <script>
         const sidebarMobile = document.getElementById('sidebarMobile');
         if (sidebarMobile) {
@@ -819,8 +705,6 @@
             }
         });
     </script>
-=======
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
     {% block script_dhika %}{% endblock %}
 </body>
 </html>
