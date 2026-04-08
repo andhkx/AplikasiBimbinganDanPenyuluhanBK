@@ -16,25 +16,44 @@ cd "$PROJECT_DIR" || { echo -e "${RED}❌ Folder tidak ditemukan!${NC}"; exit 1;
 
 # HEADER
 echo -e "${CYAN}╔════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║         🛠️  DIKA TOOLS v2.0              ║${NC}"
-echo -e "${CYAN}║       GitHub Professional Auto Commit     ║${NC}"
+echo -e "${CYAN}║         🛠️  DIKA TOOLS v3.0                 ║${NC}"
 echo -e "${CYAN}╚════════════════════════════════════════════╝${NC}"
 echo ""
 
 echo -e "${YELLOW}[?] Silahkan pilih menu:${NC}"
-echo -e "${GREEN}[1]${NC} Commit & Push (Manual message)"
-echo -e "${GREEN}[2]${NC} Lihat status file yang berubah"
-echo -e "${GREEN}[3]${NC} Lihat history commit terakhir"
-echo -e "${GREEN}[4]${NC} Pull update dari GitHub"
-echo -e "${GREEN}[5]${NC} Backup semua file ke folder backup"
-echo -e "${RED}[6]${NC} Keluar & hapus session"
+echo -e "${GREEN}[1]${NC} Commit & Push (Manual pesan)"
+echo -e "${GREEN}[2]${NC} Pull update dari GitHub"
+echo -e "${GREEN}[3]${NC} Lihat status file"
+echo -e "${GREEN}[4]${NC} Lihat history commit (5 terakhir)"
+echo -e "${GREEN}[5]${NC} Cek conflict sebelum commit"
+echo -e "${GREEN}[6]${NC} Backup semua file"
+echo -e "${RED}[7]${NC} Keluar & hapus session"
 echo ""
-read -p "Pilihan (1-6): " pilihan
+read -p "Pilihan (1-7): " pilihan
 
 case $pilihan in
     1)
         echo -e "${BLUE}────────────────────────────────────────${NC}"
-        echo -e "${YELLOW}🔍 Mengecek perubahan...${NC}"
+        
+        # Cek conflict dulu
+        echo -e "${YELLOW}🔍 Cek conflict marker...${NC}"
+        if grep -r "<<<<" . --include="*.html" --include="*.py" --include="*.txt" 2>/dev/null; then
+            echo -e "${RED}❌ Masih ada conflict marker! Selesaikan dulu.${NC}"
+            exit 1
+        fi
+        echo -e "${GREEN}✅ Tidak ada conflict.${NC}"
+        
+        # Pull update dari GitHub (biar aman)
+        echo -e "${YELLOW}⬇️  Cek update dari GitHub...${NC}"
+        git pull origin main --no-edit
+        
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}❌ Gagal pull. Cek koneksi atau selesaikan conflict.${NC}"
+            exit 1
+        fi
+        
+        # Cek perubahan
+        echo -e "${YELLOW}🔍 Mengecek perubahan lokal...${NC}"
         
         if [[ -z $(git status -s) ]]; then
             echo -e "${RED}✨ Tidak ada perubahan untuk di-commit.${NC}"
@@ -49,13 +68,12 @@ case $pilihan in
         echo -e "${YELLOW}➕ Menambahkan semua perubahan...${NC}"
         git add .
         
-        # MANUAL COMMIT MESSAGE (WAJIB)
+        # Manual commit message
         echo ""
         echo -e "${PURPLE}📝 Tulis pesan commit (WAJIB diisi):${NC}"
         echo -e "${CYAN}   Contoh: fix bug login, add fitur dashboard, update UI${NC}"
         read -p "> " user_msg
         
-        # Validasi tidak boleh kosong
         while [[ -z "$user_msg" ]]; do
             echo -e "${RED}❌ Pesan commit tidak boleh kosong!${NC}"
             read -p "> " user_msg
@@ -86,21 +104,6 @@ case $pilihan in
     
     2)
         echo -e "${BLUE}────────────────────────────────────────${NC}"
-        echo -e "${YELLOW}📊 Status file yang berubah:${NC}"
-        git status -s
-        if [[ -z $(git status -s) ]]; then
-            echo -e "${GREEN}✅ Tidak ada perubahan, semua file sudah sync.${NC}"
-        fi
-        ;;
-    
-    3)
-        echo -e "${BLUE}────────────────────────────────────────${NC}"
-        echo -e "${YELLOW}📜 History 5 commit terakhir:${NC}"
-        git log --oneline -5 --color=always
-        ;;
-    
-    4)
-        echo -e "${BLUE}────────────────────────────────────────${NC}"
         echo -e "${YELLOW}⬇️  Menarik update dari GitHub...${NC}"
         git pull origin main
         if [ $? -eq 0 ]; then
@@ -110,17 +113,44 @@ case $pilihan in
         fi
         ;;
     
+    3)
+        echo -e "${BLUE}────────────────────────────────────────${NC}"
+        echo -e "${YELLOW}📊 Status file yang berubah:${NC}"
+        git status -s
+        if [[ -z $(git status -s) ]]; then
+            echo -e "${GREEN}✅ Tidak ada perubahan, semua file sudah sync.${NC}"
+        fi
+        ;;
+    
+    4)
+        echo -e "${BLUE}────────────────────────────────────────${NC}"
+        echo -e "${YELLOW}📜 History 5 commit terakhir:${NC}"
+        git log --oneline -5 --color=always
+        ;;
+    
     5)
+        echo -e "${BLUE}────────────────────────────────────────${NC}"
+        echo -e "${YELLOW}🔍 Mencari conflict marker di semua file...${NC}"
+        CONFLICT_FOUND=$(grep -r "<<<<" . --include="*.html" --include="*.py" --include="*.txt" 2>/dev/null)
+        if [[ -n "$CONFLICT_FOUND" ]]; then
+            echo -e "${RED}⚠️ Conflict ditemukan di file:${NC}"
+            echo "$CONFLICT_FOUND"
+        else
+            echo -e "${GREEN}✅ Tidak ada conflict marker. Aman!${NC}"
+        fi
+        ;;
+    
+    6)
         echo -e "${BLUE}────────────────────────────────────────${NC}"
         echo -e "${YELLOW}💾 Membuat backup...${NC}"
         BACKUP_DIR="../Backup_$(date +'%Y%m%d_%H%M%S')"
         mkdir -p "$BACKUP_DIR"
-        cp -r ./* "$BACKUP_DIR/"
+        cp -r ./* "$BACKUP_DIR/" 2>/dev/null
         echo -e "${GREEN}✅ Backup berhasil disimpan di:${NC}"
         echo -e "   ${CYAN}$BACKUP_DIR${NC}"
         ;;
     
-    6)
+    7)
         echo -e "${RED}🗑️  Menghapus session dan keluar...${NC}"
         git config --global --unset credential.helper
         echo -e "${GREEN}✅ Session terhapus! Sampai jumpa.${NC}"
@@ -128,7 +158,7 @@ case $pilihan in
         ;;
     
     *)
-        echo -e "${RED}❌ Pilihan salah! Masukkan angka 1-6.${NC}"
+        echo -e "${RED}❌ Pilihan salah! Masukkan angka 1-7.${NC}"
         exit 1
         ;;
 esac
