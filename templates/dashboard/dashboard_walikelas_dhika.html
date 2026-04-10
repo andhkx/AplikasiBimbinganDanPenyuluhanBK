@@ -1,0 +1,143 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Dashboard Wali Kelas - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        border-radius: 18px; padding: 24px 28px; color: white;
+        margin-bottom: 22px; box-shadow: 0 8px 24px rgba(14,165,233,0.3);
+    }
+    .wk-stat-dhika {
+        background: white; border-radius: 14px; padding: 18px 20px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); text-align: center;
+    }
+    .wk-stat-dhika .num { font-size: 1.8rem; font-weight: 700; color: #1e293b; }
+    .wk-stat-dhika .lbl { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+    .siswa-card-dhika {
+        background: white; border-radius: 14px; padding: 16px 18px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        border-left: 4px solid #0ea5e9; margin-bottom: 12px;
+        display: flex; align-items: center; gap: 14px;
+        transition: transform 0.2s;
+    }
+    .siswa-card-dhika:hover { transform: translateY(-2px); }
+    .siswa-avatar-dhika {
+        width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 700; font-size: 0.95rem;
+    }
+    .siswa-info-dhika { flex: 1; min-width: 0; }
+    .siswa-info-dhika .nama { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+    .siswa-info-dhika .meta { font-size: 0.77rem; color: #64748b; margin-top: 2px; }
+    .badge-pel-dhika {
+        padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+    }
+    .empty-wk-dhika { text-align: center; padding: 40px; color: #94a3b8; }
+    .empty-wk-dhika i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+    @media (max-width: 768px) {
+        .page-header-dhika { padding: 16px 18px; border-radius: 14px; }
+        .page-header-dhika h4 { font-size: 1.1rem; }
+    }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1">
+                    <i class="fas fa-chalkboard me-2"></i>Dashboard Wali Kelas
+                </h4>
+                <p class="mb-0 opacity-75">
+                    Kelas {{ walikelas.kelas }} {{ walikelas.jurusan }} {{ walikelas.rombel }}
+                </p>
+            </div>
+            <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
+                <i class="fas fa-user-tie me-1"></i>{{ session.nama }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4" data-aos="fade-up">
+        <div class="col-6 col-md-3">
+            <div class="wk-stat-dhika">
+                <div class="num">{{ siswa_list|length }}</div>
+                <div class="lbl">Total Siswa</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wk-stat-dhika">
+                <div class="num" style="color:#10b981;">
+                    {{ siswa_list|selectattr('stats_konseling')|list|length }}
+                </div>
+                <div class="lbl">Pernah Konseling</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wk-stat-dhika">
+                <div class="num" style="color:#f59e0b;">
+                    {{ siswa_list|sum(attribute='total_pelanggaran') }}
+                </div>
+                <div class="lbl">Total Pelanggaran</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="wk-stat-dhika">
+                <div class="num" style="color:#3b82f6;">
+                    {{ walikelas.kelas }} {{ walikelas.rombel }}
+                </div>
+                <div class="lbl">Kelas</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div style="background:white;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.07);overflow:hidden;" data-aos="fade-up">
+                <div style="padding:18px 22px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                    <h5 class="fw-bold mb-0" style="font-size:0.9rem;color:#1e293b;">
+                        <i class="fas fa-users me-2 text-primary"></i>Daftar Siswa
+                    </h5>
+                    <span class="badge bg-primary px-3 py-2" style="font-size:0.78rem;">{{ siswa_list|length }} siswa</span>
+                </div>
+                <div style="padding:16px;">
+                    {% if siswa_list %}
+                        {% for s in siswa_list %}
+                        <a href="{{ url_for('walikelas_detail_siswa_dhika', siswa_id=s.id_siswa) }}" class="text-decoration-none">
+                            <div class="siswa-card-dhika">
+                                <div class="siswa-avatar-dhika">
+                                    {{ s.nama[0] }}{% if s.nama.split(' ')|length > 1 %}{{ s.nama.split(' ')[1][0] }}{% endif %}
+                                </div>
+                                <div class="siswa-info-dhika">
+                                    <div class="nama">{{ s.nama }}</div>
+                                    <div class="meta">NIS: {{ s.nis }}</div>
+                                </div>
+                                <div class="d-flex flex-column align-items-end gap-1">
+                                    {% if s.stats_konseling and s.stats_konseling.total %}
+                                    <span class="badge-pel-dhika" style="background:#d1fae5;color:#065f46;">
+                                        {{ s.stats_konseling.total }} konseling
+                                    </span>
+                                    {% endif %}
+                                    {% if s.total_pelanggaran %}
+                                    <span class="badge-pel-dhika" style="background:#fee2e2;color:#991b1b;">
+                                        {{ s.total_pelanggaran }} pelanggaran
+                                    </span>
+                                    {% endif %}
+                                    <i class="fas fa-chevron-right" style="color:#94a3b8;font-size:0.8rem;margin-top:4px;"></i>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-wk-dhika">
+                        <i class="fas fa-users"></i>
+                        <p>Belum ada siswa di kelas ini</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

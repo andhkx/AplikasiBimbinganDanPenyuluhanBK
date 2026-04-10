@@ -129,38 +129,23 @@
         </div>
     </div>
 
-    {% if notif %}
-    <div class="notif-banner-dhika" data-aos="fade-down">
-        <i class="fas fa-exclamation-circle fa-lg mt-1"></i>
-        <div>
-            <strong>Perhatian!</strong><br>{{ notif }}
-        </div>
-    </div>
-    {% endif %}
+
 
     <div class="row">
         <div class="col-lg-4 mb-4">
             <div class="poin-hero-dhika" data-aos="fade-right">
-                <div class="poin-ring-dhika
-                    {% if (siswa.total_poin or 0) <= 50 %}ring-aman
-                    {% elif (siswa.total_poin or 0) <= 100 %}ring-peringatan
-                    {% else %}ring-sp{% endif %}">
-                    <span class="big">{{ siswa.total_poin or 0 }}</span>
-                    <span class="small">poin</span>
+                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+                    <i class="fas fa-exclamation-triangle" style="color:white;font-size:1.8rem;"></i>
                 </div>
-                <div class="status-label-dhika
-                    {% if (siswa.total_poin or 0) <= 50 %}bg-success text-white
-                    {% elif (siswa.total_poin or 0) <= 100 %}bg-warning text-dark
-                    {% else %}bg-danger text-white{% endif %}">
-                    {% if (siswa.total_poin or 0) <= 50 %}Aman
-                    {% elif (siswa.total_poin or 0) <= 100 %}Peringatan
-                    {% elif (siswa.total_poin or 0) <= 150 %}SP1
-                    {% elif (siswa.total_poin or 0) <= 200 %}SP2
-                    {% else %}SP3{% endif %}
-                </div>
-                <p class="text-muted" style="font-size:0.82rem;">
-                    Total {{ riwayat|length }} catatan pelanggaran
-                </p>
+                <div style="font-size:2rem;font-weight:700;color:#1e293b;">{{ riwayat|length }}</div>
+                <div style="font-size:0.875rem;color:#64748b;margin-bottom:8px;">Catatan Pelanggaran</div>
+                {% if riwayat|length == 0 %}
+                <div style="padding:4px 16px;background:#d1fae5;color:#065f46;border-radius:20px;font-size:0.82rem;font-weight:600;display:inline-block;">Bersih</div>
+                {% elif riwayat|length <= 3 %}
+                <div style="padding:4px 16px;background:#fef3c7;color:#92400e;border-radius:20px;font-size:0.82rem;font-weight:600;display:inline-block;">Perlu Perhatian</div>
+                {% else %}
+                <div style="padding:4px 16px;background:#fee2e2;color:#991b1b;border-radius:20px;font-size:0.82rem;font-weight:600;display:inline-block;">Banyak Pelanggaran</div>
+                {% endif %}
             </div>
 
             <div class="scale-dhika" data-aos="fade-right" data-aos-delay="100">
@@ -211,7 +196,7 @@
                             <div class="name">{{ r.nama_pelanggaran }}</div>
                             <div class="date">{{ r.tanggal|format_tanggal_dhika }} &nbsp;·&nbsp; {{ r.kategori }}</div>
                         </div>
-                        <span class="poin-red-dhika">+{{ r.poin }}</span>
+                        
                     </div>
                     {% endfor %}
                 {% else %}

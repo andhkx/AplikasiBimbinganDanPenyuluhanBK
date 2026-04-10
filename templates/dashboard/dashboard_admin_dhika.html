@@ -1,0 +1,268 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Dashboard Admin - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border-radius: 18px; padding: 24px 28px; color: white;
+        margin-bottom: 22px; box-shadow: 0 8px 24px rgba(30,41,59,0.3);
+    }
+    .stat-admin-dhika {
+        background: white; border-radius: 14px; padding: 18px 20px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); text-align: center; border-top: 4px solid;
+    }
+    .stat-admin-dhika .num { font-size: 1.8rem; font-weight: 700; color: #1e293b; }
+    .stat-admin-dhika .lbl { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+    .card-admin-dhika {
+        background: white; border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px;
+    }
+    .card-admin-header-dhika {
+        padding: 16px 20px; border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .card-admin-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 0.9rem; }
+    .form-admin-dhika { padding: 18px 20px; }
+    .form-admin-dhika label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 5px; }
+    .form-admin-dhika input, .form-admin-dhika select {
+        width: 100%; padding: 9px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.855rem; font-family: 'Poppins', sans-serif; background: #f8fafc; transition: border 0.2s;
+    }
+    .form-admin-dhika input:focus, .form-admin-dhika select:focus {
+        outline: none; border-color: #334155; background: white;
+    }
+    .btn-admin-dhika {
+        padding: 10px 20px; background: linear-gradient(135deg, #1e293b, #334155);
+        color: white; border: none; border-radius: 10px; font-size: 0.855rem;
+        font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; width: 100%; margin-top: 4px;
+        transition: all 0.2s;
+    }
+    .btn-admin-dhika:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,41,59,0.3); }
+    .akun-row-dhika {
+        padding: 12px 20px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: center; gap: 12px; font-size: 0.855rem;
+    }
+    .akun-row-dhika:last-child { border-bottom: none; }
+    .role-pill-dhika {
+        padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600;
+    }
+    .r-siswa { background: #dbeafe; color: #1e40af; }
+    .r-guru { background: #d1fae5; color: #065f46; }
+    .r-wk { background: #fef3c7; color: #92400e; }
+    .r-ks { background: #f3e8ff; color: #6b21a8; }
+    .r-admin { background: #fee2e2; color: #991b1b; }
+    .toggle-btn-dhika {
+        padding: 4px 10px; border: none; border-radius: 8px; font-size: 0.72rem;
+        font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; transition: all 0.15s;
+    }
+    .toggle-aktif { background: #fee2e2; color: #dc2626; }
+    .toggle-aktif:hover { background: #dc2626; color: white; }
+    .toggle-nonaktif { background: #d1fae5; color: #059669; }
+    .toggle-nonaktif:hover { background: #059669; color: white; }
+    .search-admin-dhika {
+        padding: 8px 12px 8px 36px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.855rem; font-family: 'Poppins', sans-serif; background: #f8fafc; width: 200px;
+    }
+    .search-admin-dhika:focus { outline: none; border-color: #334155; background: white; }
+    @media (max-width: 768px) {
+        .page-header-dhika h4 { font-size: 1.1rem; }
+        .search-admin-dhika { width: 100%; }
+    }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-cogs me-2"></i>Dashboard Admin</h4>
+                <p class="mb-0 opacity-75">Kelola seluruh akun pengguna sistem</p>
+            </div>
+            <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
+                <i class="fas fa-user-shield me-1"></i>{{ session.nama }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4" data-aos="fade-up">
+        <div class="col-6 col-md-3">
+            <div class="stat-admin-dhika" style="border-color:#667eea;">
+                <div class="num">{{ total_akun }}</div>
+                <div class="lbl">Total Akun</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-admin-dhika" style="border-color:#10b981;">
+                <div class="num">{{ total_siswa }}</div>
+                <div class="lbl">Siswa</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-admin-dhika" style="border-color:#3b82f6;">
+                <div class="num">{{ total_guru }}</div>
+                <div class="lbl">Guru BK</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-admin-dhika" style="border-color:#f59e0b;">
+                <div class="num">{{ total_konseling }}</div>
+                <div class="lbl">Konseling</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card-admin-dhika" data-aos="fade-right">
+                <div class="card-admin-header-dhika">
+                    <h5><i class="fas fa-user-plus me-2" style="color:#334155;"></i>Tambah Akun</h5>
+                </div>
+                <div class="form-admin-dhika">
+                    <form action="{{ url_for('admin_tambah_akun_dhika') }}" method="POST">
+                        <div class="mb-3">
+                            <label>Role</label>
+                            <select name="role_dhika" id="roleAdminDhika" required onchange="updateFormAdmin()">
+                                <option value="" disabled selected>-- Pilih Role --</option>
+                                <option value="Siswa">Siswa</option>
+                                <option value="Guru BK">Guru BK</option>
+                                <option value="Wali Kelas">Wali Kelas</option>
+                                <option value="Kesiswaan">Kesiswaan</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Nama Lengkap</label>
+                            <input type="text" name="nama_dhika" placeholder="Nama lengkap" required>
+                        </div>
+                        <div class="mb-3" id="nisFieldDhika" style="display:none;">
+                            <label>NIS</label>
+                            <input type="text" name="nis_dhika" placeholder="Nomor Induk Siswa">
+                        </div>
+                        <div class="mb-3" id="nipFieldDhika" style="display:none;">
+                            <label>NIP</label>
+                            <input type="text" name="nip_dhika" placeholder="Nomor Induk Pegawai">
+                        </div>
+                        <div id="kelasFieldDhika" style="display:none;">
+                            <div class="row g-2 mb-3">
+                                <div class="col-4">
+                                    <label>Kelas</label>
+                                    <select name="kelas_dhika">
+                                        <option value="">-</option>
+                                        <option value="X">X</option>
+                                        <option value="XI">XI</option>
+                                        <option value="XII">XII</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label>Jurusan</label>
+                                    <select name="jurusan_dhika">
+                                        <option value="">-</option>
+                                        <option value="RPL">RPL</option>
+                                        <option value="Animasi">Animasi</option>
+                                        <option value="DKV">DKV</option>
+                                        <option value="Kimia">Kimia</option>
+                                        <option value="Mesin">Mesin</option>
+                                        <option value="Meka">Meka</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label>Rombel</label>
+                                    <select name="rombel_dhika">
+                                        <option value="">-</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Username</label>
+                            <input type="text" name="username_dhika" placeholder="Username unik" required>
+                        </div>
+                        <div class="mb-4">
+                            <label>Password</label>
+                            <input type="text" name="password_dhika" placeholder="Password awal" required>
+                        </div>
+                        <button type="submit" class="btn-admin-dhika">
+                            <i class="fas fa-plus me-2"></i>Buat Akun
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="card-admin-dhika" data-aos="fade-left">
+                <div class="card-admin-header-dhika">
+                    <h5><i class="fas fa-users me-2" style="color:#334155;"></i>Semua Akun</h5>
+                    <div style="position:relative;">
+                        <i class="fas fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:0.82rem;"></i>
+                        <input type="text" id="searchAkunDhika" class="search-admin-dhika" placeholder="Cari username...">
+                    </div>
+                </div>
+                <div id="akunListDhika">
+                    {% for a in semua_akun %}
+                    <div class="akun-row-dhika" data-username="{{ a.username|lower }}" data-role="{{ a.role|lower }}">
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-weight:600;color:#1e293b;">{{ a.username }}</div>
+                            <div style="font-size:0.77rem;color:#94a3b8;">
+                                Dibuat: {{ a.created_at.strftime('%d %b %Y') if a.created_at else '-' }}
+                            </div>
+                        </div>
+                        <span class="role-pill-dhika
+                            {% if a.role == 'Siswa' %}r-siswa
+                            {% elif a.role == 'Guru BK' %}r-guru
+                            {% elif a.role == 'Wali Kelas' %}r-wk
+                            {% elif a.role == 'Kesiswaan' %}r-ks
+                            {% else %}r-admin{% endif %}">
+                            {{ a.role }}
+                        </span>
+                        <span style="font-size:0.72rem;padding:2px 8px;border-radius:12px;
+                            {% if a.status_akun == 'Aktif' %}background:#d1fae5;color:#065f46;
+                            {% else %}background:#fee2e2;color:#991b1b;{% endif %}">
+                            {{ a.status_akun or 'Aktif' }}
+                        </span>
+                        {% if a.id_akun != session.id_akun %}
+                        <form method="POST" action="{{ url_for('admin_toggle_akun_dhika', id_akun=a.id_akun) }}" style="margin:0;">
+                            {% if a.status_akun == 'Aktif' or not a.status_akun %}
+                            <input type="hidden" name="status_dhika" value="Nonaktif">
+                            <button type="submit" class="toggle-btn-dhika toggle-aktif"
+                                    onclick="return confirm('Nonaktifkan akun {{ a.username }}?')">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            {% else %}
+                            <input type="hidden" name="status_dhika" value="Aktif">
+                            <button type="submit" class="toggle-btn-dhika toggle-nonaktif">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            {% endif %}
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script_dhika %}
+<script>
+    function updateFormAdmin() {
+        var role = document.getElementById('roleAdminDhika').value;
+        document.getElementById('nisFieldDhika').style.display = role === 'Siswa' ? 'block' : 'none';
+        document.getElementById('nipFieldDhika').style.display = ['Guru BK','Wali Kelas','Kesiswaan'].includes(role) ? 'block' : 'none';
+        document.getElementById('kelasFieldDhika').style.display = ['Siswa','Wali Kelas'].includes(role) ? 'block' : 'none';
+    }
+
+    document.getElementById('searchAkunDhika').addEventListener('input', function() {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.akun-row-dhika').forEach(function(row) {
+            var match = (row.dataset.username || '').includes(q) || (row.dataset.role || '').includes(q);
+            row.style.display = match ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

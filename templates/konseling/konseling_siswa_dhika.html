@@ -176,20 +176,14 @@
                             <input type="date" name="tanggal_dhika" class="form-control form-control-dhika" 
                                    min="{{ now.strftime('%Y-%m-%d') }}" required>
                         </div>
-                        <div class="col-md-3 mb-4">
+                        <div class="col-md-4 mb-4">
                             <label class="form-label-dhika">
                                 <i class="fas fa-clock me-2"></i>Jam Mulai
                             </label>
                             <input type="time" name="jam_mulai_dhika" class="form-control form-control-dhika" 
                                    min="07:00" max="16:00" required>
                         </div>
-                        <div class="col-md-3 mb-4">
-                            <label class="form-label-dhika">
-                                <i class="fas fa-clock me-2"></i>Jam Selesai
-                            </label>
-                            <input type="time" name="jam_selesai_dhika" class="form-control form-control-dhika" 
-                                   min="07:00" max="16:00" required>
-                        </div>
+
                     </div>
                     
                     <!-- Alasan -->
@@ -276,7 +270,7 @@
                                 </p>
                                 <p class="mb-0">
                                     <i class="fas fa-clock me-2 text-muted"></i>
-                                    <strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}
+                                    <strong>Waktu Mulai:</strong> {{ konseling.jam_mulai }}{% if konseling.jam_selesai %} - {{ konseling.jam_selesai }}{% endif %}
                                 </p>
                             </div>
                             <div class="col-md-4 text-end">
@@ -325,7 +319,7 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}</p>
-                            <p><strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</p>
+                            <p><strong>Waktu Mulai:</strong> {{ konseling.jam_mulai }}{% if konseling.jam_selesai %} - {{ konseling.jam_selesai }}{% endif %}</p>
                             <p><strong>Diajukan pada:</strong> {{ konseling.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
                         </div>
                     </div>
@@ -377,10 +371,7 @@
     document.querySelector('input[name="tanggal_dhika"]').min = today;
     
     const jamMulai = document.querySelector('input[name="jam_mulai_dhika"]');
-    const jamSelesai = document.querySelector('input[name="jam_selesai_dhika"]');
-    
     jamMulai.addEventListener('change', function() {
-        jamSelesai.min = this.value;
     });
     
     const form = document.querySelector('form');

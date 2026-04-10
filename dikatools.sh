@@ -70,8 +70,7 @@ case $pilihan in
         
         # Manual commit message
         echo ""
-        echo -e "${PURPLE}📝 Tulis pesan commit (WAJIB diisi):${NC}"
-        echo -e "${CYAN}   Contoh: fix bug login, add fitur dashboard, update UI${NC}"
+        echo -e "${PURPLE}📝 Tulis pesan commit (wajib diisi):${NC}"
         read -p "> " user_msg
         
         while [[ -z "$user_msg" ]]; do
@@ -95,7 +94,7 @@ case $pilihan in
         
         if [ $? -eq 0 ]; then
             echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-            echo -e "${GREEN}║   🎉 SUCCESS! Terkirim ke GitHub!     ║${NC}"
+            echo -e "${GREEN}║   🎉 SUCCESS! Terkirim ke GitHub!       ║${NC}"
             echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
         else
             echo -e "${RED}❌ Push gagal! Cek koneksi atau token GitHub.${NC}"

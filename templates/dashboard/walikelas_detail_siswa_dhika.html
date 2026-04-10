@@ -1,0 +1,164 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Detail Siswa - {{ siswa.nama }}{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        border-radius: 18px; padding: 24px 28px; color: white;
+        margin-bottom: 22px; box-shadow: 0 8px 24px rgba(14,165,233,0.3);
+    }
+    .info-card-dhika {
+        background: white; border-radius: 14px; padding: 20px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); margin-bottom: 18px;
+    }
+    .info-card-dhika h6 { font-weight: 700; color: #1e293b; margin-bottom: 14px; font-size: 0.875rem; }
+    .detail-row-dhika {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 8px 0; border-bottom: 1px solid #f8fafc; font-size: 0.85rem;
+    }
+    .detail-row-dhika:last-child { border-bottom: none; }
+    .detail-row-dhika .key { color: #64748b; min-width: 110px; font-weight: 500; }
+    .detail-row-dhika .val { color: #1e293b; font-weight: 600; }
+    .timeline-item-dhika {
+        display: flex; gap: 12px; padding: 12px 0;
+        border-bottom: 1px solid #f8fafc;
+    }
+    .timeline-item-dhika:last-child { border-bottom: none; }
+    .tl-icon-dhika {
+        width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem; color: white;
+    }
+    .tl-body-dhika { flex: 1; min-width: 0; }
+    .tl-body-dhika .title { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
+    .tl-body-dhika .meta { font-size: 0.77rem; color: #64748b; margin-top: 2px; }
+    .status-badge-dhika {
+        padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+    }
+    .s-pending { background: #fef3c7; color: #92400e; }
+    .s-disetujui { background: #d1fae5; color: #065f46; }
+    .s-selesai { background: #dbeafe; color: #1e40af; }
+    .s-dibatalkan { background: #fee2e2; color: #991b1b; }
+    .empty-tl { text-align: center; padding: 28px; color: #94a3b8; font-size: 0.85rem; }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-user-graduate me-2"></i>{{ siswa.nama }}</h4>
+                <p class="mb-0 opacity-75">{{ siswa.kelas }} {{ siswa.jurusan }} {{ siswa.rombel }}</p>
+            </div>
+            <a href="{{ url_for('dashboard_walikelas_dhika') }}"
+               class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:0.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="info-card-dhika" data-aos="fade-right">
+                <h6><i class="fas fa-id-card me-2 text-primary"></i>Data Siswa</h6>
+                <div class="detail-row-dhika">
+                    <span class="key">Nama</span>
+                    <span class="val">{{ siswa.nama }}</span>
+                </div>
+                <div class="detail-row-dhika">
+                    <span class="key">NIS</span>
+                    <span class="val">{{ siswa.nis }}</span>
+                </div>
+                <div class="detail-row-dhika">
+                    <span class="key">Kelas</span>
+                    <span class="val">{{ siswa.kelas }} {{ siswa.jurusan }} {{ siswa.rombel }}</span>
+                </div>
+                {% if siswa.no_ortu %}
+                <div class="detail-row-dhika">
+                    <span class="key">No. Ortu</span>
+                    <span class="val">{{ siswa.no_ortu }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="info-card-dhika" data-aos="fade-right" data-aos-delay="100">
+                <h6><i class="fas fa-chart-bar me-2 text-success"></i>Ringkasan</h6>
+                <div class="detail-row-dhika">
+                    <span class="key">Konseling</span>
+                    <span class="val">{{ riwayat_konseling|length }} kali</span>
+                </div>
+                <div class="detail-row-dhika">
+                    <span class="key">Selesai</span>
+                    <span class="val">{{ riwayat_konseling|selectattr('status','equalto','Selesai')|list|length }} kali</span>
+                </div>
+                <div class="detail-row-dhika">
+                    <span class="key">Pelanggaran</span>
+                    <span class="val">{{ riwayat_pelanggaran|length }} catatan</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="info-card-dhika" data-aos="fade-left">
+                <h6><i class="fas fa-history me-2 text-primary"></i>Riwayat Konseling</h6>
+                {% if riwayat_konseling %}
+                    {% for k in riwayat_konseling %}
+                    <div class="timeline-item-dhika">
+                        <div class="tl-icon-dhika"
+                             style="background:{% if k.status=='Selesai' %}#3b82f6{% elif k.status=='Disetujui' %}#10b981{% elif k.status=='Pending' %}#f59e0b{% else %}#ef4444{% endif %};">
+                            <i class="fas fa-{% if k.status=='Selesai' %}check{% elif k.status=='Disetujui' %}calendar-check{% elif k.status=='Pending' %}clock{% else %}times{% endif %}"></i>
+                        </div>
+                        <div class="tl-body-dhika">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="title">{{ k.jenis }} — {{ k.nama_guru }}</div>
+                                <span class="status-badge-dhika
+                                    {% if k.status=='Pending' %}s-pending
+                                    {% elif k.status=='Disetujui' %}s-disetujui
+                                    {% elif k.status=='Selesai' %}s-selesai
+                                    {% else %}s-dibatalkan{% endif %}">
+                                    {{ k.status }}
+                                </span>
+                            </div>
+                            <div class="meta">
+                                {{ k.tanggal|format_tanggal_dhika }}
+                                {% if k.jam_mulai %}· {{ k.jam_mulai }}{% endif %}
+                            </div>
+                            {% if k.hasil %}
+                            <div class="meta" style="color:#10b981;margin-top:4px;">
+                                <i class="fas fa-check me-1"></i>{{ k.hasil[:80] }}{% if k.hasil|length > 80 %}...{% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-tl">Belum ada riwayat konseling</div>
+                {% endif %}
+            </div>
+
+            <div class="info-card-dhika" data-aos="fade-left" data-aos-delay="100">
+                <h6><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Riwayat Pelanggaran</h6>
+                {% if riwayat_pelanggaran %}
+                    {% for r in riwayat_pelanggaran %}
+                    <div class="timeline-item-dhika">
+                        <div class="tl-icon-dhika"
+                             style="background:{% if r.kategori=='Ringan' %}#10b981{% elif r.kategori=='Sedang' %}#f59e0b{% elif r.kategori=='Berat' %}#f97316{% else %}#ef4444{% endif %};">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="tl-body-dhika">
+                            <div class="title">{{ r.nama_pelanggaran }}</div>
+                            <div class="meta">
+                                {{ r.tanggal|format_tanggal_dhika }} · {{ r.kategori }}
+                                {% if r.keterangan %}· {{ r.keterangan[:50] }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-tl">Tidak ada catatan pelanggaran</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
