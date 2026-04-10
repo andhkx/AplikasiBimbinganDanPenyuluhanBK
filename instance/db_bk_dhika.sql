@@ -1,10 +1,9 @@
-<<<<<<< HEAD
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Mar 2026 pada 23.30
+-- Waktu pembuatan: 09 Apr 2026 pada 23.57
 -- Versi server: 10.4.6-MariaDB
 -- Versi PHP: 7.3.10
 
@@ -33,19 +32,21 @@ CREATE TABLE `akun_dhika` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('Siswa','Guru BK') NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status_akun` enum('Aktif','Pending','Nonaktif') DEFAULT 'Aktif'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data untuk tabel `akun_dhika`
 --
 
-INSERT INTO `akun_dhika` (`id_akun`, `username`, `password`, `role`, `created_at`) VALUES
-(1, 'tini', 'tini123', 'Guru BK', '2026-03-28 08:55:06'),
-(2, 'anom', 'anom123', 'Guru BK', '2026-03-28 08:55:06'),
-(3, 'dudu', 'dudu123', 'Guru BK', '2026-03-28 08:55:06'),
-(4, 'andhika', 'andhika123', 'Siswa', '2026-03-28 08:55:06'),
-(5, 'fika', 'fika123', 'Siswa', '2026-03-28 08:55:06');
+INSERT INTO `akun_dhika` (`id_akun`, `username`, `password`, `role`, `created_at`, `status_akun`) VALUES
+(1, 'tini', 'tini123', 'Guru BK', '2026-03-28 08:55:06', 'Aktif'),
+(2, 'anom', 'anom123', 'Guru BK', '2026-03-28 08:55:06', 'Aktif'),
+(3, 'dudu', 'dudu123', 'Guru BK', '2026-03-28 08:55:06', 'Aktif'),
+(4, 'andhika', 'andhika123', 'Siswa', '2026-03-28 08:55:06', 'Aktif'),
+(5, 'fika', 'fika123', 'Siswa', '2026-03-28 08:55:06', 'Aktif'),
+(6, 'adit', 'adit123', 'Siswa', '2026-04-07 05:03:57', 'Aktif');
 
 -- --------------------------------------------------------
 
@@ -75,7 +76,15 @@ INSERT INTO `chat_dhika` (`id_chat`, `pengirim_akun_id`, `penerima_akun_id`, `pe
 (12, 4, 1, 'bu saya mau konseling', '2026-03-30 01:21:41'),
 (13, 1, 4, 'selesai ya nak', '2026-03-30 01:24:07'),
 (14, 4, 1, 'halo bu', '2026-03-30 01:25:53'),
-(15, 4, 1, 'p', '2026-03-30 01:25:56');
+(15, 4, 1, 'p', '2026-03-30 01:25:56'),
+(16, 4, 1, 'Halo, saya telah mengajukan konseling (Belajar) pada 2026-04-05 pukul 08:06-09:06. Mohon konfirmasinya. Terima kasih.', '2026-04-05 01:06:35'),
+(17, 4, 1, 'bu', '2026-04-07 05:06:22'),
+(18, 4, 1, 'ko diatas ya', '2026-04-07 05:06:46'),
+(19, 4, 1, 'assalamualaikum by', '2026-04-08 12:57:24'),
+(20, 4, 1, 'bu', '2026-04-08 12:57:29'),
+(21, 4, 1, 'Halo, saya telah mengajukan konseling (Pribadi) pada 2026-04-09 pukul 11:15-13:15. Mohon konfirmasinya.', '2026-04-09 04:15:52'),
+(22, 1, 4, 'test', '2026-04-09 04:16:52'),
+(23, 4, 1, 'halo Bu', '2026-04-09 23:53:19');
 
 -- --------------------------------------------------------
 
@@ -128,7 +137,9 @@ INSERT INTO `konseling_dhika` (`id_konseling`, `siswa_id`, `guru_id`, `jenis`, `
 ('KS0001', 1, 1, 'Karir', '2026-03-30', '11:00:00', '12:00:00', 'Disetujui', 'konsultasi tentang apa yang terjadi setelah lulus sekolah', '', '2026-03-28 11:32:39'),
 ('KS0002', 2, 2, 'Belajar', '2026-03-28', '12:00:00', '13:00:00', 'Selesai', 'konsultasi jurnal kimia', 'fika sudah lancar mengerjakan jurnal', '2026-03-28 12:00:10'),
 ('KS0003', 1, 1, 'Sosial', '2026-03-30', '07:00:00', '08:00:00', 'Disetujui', 'teman', '', '2026-03-29 14:39:44'),
-('KS0004', 1, 1, 'Karir', '2026-03-30', '11:00:00', '12:00:00', 'Selesai', 'cita cita masadepan', 'andhika sudah mendapatkan tujuan hidupnya', '2026-03-30 01:21:19');
+('KS0004', 1, 1, 'Karir', '2026-03-30', '11:00:00', '12:00:00', 'Selesai', 'cita cita masadepan', 'andhika sudah mendapatkan tujuan hidupnya', '2026-03-30 01:21:19'),
+('KS0005', 1, 1, 'Belajar', '2026-04-05', '08:06:00', '09:06:00', 'Pending', 'ingin bimbingan tentang mapel', NULL, '2026-04-05 01:06:35'),
+('KS0006', 1, 1, 'Pribadi', '2026-04-09', '11:15:00', '13:15:00', 'Disetujui', 'aaaa', '', '2026-04-09 04:15:52');
 
 -- --------------------------------------------------------
 
@@ -212,7 +223,40 @@ INSERT INTO `log_aktivitas_dhika` (`id_log`, `akun_id`, `aktivitas`, `waktu`) VA
 (62, 1, 'Login ke sistem', '2026-03-30 21:54:26'),
 (63, 1, 'Input pelanggaran siswa id 1, poin +10', '2026-03-30 22:16:18'),
 (64, 1, 'Logout dari sistem', '2026-03-30 22:18:14'),
-(65, 4, 'Login ke sistem', '2026-03-30 22:18:30');
+(65, 4, 'Login ke sistem', '2026-03-30 22:18:30'),
+(66, 4, 'Login ke sistem', '2026-04-05 01:05:18'),
+(67, 4, 'Login ke sistem', '2026-04-05 01:05:46'),
+(68, 4, 'Mengajukan konseling KS0005', '2026-04-05 01:06:35'),
+(69, 4, 'Login ke sistem', '2026-04-05 01:07:18'),
+(70, 4, 'Logout dari sistem', '2026-04-05 01:07:27'),
+(71, 4, 'Login ke sistem', '2026-04-05 01:07:56'),
+(72, 4, 'Login ke sistem', '2026-04-07 00:00:10'),
+(73, 4, 'Logout dari sistem', '2026-04-07 00:02:00'),
+(74, 1, 'Login ke sistem', '2026-04-07 00:02:11'),
+(75, 1, 'Logout dari sistem', '2026-04-07 00:02:54'),
+(76, 1, 'Login ke sistem', '2026-04-07 00:05:59'),
+(77, 4, 'Login ke sistem', '2026-04-07 00:22:28'),
+(78, 4, 'Logout dari sistem', '2026-04-07 00:24:12'),
+(79, 1, 'Login ke sistem', '2026-04-07 00:24:20'),
+(80, 1, 'Login ke sistem', '2026-04-07 05:03:42'),
+(81, 1, 'Menyetujui pendaftaran Aditya Firmansyah Andira', '2026-04-07 05:03:57'),
+(82, 1, 'Logout dari sistem', '2026-04-07 05:04:58'),
+(83, 4, 'Login ke sistem', '2026-04-07 05:05:08'),
+(84, 1, 'Login ke sistem', '2026-04-08 12:30:56'),
+(85, 1, 'Login ke sistem', '2026-04-08 12:31:16'),
+(86, 4, 'Login ke sistem', '2026-04-08 12:32:07'),
+(87, 4, 'Login ke sistem', '2026-04-08 12:33:43'),
+(88, 4, 'Login ke sistem', '2026-04-08 12:45:14'),
+(89, 4, 'Login ke sistem', '2026-04-09 04:14:52'),
+(90, 4, 'Mengajukan konseling KS0006', '2026-04-09 04:15:52'),
+(91, 4, 'Logout dari sistem', '2026-04-09 04:16:03'),
+(92, 1, 'Login ke sistem', '2026-04-09 04:16:11'),
+(93, 1, 'Update konseling KS0006 ke Disetujui', '2026-04-09 04:16:35'),
+(94, 1, 'Logout dari sistem', '2026-04-09 04:16:57'),
+(95, 4, 'Login ke sistem', '2026-04-09 04:17:06'),
+(96, 4, 'Login ke sistem', '2026-04-09 23:51:34'),
+(97, 4, 'Logout dari sistem', '2026-04-09 23:53:24'),
+(98, 1, 'Login ke sistem', '2026-04-09 23:53:32');
 
 -- --------------------------------------------------------
 
@@ -243,6 +287,35 @@ INSERT INTO `pelanggaran_dhika` (`id_pelanggaran`, `nama_pelanggaran`, `poin`, `
 (9, 'Merokok', 50, 'Berat'),
 (10, 'Membawa barang terlarang', 75, 'Sangat Berat'),
 (11, 'Narkoba', 100, 'Sangat Berat');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `pendaftaran_dhika`
+--
+
+CREATE TABLE `pendaftaran_dhika` (
+  `id_daftar` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `nis` varchar(20) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `kelas` enum('X','XI','XII') NOT NULL,
+  `jurusan` enum('RPL','Animasi','DKV','Kimia','Mesin','Meka') NOT NULL,
+  `rombel` enum('A','B','C','D') NOT NULL,
+  `no_ortu` varchar(20) DEFAULT NULL,
+  `status_daftar` enum('Pending','Disetujui','Ditolak') DEFAULT 'Pending',
+  `catatan_guru` text DEFAULT NULL,
+  `tanggal_daftar` timestamp NOT NULL DEFAULT current_timestamp(),
+  `tanggal_proses` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `pendaftaran_dhika`
+--
+
+INSERT INTO `pendaftaran_dhika` (`id_daftar`, `username`, `password`, `nis`, `nama`, `kelas`, `jurusan`, `rombel`, `no_ortu`, `status_daftar`, `catatan_guru`, `tanggal_daftar`, `tanggal_proses`) VALUES
+(1, 'adit', 'adit123', '10243249', 'Aditya Firmansyah Andira', 'XI', 'RPL', 'A', NULL, 'Disetujui', NULL, '2026-04-07 05:03:30', '2026-04-07 05:03:57');
 
 -- --------------------------------------------------------
 
@@ -289,8 +362,9 @@ CREATE TABLE `siswa_dhika` (
 --
 
 INSERT INTO `siswa_dhika` (`id_siswa`, `akun_id`, `nis`, `nama`, `kelas`, `jurusan`, `rombel`, `email`, `total_poin`, `no_ortu`) VALUES
-(1, 4, '10243252', 'Andhika Andriana Putra', 'XI', 'RPL', 'A', 'andhika@gmail.com', 10, NULL),
-(2, 5, '10245407', 'Fika Indah Lestari', 'XI', 'Kimia', 'A', 'fika@gmail.com', 0, NULL);
+(1, 4, '10243252', 'Andhika Andriana Putra', 'XI', 'RPL', 'A', 'andhika@gmail.com', 10, '+6281223530650'),
+(2, 5, '10245407', 'Fika Indah Lestari', 'XI', 'Kimia', 'A', 'fika@gmail.com', 0, '+62895631922002'),
+(11, 6, '10243249', 'Aditya Firmansyah Andira', 'XI', 'RPL', 'A', NULL, 0, NULL);
 
 --
 -- Indexes for dumped tables
@@ -341,6 +415,13 @@ ALTER TABLE `pelanggaran_dhika`
   ADD PRIMARY KEY (`id_pelanggaran`);
 
 --
+-- Indeks untuk tabel `pendaftaran_dhika`
+--
+ALTER TABLE `pendaftaran_dhika`
+  ADD PRIMARY KEY (`id_daftar`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
 -- Indeks untuk tabel `riwayat_pelanggaran_dhika`
 --
 ALTER TABLE `riwayat_pelanggaran_dhika`
@@ -364,13 +445,13 @@ ALTER TABLE `siswa_dhika`
 -- AUTO_INCREMENT untuk tabel `akun_dhika`
 --
 ALTER TABLE `akun_dhika`
-  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_akun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `chat_dhika`
 --
 ALTER TABLE `chat_dhika`
-  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT untuk tabel `guru_dhika`
@@ -382,13 +463,19 @@ ALTER TABLE `guru_dhika`
 -- AUTO_INCREMENT untuk tabel `log_aktivitas_dhika`
 --
 ALTER TABLE `log_aktivitas_dhika`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT untuk tabel `pelanggaran_dhika`
 --
 ALTER TABLE `pelanggaran_dhika`
   MODIFY `id_pelanggaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT untuk tabel `pendaftaran_dhika`
+--
+ALTER TABLE `pendaftaran_dhika`
+  MODIFY `id_daftar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `riwayat_pelanggaran_dhika`
@@ -400,7 +487,7 @@ ALTER TABLE `riwayat_pelanggaran_dhika`
 -- AUTO_INCREMENT untuk tabel `siswa_dhika`
 --
 ALTER TABLE `siswa_dhika`
-  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_siswa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -449,128 +536,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-=======
--- Database untuk Aplikasi Bimbingan dan Penyuluhan / BK
--- Dibuat oleh: Andhika Andriana Putra
--- SMK Negeri 2 Cimahi
-
--- Buat database
-CREATE DATABASE IF NOT EXISTS db_bk_dhika;
-USE db_bk_dhika;
-
--- Tabel 1: akun_dhika
-CREATE TABLE akun_dhika (
-    id_akun INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('Siswa', 'Guru BK', 'Admin') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Insert 5 data akun_dhika
-INSERT INTO akun_dhika (username, password, role) VALUES
-('admin_dhika', 'admin123', 'Admin'),
-('guru_bk1', 'guru123', 'Guru BK'),
-('guru_bk2', 'guru123', 'Guru BK'),
-('siswa001', 'siswa123', 'Siswa'),
-('siswa002', 'siswa123', 'Siswa');
-
--- Tabel 2: siswa_dhika
-CREATE TABLE siswa_dhika (
-    id_siswa INT PRIMARY KEY AUTO_INCREMENT,
-    akun_id INT NOT NULL,
-    nis VARCHAR(20) NOT NULL UNIQUE,
-    nama VARCHAR(100) NOT NULL,
-    kelas VARCHAR(10) NOT NULL,
-    jurusan VARCHAR(50) NOT NULL,
-    email VARCHAR(100),
-    FOREIGN KEY (akun_id) REFERENCES akun_dhika(id_akun) ON DELETE CASCADE
-);
-
--- Insert 5 data siswa_dhika
-INSERT INTO siswa_dhika (akun_id, nis, nama, kelas, jurusan, email) VALUES
-(4, '2024001', 'Budi Santoso', 'XI RPL A', 'Rekayasa Perangkat Lunak', 'budi@student.smkn2cimahi.sch.id'),
-(5, '2024002', 'Siti Nurhaliza', 'XI RPL A', 'Rekayasa Perangkat Lunak', 'siti@student.smkn2cimahi.sch.id'),
-(4, '2024003', 'Dimas Prasetyo', 'XI TKJ B', 'Teknik Komputer Jaringan', 'dimas@student.smkn2cimahi.sch.id'),
-(5, '2024004', 'Rina Wijaya', 'XI MM A', 'Multimedia', 'rina@student.smkn2cimahi.sch.id'),
-(4, '2024005', 'Ahmad Fauzi', 'XI RPL B', 'Rekayasa Perangkat Lunak', 'ahmad@student.smkn2cimahi.sch.id');
-
--- Tabel 3: guru_dhika
-CREATE TABLE guru_dhika (
-    id_guru INT PRIMARY KEY AUTO_INCREMENT,
-    akun_id INT NOT NULL,
-    nip VARCHAR(20) NOT NULL UNIQUE,
-    nama VARCHAR(100) NOT NULL,
-    email VARCHAR(100),
-    FOREIGN KEY (akun_id) REFERENCES akun_dhika(id_akun) ON DELETE CASCADE
-);
-
--- Insert 5 data guru_dhika
-INSERT INTO guru_dhika (akun_id, nip, nama, email) VALUES
-(2, '197801012006041001', 'Dra. Siti Aminah, M.Pd', 'siti.aminah@smkn2cimahi.sch.id'),
-(3, '198505152010122002', 'Drs. Bambang Sudrajat', 'bambang.sudrajat@smkn2cimahi.sch.id'),
-(2, '199002282015031003', 'Rina Marlina, S.Pd', 'rina.marlina@smkn2cimahi.sch.id'),
-(3, '198712102012121004', 'Agus Setiawan, S.Psi', 'agus.setiawan@smkn2cimahi.sch.id'),
-(2, '199306192018032005', 'Fitri Handayani, M.Psi', 'fitri.handayani@smkn2cimahi.sch.id');
-
--- Tabel 4: konseling_dhika
-CREATE TABLE konseling_dhika (
-    id_konseling VARCHAR(20) PRIMARY KEY,
-    siswa_id INT NOT NULL,
-    guru_id INT NOT NULL,
-    jenis ENUM('Pribadi', 'Sosial', 'Belajar', 'Karir') NOT NULL,
-    tanggal DATE NOT NULL,
-    jam_mulai TIME NOT NULL,
-    jam_selesai TIME NOT NULL,
-    status ENUM('Pending', 'Disetujui', 'Selesai', 'Dibatalkan') DEFAULT 'Pending',
-    alasan TEXT NOT NULL,
-    hasil TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (siswa_id) REFERENCES siswa_dhika(id_siswa) ON DELETE CASCADE,
-    FOREIGN KEY (guru_id) REFERENCES guru_dhika(id_guru) ON DELETE CASCADE
-);
-
--- Insert 5 data konseling_dhika
-INSERT INTO konseling_dhika (id_konseling, siswa_id, guru_id, jenis, tanggal, jam_mulai, jam_selesai, status, alasan, hasil) VALUES
-('KSL001', 1, 1, 'Belajar', '2026-02-08', '08:00:00', '09:00:00', 'Selesai', 'Kesulitan memahami materi pemrograman Python', 'Diberikan metode belajar step by step dan latihan tambahan'),
-('KSL002', 2, 2, 'Pribadi', '2026-02-09', '10:00:00', '11:00:00', 'Selesai', 'Masalah kepercayaan diri saat presentasi', 'Diberikan tips public speaking dan latihan mental'),
-('KSL003', 3, 1, 'Sosial', '2026-02-10', '13:00:00', '14:00:00', 'Disetujui', 'Kesulitan beradaptasi dengan teman sekelas', NULL),
-('KSL004', 4, 3, 'Karir', '2026-02-11', '09:00:00', '10:00:00', 'Pending', 'Konsultasi pemilihan jurusan kuliah', NULL),
-('KSL005', 5, 2, 'Belajar', '2026-02-12', '14:00:00', '15:00:00', 'Pending', 'Kesulitan manajemen waktu belajar', NULL);
-
--- Tabel 5: chat_dhika
-CREATE TABLE chat_dhika (
-    id_chat INT PRIMARY KEY AUTO_INCREMENT,
-    pengirim_akun_id INT NOT NULL,
-    penerima_akun_id INT NOT NULL,
-    pesan TEXT NOT NULL,
-    waktu TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (pengirim_akun_id) REFERENCES akun_dhika(id_akun) ON DELETE CASCADE,
-    FOREIGN KEY (penerima_akun_id) REFERENCES akun_dhika(id_akun) ON DELETE CASCADE
-);
-
--- Insert 5 data chat_dhika
-INSERT INTO chat_dhika (pengirim_akun_id, penerima_akun_id, pesan, waktu) VALUES
-(4, 2, 'Selamat pagi Bu, saya ingin konsultasi mengenai kesulitan belajar', '2026-02-08 07:30:00'),
-(2, 4, 'Baik, silahkan ajukan jadwal konseling melalui sistem', '2026-02-08 07:45:00'),
-(5, 3, 'Pak, kapan jadwal konseling saya?', '2026-02-09 09:00:00'),
-(3, 5, 'Jadwal konseling kamu sudah disetujui untuk besok jam 10:00', '2026-02-09 09:15:00'),
-(4, 2, 'Terima kasih Bu atas bimbingannya kemarin', '2026-02-08 15:00:00');
-
--- Tabel 6: log_aktivitas_dhika
-CREATE TABLE log_aktivitas_dhika (
-    id_log INT PRIMARY KEY AUTO_INCREMENT,
-    akun_id INT NOT NULL,
-    aktivitas VARCHAR(255) NOT NULL,
-    waktu TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (akun_id) REFERENCES akun_dhika(id_akun) ON DELETE CASCADE
-);
-
--- Insert 5 data log_aktivitas_dhika
-INSERT INTO log_aktivitas_dhika (akun_id, aktivitas, waktu) VALUES
-(4, 'Login ke sistem', '2026-02-08 07:25:00'),
-(4, 'Mengajukan konseling baru - KSL001', '2026-02-08 07:35:00'),
-(2, 'Login ke sistem', '2026-02-08 07:40:00'),
-(2, 'Menyetujui konseling - KSL001', '2026-02-08 07:50:00'),
-(4, 'Menyelesaikan konseling - KSL001', '2026-02-08 09:05:00');
->>>>>>> 3ecd9455e89cf6beab1f575bc1f040908db6e90a
