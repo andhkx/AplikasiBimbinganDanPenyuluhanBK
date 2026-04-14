@@ -73,7 +73,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
                 <h4 class="fw-bold mb-1"><i class="fas fa-user-shield me-2"></i>Dashboard Kesiswaan</h4>
-                <p class="mb-0 opacity-75">Kelola pengaduan dan monitoring siswa</p>
+                <p class="mb-0 opacity-75">Pengaduan siswa & monitoring kehadiran</p>
             </div>
             <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
                 <i class="fas fa-user me-1"></i>{{ session.nama }}
@@ -82,22 +82,52 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-4 mb-4">
+                <div class="col-lg-4 mb-4">
+            <div class="card-ks-dhika" data-aos="fade-right" style="margin-bottom:16px;">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-chart-bar me-2" style="color:#8b5cf6;"></i>Akses Cepat</h5>
+                </div>
+                <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
+                    <a href="{{ url_for('chat_dhika') }}" style="padding:10px 14px;background:#f5f3ff;border-radius:10px;text-decoration:none;color:#6d28d9;font-size:0.855rem;font-weight:600;display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-comment-dots"></i> Chat dengan Guru BK
+                    </a>
+                    <a href="{{ url_for('data_siswa_dhika') }}" style="padding:10px 14px;background:#f0fdf4;border-radius:10px;text-decoration:none;color:#065f46;font-size:0.855rem;font-weight:600;display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-user-graduate"></i> Lihat Data Siswa
+                    </a>
+                </div>
+            </div>
+        <div>
             <div class="card-ks-dhika" data-aos="fade-right">
                 <div class="card-ks-header-dhika">
                     <h5><i class="fas fa-plus-circle me-2 text-purple" style="color:#8b5cf6;"></i>Buat Pengaduan Baru</h5>
                 </div>
                 <div class="form-ks-dhika">
                     <form action="{{ url_for('buat_pengaduan_dhika') }}" method="POST">
+                        <div class="mb-2">
+                            <label>Kelas</label>
+                            <select id="ksKelas" class="w-100" style="padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Jurusan</label>
+                            <select id="ksJurusan" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih kelas dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Rombel</label>
+                            <select id="ksRombel" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih jurusan dulu</option>
+                            </select>
+                        </div>
                         <div class="mb-3">
-                            <label>Pilih Siswa</label>
-                            <select name="siswa_id_dhika" required>
-                                <option value="" disabled selected>-- Pilih Siswa --</option>
-                                {% for s in siswa_list %}
-                                <option value="{{ s.id_siswa }}">
-                                    {{ s.nama }} ({{ s.kelas }} {{ s.jurusan }} {{ s.rombel }})
-                                </option>
-                                {% endfor %}
+                            <label>Siswa</label>
+                            <select name="siswa_id_dhika" id="ksSiswa" required disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih rombel dulu</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -113,6 +143,35 @@
                             <i class="fas fa-paper-plane me-2"></i>Kirim Pengaduan
                         </button>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-3" data-aos="fade-up">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div style="background:white;border-radius:13px;padding:16px;box-shadow:0 3px 10px rgba(0,0,0,0.06);text-align:center;border-top:3px solid #8b5cf6;">
+                        <div style="font-size:1.6rem;font-weight:700;color:#1e293b;">{{ pengaduan_list|length }}</div>
+                        <div style="font-size:0.78rem;color:#64748b;">Total Pengaduan</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="background:white;border-radius:13px;padding:16px;box-shadow:0 3px 10px rgba(0,0,0,0.06);text-align:center;border-top:3px solid #f59e0b;">
+                        <div style="font-size:1.6rem;font-weight:700;color:#1e293b;">{{ pengaduan_list|selectattr('status','equalto','Baru')|list|length }}</div>
+                        <div style="font-size:0.78rem;color:#64748b;">Belum Ditangani</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="background:white;border-radius:13px;padding:16px;box-shadow:0 3px 10px rgba(0,0,0,0.06);text-align:center;border-top:3px solid #3b82f6;">
+                        <div style="font-size:1.6rem;font-weight:700;color:#1e293b;">{{ pengaduan_list|selectattr('status','equalto','Diproses')|list|length }}</div>
+                        <div style="font-size:0.78rem;color:#64748b;">Sedang Diproses</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div style="background:white;border-radius:13px;padding:16px;box-shadow:0 3px 10px rgba(0,0,0,0.06);text-align:center;border-top:3px solid #10b981;">
+                        <div style="font-size:1.6rem;font-weight:700;color:#1e293b;">{{ pengaduan_list|selectattr('status','equalto','Selesai')|list|length }}</div>
+                        <div style="font-size:0.78rem;color:#64748b;">Selesai</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -207,6 +266,91 @@
 {% endblock %}
 {% block script_dhika %}
 <script>
+
+function initFilterSiswaDhika(prefix, onSiswaLoaded) {
+    var kelasEl = document.getElementById(prefix + 'Kelas');
+    var jurusanEl = document.getElementById(prefix + 'Jurusan');
+    var rombelEl = document.getElementById(prefix + 'Rombel');
+    var siswaEl = document.getElementById(prefix + 'Siswa');
+
+    var rombelMap = {
+        'RPL': ['A','B'], 'Animasi': ['A','B'], 'Mesin': ['A','B'],
+        'DKV': ['A','B','C'], 'Kimia': ['A','B','C'],
+        'Meka': ['A','B','C','D']
+    };
+
+    function resetSelect(el, placeholder) {
+        el.innerHTML = '<option value="" disabled selected>' + placeholder + '</option>';
+        el.disabled = true;
+    }
+
+    if (jurusanEl) {
+        resetSelect(jurusanEl, 'Pilih jurusan dulu');
+        resetSelect(rombelEl, 'Pilih rombel dulu');
+        if (siswaEl) resetSelect(siswaEl, 'Pilih kelas-jurusan-rombel dulu');
+    }
+
+    if (kelasEl) {
+        kelasEl.addEventListener('change', function() {
+            resetSelect(jurusanEl, '-- Pilih Jurusan --');
+            jurusanEl.disabled = false;
+            resetSelect(rombelEl, 'Pilih jurusan dulu');
+            if (siswaEl) resetSelect(siswaEl, 'Pilih rombel dulu');
+            var jurusanList = ['RPL','Animasi','DKV','Kimia','Mesin','Meka'];
+            jurusanList.forEach(function(j) {
+                var opt = document.createElement('option');
+                opt.value = j; opt.textContent = j;
+                jurusanEl.appendChild(opt);
+            });
+        });
+    }
+
+    if (jurusanEl) {
+        jurusanEl.addEventListener('change', function() {
+            var j = this.value;
+            resetSelect(rombelEl, '-- Pilih Rombel --');
+            rombelEl.disabled = false;
+            if (siswaEl) resetSelect(siswaEl, 'Pilih rombel dulu');
+            (rombelMap[j] || []).forEach(function(r) {
+                var opt = document.createElement('option');
+                opt.value = r; opt.textContent = r;
+                rombelEl.appendChild(opt);
+            });
+        });
+    }
+
+    if (rombelEl) {
+        rombelEl.addEventListener('change', function() {
+            if (!siswaEl) return;
+            var kelas = kelasEl ? kelasEl.value : '';
+            var jurusan = jurusanEl ? jurusanEl.value : '';
+            var rombel = this.value;
+            resetSelect(siswaEl, 'Memuat siswa...');
+            siswaEl.disabled = true;
+            fetch('/api/siswa-by-kelas?kelas=' + kelas + '&jurusan=' + jurusan + '&rombel=' + rombel)
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    resetSelect(siswaEl, data.length ? '-- Pilih Siswa --' : 'Tidak ada siswa');
+                    if (data.length) {
+                        siswaEl.disabled = false;
+                        data.forEach(function(s) {
+                            var opt = document.createElement('option');
+                            opt.value = s.id_siswa;
+                            opt.textContent = s.nama + ' (' + s.kelas + ' ' + s.jurusan + ' ' + s.rombel + ')';
+                            siswaEl.appendChild(opt);
+                        });
+                    }
+                    if (onSiswaLoaded) onSiswaLoaded(data);
+                })
+                .catch(function() {
+                    resetSelect(siswaEl, 'Gagal memuat siswa');
+                });
+        });
+    }
+}
+
+    initFilterSiswaDhika('ks');
+
     function bukaModalKs(id, judul) {
         document.getElementById('modalKsTitleDhika').textContent = 'Update: ' + judul;
         document.getElementById('formUpdateKsDhika').action = '/pengaduan/update/' + id;

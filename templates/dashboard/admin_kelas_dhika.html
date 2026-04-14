@@ -1,0 +1,46 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Manajemen Kelas - Admin{% endblock %}
+{% block style_dhika %}
+<style>
+.page-header-dhika{background:linear-gradient(135deg,#1e293b,#334155);border-radius:18px;padding:22px 26px;color:white;margin-bottom:20px;box-shadow:0 8px 24px rgba(30,41,59,.3)}
+.ck{background:white;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.07);overflow:hidden;margin-bottom:18px}
+.ckh{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+.ckh h5{font-weight:700;font-size:.875rem;color:#1e293b;margin:0}
+.kr{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid #f8fafc;gap:12px;font-size:.855rem}
+.kr:last-child{border-bottom:none}
+.kb{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600;background:#dbeafe;color:#1e40af}
+.jb{padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:600;background:#f0fdf4;color:#065f46}
+.rb{padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:600;background:#f3e8ff;color:#6b21a8}
+.wi{display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid #f8fafc;gap:12px}
+.wi:last-child{border-bottom:none}
+.wa{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.875rem;flex-shrink:0}
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div><h4 class="fw-bold mb-1"><i class="fas fa-school me-2"></i>Manajemen Kelas</h4><p class="mb-0 opacity-75">Data kelas, jurusan, rombel, dan wali kelas</p></div>
+            <a href="{{ url_for('dashboard_admin_dhika') }}" class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:.82rem;"><i class="fas fa-arrow-left me-1"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="ck" data-aos="fade-right">
+                <div class="ckh"><h5><i class="fas fa-chalkboard me-2 text-primary"></i>Data Kelas & Siswa</h5><span style="font-size:.78rem;color:#64748b;">{{ kelas_data|length }} rombel aktif</span></div>
+                {% if kelas_data %}{% for k in kelas_data %}
+                <div class="kr"><span class="kb">{{ k.kelas }}</span><span class="jb">{{ k.jurusan }}</span><span class="rb">{{ k.rombel }}</span><span style="flex:1;"></span><span style="font-weight:700;color:#1e293b;">{{ k.jumlah }} siswa</span></div>
+                {% endfor %}{% else %}<div style="text-align:center;padding:36px;color:#94a3b8;"><i class="fas fa-chalkboard fa-2x" style="opacity:.3;display:block;margin-bottom:10px;"></i><p style="font-size:.85rem;">Belum ada data kelas</p></div>{% endif %}
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="ck" data-aos="fade-left">
+                <div class="ckh"><h5><i class="fas fa-user-tie me-2 text-warning"></i>Wali Kelas</h5><span style="font-size:.78rem;color:#64748b;">{{ walikelas_list|length }}</span></div>
+                {% if walikelas_list %}{% for wk in walikelas_list %}
+                <div class="wi"><div class="wa">{{ wk.nama[0] }}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:.875rem;color:#1e293b;">{{ wk.nama }}</div><div style="font-size:.77rem;color:#64748b;">@{{ wk.username }} &nbsp;·&nbsp; {{ wk.kelas }} {{ wk.jurusan }} {{ wk.rombel }}</div></div></div>
+                {% endfor %}{% else %}<div style="text-align:center;padding:28px;color:#94a3b8;font-size:.85rem;">Belum ada wali kelas</div>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

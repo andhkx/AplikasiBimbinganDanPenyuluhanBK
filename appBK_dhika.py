@@ -575,6 +575,13 @@ def dashboard_siswa_dhika():
         cursor = conn.cursor(dictionary=True, buffered=True)
         cursor.execute("SELECT s.* FROM siswa_dhika s WHERE s.akun_id = %s", (session['id_akun'],))
         siswa = cursor.fetchone()
+
+        print("ID AKUN:", session.get('id_akun'))
+        print("SISWA:", siswa)
+
+        if not siswa:
+          flash_dhika('Data siswa tidak ditemukan!', 'error')
+          return redirect(url_for('login_dhika'))
         cursor.execute("""
             SELECT COUNT(*) as total,
                    SUM(CASE WHEN status='Pending' THEN 1 ELSE 0 END) as pending,
@@ -599,15 +606,29 @@ def dashboard_siswa_dhika():
             ORDER BY rp.tanggal DESC LIMIT 3
         """, (siswa['id_siswa'],))
         riwayat_pelanggaran = cursor.fetchall()
+        cursor.execute("""
+            SELECT k.id_konseling, k.jenis, k.tanggal, k.jam_mulai, g.nama as nama_guru
+            FROM konseling_dhika k
+            JOIN guru_dhika g ON k.guru_id = g.id_guru
+            WHERE k.siswa_id = %s AND k.status = 'Disetujui'
+            AND k.tanggal >= CURDATE()
+            ORDER BY k.tanggal ASC, k.jam_mulai ASC LIMIT 3
+        """, (siswa['id_siswa'],))
+        panggilan_list = cursor.fetchall()
         cursor.close()
         conn.close()
         return render_template('dashboard/dashboard_siswa_dhika.html',
                                siswa=siswa, stats=stats,
                                konseling_terbaru=konseling_terbaru,
-                               riwayat_pelanggaran=riwayat_pelanggaran)
+                               riwayat_pelanggaran=riwayat_pelanggaran,
+                               panggilan_list=panggilan_list)
     except Exception as e:
-        flash_dhika(f'Error: {str(e)}', 'error')
-        return render_template('dashboard/dashboard_siswa_dhika.html')
+        import traceback
+        traceback.print_exc()   # 🔥 WAJIB
+        print("ERROR ASLI:", e)
+
+        flash_dhika(f'Error: {e}', 'error')  # biar keliatan di web
+        return redirect(url_for('login_dhika'))
 
 
 @app.route('/dashboard/guru')
@@ -662,7 +683,7 @@ def dashboard_guru_dhika():
 
 @app.route('/data/siswa')
 def data_siswa_dhika():
-    if 'logged_in' not in session or session.get('role') != 'Guru BK':
+    if 'logged_in' not in session or session.get('role') not in ['Guru BK', 'Kesiswaan', 'Wali Kelas']:
         return redirect(url_for('login_dhika'))
     try:
         conn = get_db_connection_dhika()
@@ -758,7 +779,7 @@ def profile_dhika():
 
 @app.route('/pelanggaran')
 def pelanggaran_dhika():
-    if 'logged_in' not in session or session.get('role') != 'Guru BK':
+    if 'logged_in' not in session or session.get('role') not in ['Guru BK', 'Kesiswaan']:
         return redirect(url_for('login_dhika'))
     try:
         conn = get_db_connection_dhika()
@@ -800,7 +821,7 @@ def pelanggaran_list_api_dhika():
 
 @app.route('/pelanggaran/input', methods=['POST'])
 def pelanggaran_input_dhika():
-    if 'logged_in' not in session or session.get('role') != 'Guru BK':
+    if 'logged_in' not in session or session.get('role') not in ['Guru BK', 'Kesiswaan']:
         return redirect(url_for('login_dhika'))
     try:
         siswa_id = request.form.get('siswa_id_dhika')
@@ -830,7 +851,7 @@ def pelanggaran_input_dhika():
 
 @app.route('/pelanggaran/siswa/<int:siswa_id>')
 def pelanggaran_siswa_detail_dhika(siswa_id):
-    if 'logged_in' not in session:
+    if 'logged_in' not in session or session.get('role') not in ['Guru BK', 'Kesiswaan']:
         return redirect(url_for('login_dhika'))
     try:
         conn = get_db_connection_dhika()
@@ -1239,10 +1260,10 @@ def chat_unread_dhika():
     try:
         conn = get_db_connection_dhika()
         cursor = conn.cursor(buffered=True)
-        cursor.execute("""
-            SELECT COUNT(*) FROM chat_dhika
-            WHERE penerima_akun_id = %s AND dibaca = 0
-        """, (session['id_akun'],))
+        cursor.execute(
+            "SELECT COUNT(*) FROM chat_dhika WHERE penerima_akun_id = %s AND dibaca = 0",
+            (session['id_akun'],)
+        )
         count = cursor.fetchone()[0]
         cursor.close()
         conn.close()
@@ -1258,16 +1279,71 @@ def chat_tandai_baca_dhika(lawan_akun_id):
     try:
         conn = get_db_connection_dhika()
         cursor = conn.cursor(buffered=True)
-        cursor.execute("""
-            UPDATE chat_dhika SET dibaca = 1
-            WHERE pengirim_akun_id = %s AND penerima_akun_id = %s AND dibaca = 0
-        """, (lawan_akun_id, session['id_akun']))
+        cursor.execute(
+            "UPDATE chat_dhika SET dibaca = 1 WHERE pengirim_akun_id = %s AND penerima_akun_id = %s AND dibaca = 0",
+            (lawan_akun_id, session['id_akun'])
+        )
         conn.commit()
         cursor.close()
         conn.close()
         return jsonify({'ok': True})
     except Exception:
         return jsonify({'ok': False})
+
+
+@app.route('/chat/kontak')
+def chat_kontak_dhika():
+    if 'logged_in' not in session:
+        return jsonify([])
+    role = session.get('role')
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        kontak = []
+        if role == 'Wali Kelas':
+            cursor.execute("SELECT kelas, jurusan, rombel FROM wali_kelas_dhika WHERE akun_id = %s", (session['id_akun'],))
+            wk = cursor.fetchone()
+            cursor.execute("""
+                SELECT a.id_akun, g.nama, 'Guru BK' as role
+                FROM guru_dhika g JOIN akun_dhika a ON g.akun_id = a.id_akun
+                WHERE a.status_akun = 'Aktif'
+            """)
+            kontak += cursor.fetchall()
+            if wk:
+                cursor.execute("""
+                    SELECT a.id_akun, s.nama, 'Siswa' as role
+                    FROM siswa_dhika s JOIN akun_dhika a ON s.akun_id = a.id_akun
+                    WHERE s.kelas = %s AND s.jurusan = %s AND s.rombel = %s
+                    AND a.status_akun = 'Aktif'
+                """, (wk['kelas'], wk['jurusan'], wk['rombel']))
+                kontak += cursor.fetchall()
+        elif role == 'Kesiswaan':
+            cursor.execute("""
+                SELECT a.id_akun, g.nama, 'Guru BK' as role
+                FROM guru_dhika g JOIN akun_dhika a ON g.akun_id = a.id_akun
+                WHERE a.status_akun = 'Aktif'
+            """)
+            kontak += cursor.fetchall()
+            cursor.execute("""
+                SELECT a.id_akun, wk.nama, 'Wali Kelas' as role
+                FROM wali_kelas_dhika wk JOIN akun_dhika a ON wk.akun_id = a.id_akun
+                WHERE a.status_akun = 'Aktif'
+            """)
+            kontak += cursor.fetchall()
+            cursor.execute("""
+                SELECT DISTINCT a.id_akun, s.nama, 'Siswa' as role
+                FROM pengaduan_dhika pg
+                JOIN siswa_dhika s ON pg.siswa_id = s.id_siswa
+                JOIN akun_dhika a ON s.akun_id = a.id_akun
+                JOIN kesiswaan_dhika ks ON pg.kesiswaan_id = ks.id_kesiswaan
+                WHERE ks.akun_id = %s AND a.status_akun = 'Aktif'
+            """, (session['id_akun'],))
+            kontak += cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(kontak)
+    except Exception as e:
+        return jsonify([])
 
 
 
@@ -1334,6 +1410,204 @@ def admin_tambah_akun_dhika():
     except Exception as e:
         flash_dhika(f'Error: {str(e)}', 'error')
     return redirect(url_for('dashboard_admin_dhika'))
+
+
+@app.route('/laporan/pengaduan')
+def laporan_pengaduan_dhika():
+    if 'logged_in' not in session or session.get('role') != 'Kesiswaan':
+        return redirect(url_for('login_dhika'))
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor.execute("""
+            SELECT pg.*, s.nama as nama_siswa, s.kelas, s.jurusan, s.rombel,
+                   ks.nama as nama_kesiswaan
+            FROM pengaduan_dhika pg
+            JOIN siswa_dhika s ON pg.siswa_id = s.id_siswa
+            JOIN kesiswaan_dhika ks ON pg.kesiswaan_id = ks.id_kesiswaan
+            ORDER BY pg.tanggal DESC
+        """)
+        pengaduan_list = cursor.fetchall()
+        cursor.execute("""
+            SELECT COUNT(*) as total,
+                SUM(CASE WHEN status='Baru' THEN 1 ELSE 0 END) as baru,
+                SUM(CASE WHEN status='Diproses' THEN 1 ELSE 0 END) as diproses,
+                SUM(CASE WHEN status='Selesai' THEN 1 ELSE 0 END) as selesai
+            FROM pengaduan_dhika
+        """)
+        stats = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return render_template('laporan/laporan_pengaduan_dhika.html',
+                               pengaduan_list=pengaduan_list, stats=stats)
+    except Exception as e:
+        flash_dhika(f'Error: {str(e)}', 'error')
+        return redirect(url_for('dashboard_kesiswaan_dhika'))
+
+
+@app.route('/admin/manajemen-kelas')
+def admin_manajemen_kelas_dhika():
+    if 'logged_in' not in session or session.get('role') != 'Admin':
+        return redirect(url_for('login_dhika'))
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor.execute("""
+            SELECT kelas, jurusan, rombel, COUNT(*) as jumlah
+            FROM siswa_dhika
+            GROUP BY kelas, jurusan, rombel
+            ORDER BY kelas, jurusan, rombel
+        """)
+        kelas_data = cursor.fetchall()
+        cursor.execute("""
+            SELECT wk.*, a.username
+            FROM wali_kelas_dhika wk
+            JOIN akun_dhika a ON wk.akun_id = a.id_akun
+        """)
+        walikelas_list = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('dashboard/admin_kelas_dhika.html',
+                               kelas_data=kelas_data, walikelas_list=walikelas_list)
+    except Exception as e:
+        flash_dhika(f'Error: {str(e)}', 'error')
+        return redirect(url_for('dashboard_admin_dhika'))
+
+
+@app.route('/admin/log-aktivitas')
+def admin_log_aktivitas_dhika():
+    if 'logged_in' not in session or session.get('role') != 'Admin':
+        return redirect(url_for('login_dhika'))
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor.execute("""
+            SELECT l.*, a.username, a.role
+            FROM log_aktivitas_dhika l
+            JOIN akun_dhika a ON l.akun_id = a.id_akun
+            ORDER BY l.waktu DESC LIMIT 200
+        """)
+        log_list = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('dashboard/admin_log_dhika.html', log_list=log_list)
+    except Exception as e:
+        flash_dhika(f'Error: {str(e)}', 'error')
+        return redirect(url_for('dashboard_admin_dhika'))
+
+
+@app.route('/api/siswa-by-kelas')
+def api_siswa_by_kelas_dhika():
+    if 'logged_in' not in session:
+        return jsonify([])
+    kelas = request.args.get('kelas', '')
+    jurusan = request.args.get('jurusan', '')
+    rombel = request.args.get('rombel', '')
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        conditions = []
+        params = []
+        if kelas:
+            conditions.append("kelas = %s")
+            params.append(kelas)
+        if jurusan:
+            conditions.append("jurusan = %s")
+            params.append(jurusan)
+        if rombel:
+            conditions.append("rombel = %s")
+            params.append(rombel)
+        where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+        cursor.execute(
+            "SELECT id_siswa, nama, kelas, jurusan, rombel FROM siswa_dhika " + where + " ORDER BY nama",
+            params
+        )
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return jsonify(data)
+    except Exception as e:
+        return jsonify([])
+
+
+@app.route('/guru/pengaduan')
+def guru_lihat_pengaduan_dhika():
+    if 'logged_in' not in session or session.get('role') != 'Guru BK':
+        return redirect(url_for('login_dhika'))
+    try:
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(dictionary=True, buffered=True)
+        cursor.execute("""
+            SELECT pg.*, s.nama as nama_siswa, s.kelas, s.jurusan, s.rombel, s.id_siswa,
+                   ks.nama as nama_kesiswaan
+            FROM pengaduan_dhika pg
+            JOIN siswa_dhika s ON pg.siswa_id = s.id_siswa
+            JOIN kesiswaan_dhika ks ON pg.kesiswaan_id = ks.id_kesiswaan
+            ORDER BY pg.tanggal DESC
+        """)
+        pengaduan_list = cursor.fetchall()
+        cursor.execute("SELECT id_guru FROM guru_dhika WHERE akun_id = %s", (session['id_akun'],))
+        guru = cursor.fetchone()
+        cursor.execute("""
+            SELECT k.*, s.nama as nama_siswa FROM konseling_dhika k
+            JOIN siswa_dhika s ON k.siswa_id = s.id_siswa
+            WHERE k.guru_id = %s AND k.status IN ('Pending','Disetujui')
+            ORDER BY k.tanggal DESC
+        """, (guru['id_guru'],))
+        konseling_aktif = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return render_template('konseling/guru_pengaduan_dhika.html',
+                               pengaduan_list=pengaduan_list,
+                               konseling_aktif=konseling_aktif)
+    except Exception as e:
+        flash_dhika(f'Error: {str(e)}', 'error')
+        return redirect(url_for('dashboard_guru_dhika'))
+
+
+@app.route('/guru/panggil-siswa', methods=['POST'])
+def guru_panggil_siswa_dhika():
+    if 'logged_in' not in session or session.get('role') != 'Guru BK':
+        return redirect(url_for('login_dhika'))
+    try:
+        siswa_id = request.form.get('siswa_id_dhika')
+        tanggal = request.form.get('tanggal_dhika')
+        jam_mulai = request.form.get('jam_mulai_dhika')
+        alasan = request.form.get('alasan_dhika', '').strip()
+        pengaduan_id = request.form.get('pengaduan_id_dhika')
+        if not all([siswa_id, tanggal, jam_mulai]):
+            flash_dhika('Tanggal dan jam harus diisi!', 'error')
+            return redirect(url_for('guru_lihat_pengaduan_dhika'))
+        conn = get_db_connection_dhika()
+        cursor = conn.cursor(buffered=True)
+        cursor.execute("SELECT id_konseling FROM konseling_dhika ORDER BY id_konseling DESC LIMIT 1")
+        last = cursor.fetchone()
+        if last and last[0].startswith('KS'):
+            num = int(last[0][2:]) + 1
+        else:
+            num = 1
+        id_konseling = f"KS{num:04d}"
+        cursor.execute("SELECT id_guru FROM guru_dhika WHERE akun_id = %s", (session['id_akun'],))
+        guru = cursor.fetchone()
+        cursor.execute("""
+            INSERT INTO konseling_dhika
+            (id_konseling, siswa_id, guru_id, jenis, tanggal, jam_mulai, alasan, status)
+            VALUES (%s, %s, %s, 'Pribadi', %s, %s, %s, 'Disetujui')
+        """, (id_konseling, siswa_id, guru[0], tanggal, jam_mulai,
+              alasan or 'Panggilan dari Guru BK'))
+        if pengaduan_id:
+            cursor.execute(
+                "UPDATE pengaduan_dhika SET status = 'Diproses' WHERE id_pengaduan = %s",
+                (pengaduan_id,)
+            )
+        conn.commit()
+        log_aktivitas_dhika(session['id_akun'], f'Memanggil siswa id {siswa_id} untuk konseling {id_konseling}')
+        cursor.close()
+        conn.close()
+        flash_dhika('Siswa berhasil dipanggil! Jadwal konseling sudah dibuat.', 'success')
+    except Exception as e:
+        flash_dhika(f'Error: {str(e)}', 'error')
+    return redirect(url_for('guru_lihat_pengaduan_dhika'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

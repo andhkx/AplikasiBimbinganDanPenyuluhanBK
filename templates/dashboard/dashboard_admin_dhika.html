@@ -246,6 +246,21 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card-admin-dhika" data-aos="fade-up">
+                <div class="card-admin-header-dhika">
+                    <h5><i class="fas fa-history me-2" style="color:#334155;"></i>Log Aktivitas Terbaru</h5>
+                </div>
+                <div id="logListDhika" style="padding:10px 0;">
+                    <div style="text-align:center;padding:20px;color:#94a3b8;font-size:0.85rem;">
+                        <i class="fas fa-spinner fa-spin"></i> Memuat log...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block script_dhika %}
@@ -264,5 +279,25 @@
             row.style.display = match ? '' : 'none';
         });
     });
+
+    fetch('/notifikasi')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            var list = document.getElementById('logListDhika');
+            if (!data.length) {
+                list.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:0.85rem;">Belum ada log aktivitas</div>';
+                return;
+            }
+            list.innerHTML = data.map(function(d) {
+                return '<div style="padding:10px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;gap:12px;font-size:0.855rem;">'
+                    + '<div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+                    + '<i class="fas fa-circle" style="color:white;font-size:0.4rem;"></i></div>'
+                    + '<div style="flex:1;"><div style="color:#1e293b;font-weight:500;">' + d.aktivitas + '</div>'
+                    + '<div style="font-size:0.72rem;color:#94a3b8;">' + d.waktu + '</div></div></div>';
+            }).join('');
+        }).catch(function() {
+            document.getElementById('logListDhika').innerHTML =
+                '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:0.85rem;">Gagal memuat log</div>';
+        });
 </script>
 {% endblock %}

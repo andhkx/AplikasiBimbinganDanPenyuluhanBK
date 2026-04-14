@@ -211,7 +211,7 @@
                                 </span>
                             </td>
                             <td>{{ konseling.tanggal|format_tanggal_dhika }}</td>
-                            <td>{{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</td>
+                            <td>{{ konseling.jam_mulai }}{% if konseling.jam_selesai %} - {{ konseling.jam_selesai }}{% endif %}</td>
                             <td>
                                 <span class="badge-dhika
                                             {% if konseling.status == 'Pending' %}bg-warning text-dark
@@ -252,6 +252,7 @@
                             </td>
                         </tr>
                         {% endfor %}
+                    {% else %}
                     {% else %}
                     <tr>
                         <td colspan="8">
@@ -316,7 +317,7 @@
                         </div>
                         <div class="col-md-6">
                             <p><strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}</p>
-                            <p><strong>Waktu:</strong> {{ konseling.jam_mulai }} - {{ konseling.jam_selesai }}</p>
+                            <p><strong>Waktu Mulai:</strong> {{ konseling.jam_mulai }}{% if konseling.jam_selesai %} — Selesai: {{ konseling.jam_selesai }}{% endif %}</p>
                             <p><strong>Status:</strong>
                                 <span class="badge-dhika
                                             {% if konseling.status == 'Pending' %}bg-warning text-dark

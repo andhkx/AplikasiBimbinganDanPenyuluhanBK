@@ -144,13 +144,31 @@
                 <div class="form-pel-dhika">
                     <form action="{{ url_for('pelanggaran_input_dhika') }}" method="POST">
 
+                        <div class="mb-2">
+                            <label>Kelas</label>
+                            <select id="pelKelas" required style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Jurusan</label>
+                            <select id="pelJurusan" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih kelas dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Rombel</label>
+                            <select id="pelRombel" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih jurusan dulu</option>
+                            </select>
+                        </div>
                         <div class="mb-3">
-                            <label>Pilih Siswa</label>
-                            <select name="siswa_id_dhika" required>
-                                <option value="" disabled selected>-- Pilih Siswa --</option>
-                                {% for s in siswa_list %}
-                                <option value="{{ s.id_siswa }}">{{ s.nama }} ({{ s.kelas }})</option>
-                                {% endfor %}
+                            <label>Siswa</label>
+                            <select name="siswa_id_dhika" id="pelSiswa" required disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih rombel dulu</option>
                             </select>
                         </div>
 
@@ -186,7 +204,7 @@
         <div class="col-lg-8 mb-4">
             <div class="card-pel-dhika" data-aos="fade-left">
                 <div class="card-pel-header-dhika">
-                    <h5><i class="fas fa-users me-2 text-danger"></i>Status Poin Siswa</h5>
+                    <h5><i class="fas fa-users me-2 text-danger"></i>Daftar Siswa</h5>
                     <span class="badge bg-danger px-3 py-2" style="font-size:0.78rem;">{{ siswa_list|length }} siswa</span>
                 </div>
                 <div class="table-responsive">
@@ -194,9 +212,8 @@
                         <thead>
                             <tr>
                                 <th class="ps-3">Nama</th>
-                                <th>Kelas</th>
-                                <th>Poin</th>
-                                <th>Status</th>
+                                <th>Kelas / Jurusan</th>
+                                <th>Pelanggaran</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -205,32 +222,11 @@
                             <tr>
                                 <td class="ps-3">
                                     <div class="fw-semibold">{{ s.nama }}</div>
-                                    <small class="text-muted">{{ s.jurusan }}</small>
+                                    <small class="text-muted">{{ s.jurusan }} {{ s.rombel }}</small>
                                 </td>
                                 <td>{{ s.kelas }}</td>
                                 <td>
-                                    <div class="poin-badge-dhika
-                                        {% if (s.total_poin or 0) > 100 %}text-danger
-                                        {% elif (s.total_poin or 0) > 50 %}text-warning
-                                        {% else %}text-success{% endif %}">
-                                        {{ s.total_poin or 0 }}
-                                    </div>
-                                    <div class="poin-bar-dhika">
-                                        <div class="poin-fill-dhika"
-                                             style="width:{{ [((s.total_poin or 0) / 200 * 100)|int, 100]|min }}%;
-                                                    background:{% if (s.total_poin or 0) > 100 %}#ef4444{% elif (s.total_poin or 0) > 50 %}#f59e0b{% else %}#10b981{% endif %};">
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="status-poin-dhika
-                                        {% if s.status_poin == 'Aman' %}sp-aman
-                                        {% elif s.status_poin == 'Peringatan' %}sp-peringatan
-                                        {% elif s.status_poin == 'SP1' %}sp-1
-                                        {% elif s.status_poin == 'SP2' %}sp-2
-                                        {% else %}sp-3{% endif %}">
-                                        {{ s.status_poin }}
-                                    </span>
+                                    <span style="font-size:0.78rem;font-weight:600;">-</span>
                                 </td>
                                 <td>
                                     <a href="{{ url_for('pelanggaran_siswa_detail_dhika', siswa_id=s.id_siswa) }}"
@@ -257,7 +253,6 @@
                                 <th class="ps-3">Siswa</th>
                                 <th>Pelanggaran</th>
                                 <th>Kategori</th>
-                                <th>Poin</th>
                                 <th>Tanggal</th>
                             </tr>
                         </thead>
@@ -278,7 +273,6 @@
                                         {{ r.kategori }}
                                     </span>
                                 </td>
-                                <td class="fw-bold text-danger">+{{ r.poin }}</td>
                                 <td style="font-size:0.82rem;">{{ r.tanggal|format_tanggal_dhika }}</td>
                             </tr>
                             {% endfor %}
@@ -299,6 +293,58 @@
 
 {% block script_dhika %}
 <script>
+    function initFilterSiswaDhika(prefix, onSiswaLoaded) {
+    var kelasEl = document.getElementById(prefix + 'Kelas');
+    var jurusanEl = document.getElementById(prefix + 'Jurusan');
+    var rombelEl = document.getElementById(prefix + 'Rombel');
+    var siswaEl = document.getElementById(prefix + 'Siswa');
+    var rombelMap = {
+        'RPL': ['A','B'], 'Animasi': ['A','B'], 'Mesin': ['A','B'],
+        'DKV': ['A','B','C'], 'Kimia': ['A','B','C'], 'Meka': ['A','B','C','D']
+    };
+    function resetSelect(el, ph) {
+        el.innerHTML = '<option value="" disabled selected>' + ph + '</option>';
+        el.disabled = true;
+    }
+    if (jurusanEl) resetSelect(jurusanEl, 'Pilih kelas dulu');
+    if (rombelEl) resetSelect(rombelEl, 'Pilih jurusan dulu');
+    if (siswaEl) resetSelect(siswaEl, 'Pilih rombel dulu');
+    kelasEl && kelasEl.addEventListener('change', function() {
+        resetSelect(jurusanEl, '-- Pilih Jurusan --'); jurusanEl.disabled = false;
+        resetSelect(rombelEl, 'Pilih jurusan dulu');
+        if (siswaEl) resetSelect(siswaEl, 'Pilih rombel dulu');
+        ['RPL','Animasi','DKV','Kimia','Mesin','Meka'].forEach(function(j) {
+            var o = document.createElement('option'); o.value = j; o.textContent = j; jurusanEl.appendChild(o);
+        });
+    });
+    jurusanEl && jurusanEl.addEventListener('change', function() {
+        resetSelect(rombelEl, '-- Pilih Rombel --'); rombelEl.disabled = false;
+        if (siswaEl) resetSelect(siswaEl, 'Pilih rombel dulu');
+        (rombelMap[this.value] || []).forEach(function(r) {
+            var o = document.createElement('option'); o.value = r; o.textContent = r; rombelEl.appendChild(o);
+        });
+    });
+    rombelEl && siswaEl && rombelEl.addEventListener('change', function() {
+        var k = kelasEl ? kelasEl.value : '';
+        var j = jurusanEl ? jurusanEl.value : '';
+        siswaEl.innerHTML = '<option disabled selected>Memuat...</option>'; siswaEl.disabled = true;
+        fetch('/api/siswa-by-kelas?kelas=' + k + '&jurusan=' + j + '&rombel=' + this.value)
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                siswaEl.innerHTML = '<option value="" disabled selected>' + (data.length ? '-- Pilih Siswa --' : 'Tidak ada siswa') + '</option>';
+                if (data.length) {
+                    siswaEl.disabled = false;
+                    data.forEach(function(s) {
+                        var o = document.createElement('option'); o.value = s.id_siswa; o.textContent = s.nama; siswaEl.appendChild(o);
+                    });
+                }
+                if (onSiswaLoaded) onSiswaLoaded(data);
+            }).catch(function() { siswaEl.innerHTML = '<option>Gagal memuat</option>'; });
+    });
+}
+
+    initFilterSiswaDhika('pel');
+
     fetch('/pelanggaran/list-pelanggaran')
         .then(r => r.json())
         .then(data => {
@@ -315,13 +361,12 @@
                 groups[kat].forEach(p => {
                     const opt = document.createElement('option');
                     opt.value = p.id_pelanggaran;
-                    opt.textContent = p.nama_pelanggaran + ' (+' + p.poin + ' poin)';
+                    opt.textContent = p.nama_pelanggaran;
                     og.appendChild(opt);
                 });
                 sel.appendChild(og);
             });
-        })
-        .catch(() => {});
+        }).catch(() => {});
 
     document.querySelector('input[name="tanggal_dhika"]').value = new Date().toISOString().split('T')[0];
 </script>

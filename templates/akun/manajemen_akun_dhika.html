@@ -131,7 +131,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
                 <h4 class="fw-bold mb-1"><i class="fas fa-users-cog me-2"></i>Manajemen Akun</h4>
-                <p class="mb-0 opacity-75">Kelola pendaftaran siswa dan akun Guru BK</p>
+                <p class="mb-0 opacity-75">Tambah dan kelola akun Guru BK</p>
             </div>
             <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
                 <i class="fas fa-chalkboard-teacher me-1"></i>{{ session.nama }}
@@ -141,62 +141,6 @@
 
     <div class="row">
         <div class="col-lg-7 mb-4">
-            <div class="card-ma-dhika" data-aos="fade-right">
-                <div class="card-ma-header-dhika">
-                    <h5><i class="fas fa-user-clock me-2 text-warning"></i>Pendaftaran Siswa</h5>
-                    <span class="status-pill-dhika pill-pending">
-                        {{ pendaftaran_list|selectattr('status_daftar','equalto','Pending')|list|length }} menunggu
-                    </span>
-                </div>
-
-                {% if pendaftaran_list %}
-                    {% for p in pendaftaran_list %}
-                    <div class="daftar-item-dhika">
-                        <div class="daftar-avatar-dhika">
-                            {{ p.nama[0] }}{{ p.nama.split(' ')[1][0] if p.nama.split(' ')|length > 1 else '' }}
-                        </div>
-                        <div class="daftar-body-dhika">
-                            <div class="nama">{{ p.nama }}</div>
-                            <div class="meta">
-                                NIS: {{ p.nis }} &nbsp;·&nbsp; {{ p.kelas }} {{ p.jurusan }} {{ p.rombel }}
-                            </div>
-                            <div class="meta mt-1">
-                                Daftar: {{ p.tanggal_daftar.strftime('%d %b %Y %H:%M') if p.tanggal_daftar else '-' }}
-                                {% if p.catatan_guru %}
-                                &nbsp;·&nbsp; <span style="color:#ef4444;">{{ p.catatan_guru }}</span>
-                                {% endif %}
-                            </div>
-                            {% if p.status_daftar == 'Pending' %}
-                            <div class="d-flex gap-2 mt-2">
-                                <button class="btn-approve-dhika btn-setujui-dhika"
-                                        onclick="bukaModalApprove({{ p.id_daftar }}, '{{ p.nama }}', 'setujui')">
-                                    <i class="fas fa-check me-1"></i>Setujui
-                                </button>
-                                <button class="btn-approve-dhika btn-tolak-dhika"
-                                        onclick="bukaModalApprove({{ p.id_daftar }}, '{{ p.nama }}', 'tolak')">
-                                    <i class="fas fa-times me-1"></i>Tolak
-                                </button>
-                            </div>
-                            {% endif %}
-                        </div>
-                        <span class="status-pill-dhika
-                            {% if p.status_daftar == 'Pending' %}pill-pending
-                            {% elif p.status_daftar == 'Disetujui' %}pill-disetujui
-                            {% else %}pill-ditolak{% endif %}">
-                            {{ p.status_daftar }}
-                        </span>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                <div class="empty-ma-dhika">
-                    <i class="fas fa-inbox"></i>
-                    <p>Belum ada pendaftaran masuk</p>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-lg-5 mb-4">
             <div class="card-ma-dhika" data-aos="fade-left">
                 <div class="card-ma-header-dhika">
                     <h5><i class="fas fa-chalkboard-teacher me-2 text-primary"></i>Tambah Akun Guru BK</h5>
@@ -254,67 +198,9 @@
     </div>
 </div>
 
-<div class="modal-approve-dhika" id="modalApproveDhika">
-    <div class="modal-box-dhika">
-        <h6 id="modalTitleDhika">Konfirmasi</h6>
-        <p id="modalDescDhika" style="font-size:0.855rem;color:#64748b;margin-bottom:16px;"></p>
-        <form id="formApproveDhika" method="POST">
-            <input type="hidden" name="aksi_dhika" id="aksiInputDhika">
-            <div style="margin-bottom:14px;">
-                <label style="font-size:0.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Catatan (opsional)</label>
-                <textarea name="catatan_dhika" rows="2"
-                          style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;resize:none;"
-                          placeholder="Tulis catatan jika diperlukan..."></textarea>
-            </div>
-            <div style="display:flex;gap:10px;">
-                <button type="button" onclick="tutupModal()"
-                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
-                    Batal
-                </button>
-                <button type="submit" id="btnConfirmDhika"
-                        style="flex:1;padding:9px;color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
-                    Konfirmasi
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+
 {% endblock %}
 
 {% block script_dhika %}
-<script>
-    function bukaModalApprove(id, nama, aksi) {
-        var modal = document.getElementById('modalApproveDhika');
-        var title = document.getElementById('modalTitleDhika');
-        var desc = document.getElementById('modalDescDhika');
-        var btn = document.getElementById('btnConfirmDhika');
-        var aksiInput = document.getElementById('aksiInputDhika');
-        var form = document.getElementById('formApproveDhika');
-
-        form.action = '/manajemen-akun/approve/' + id;
-        aksiInput.value = aksi;
-
-        if (aksi === 'setujui') {
-            title.textContent = 'Setujui Pendaftaran';
-            desc.textContent = 'Akun siswa ' + nama + ' akan dibuat dan langsung aktif.';
-            btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
-            btn.textContent = 'Setujui';
-        } else {
-            title.textContent = 'Tolak Pendaftaran';
-            desc.textContent = 'Pendaftaran ' + nama + ' akan ditolak.';
-            btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-            btn.textContent = 'Tolak';
-        }
-
-        modal.classList.add('show');
-    }
-
-    function tutupModal() {
-        document.getElementById('modalApproveDhika').classList.remove('show');
-    }
-
-    document.getElementById('modalApproveDhika').addEventListener('click', function(e) {
-        if (e.target === this) tutupModal();
-    });
-</script>
+<script></script>
 {% endblock %}

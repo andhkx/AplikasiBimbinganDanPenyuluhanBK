@@ -256,14 +256,24 @@
                 <input type="text" id="searchChatDhika" placeholder="Cari percakapan...">
             </div>
             <div class="chat-list-dhika" id="chatListDhika">
-                {% if kontak_list %}
+                {% set role = session.get('role') %}
+                {% if role in ['Wali Kelas', 'Kesiswaan'] %}
+                    <div id="kontakExtraDhika">
+                        <div style="padding:10px 14px;font-size:.72rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">
+                            Kontak Tersedia
+                        </div>
+                    </div>
+                {% elif kontak_list %}
                     {% for kontak in kontak_list %}
                     <div class="chat-item-dhika"
                          data-akun-id="{{ kontak.akun_id }}"
-                         data-nama="{{ kontak.nama }}"
-                         onclick="bukaChat({{ kontak.akun_id }}, '{{ kontak.nama }}')">
+                         data-nama="{{ kontak.nama }}">
                         <div class="chat-avatar-dhika">
-                            <i class="fas fa-{{ 'chalkboard-teacher' if session.role == 'Siswa' else 'user-graduate' }}"></i>
+                            {% if role == 'Siswa' %}
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            {% else %}
+                            <i class="fas fa-user-graduate"></i>
+                            {% endif %}
                         </div>
                         <div class="chat-item-info-dhika">
                             <div class="chat-item-name-dhika">{{ kontak.nama }}</div>
@@ -369,13 +379,30 @@ const myRole = "{{ session.get('role') }}";
 function bukaChat(akunId, nama) {
     activeAkunId = akunId;
     document.getElementById('activeChatNameDhika').textContent = nama;
-    document.getElementById('activeChatIconDhika').className =
-        myRole === 'Siswa' ? 'fas fa-chalkboard-teacher' : 'fas fa-user-graduate';
+    const roleIcons = {
+        'Siswa': 'fas fa-chalkboard-teacher',
+        'Guru BK': 'fas fa-user-graduate',
+        'Wali Kelas': 'fas fa-user-graduate',
+        'Kesiswaan': 'fas fa-user-graduate',
+        'Admin': 'fas fa-user-graduate'
+    };
+    document.getElementById('activeChatIconDhika').className = roleIcons[myRole] || 'fas fa-user';
     document.getElementById('emptyChatDhika').style.display = 'none';
     document.getElementById('activeChatDhika').style.display = 'flex';
     document.querySelectorAll('.chat-item-dhika').forEach(el => el.classList.remove('active-dhika'));
-    document.querySelector(`.chat-item-dhika[data-akun-id="${akunId}"]`)?.classList.add('active-dhika');
+    var el = document.querySelector(`.chat-item-dhika[data-akun-id="${akunId}"]`);
+    if (el) el.classList.add('active-dhika');
     muatPesan(akunId);
+    fetch(`/chat/tandai-baca/${akunId}`, {method:'POST'})
+        .then(() => {
+            var dot = document.getElementById(`unreadDot_${akunId}`);
+            if (dot) dot.style.display = 'none';
+            fetch('/chat/unread').then(r=>r.json()).then(data => {
+                document.querySelectorAll('[id^="chatDot"]').forEach(function(d) {
+                    d.style.display = data.count > 0 ? 'inline-block' : 'none';
+                });
+            });
+        }).catch(()=>{});
 }
 
 function muatPesan(akunId) {
@@ -392,9 +419,11 @@ function muatPesan(akunId) {
                 const isSent = msg.pengirim_akun_id === myAkunId;
                 const div = document.createElement('div');
                 div.className = `msg-row-dhika ${isSent ? 'sent' : 'received'}`;
+                const iconSent = 'user';
+                const iconRecv = (myRole === 'Siswa') ? 'chalkboard-teacher' : 'user-graduate';
                 div.innerHTML = `
                     <div class="msg-avatar-sm-dhika">
-                        <i class="fas fa-${isSent ? 'user' : (myRole === 'Siswa' ? 'chalkboard-teacher' : 'user-graduate')}"></i>
+                        <i class="fas fa-${isSent ? iconSent : iconRecv}"></i>
                     </div>
                     <div>
                         <div class="msg-bubble-dhika">${escHtml(msg.pesan)}</div>
@@ -436,5 +465,58 @@ document.getElementById('searchChatDhika').addEventListener('input', function() 
 });
 
 setInterval(() => { if (activeAkunId) muatPesan(activeAkunId); }, 5000);
+
+document.querySelectorAll('.chat-item-dhika').forEach(function(el) {
+    el.addEventListener('click', function() {
+        bukaChat(parseInt(this.dataset.akunId), this.dataset.nama);
+    });
+});
+
+if (myRole === 'Wali Kelas' || myRole === 'Kesiswaan') {
+    var container = document.getElementById('kontakExtraDhika');
+    if (container) {
+        fetch('/chat/kontak')
+            .then(r => r.json())
+            .then(data => {
+                if (!data.length) {
+                    container.innerHTML += '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:.82rem;">Belum ada kontak tersedia</div>';
+                    return;
+                }
+                var roleLabel = {'Guru BK':'Guru BK','Wali Kelas':'Wali Kelas','Siswa':'Siswa'};
+                var grouped = {};
+                data.forEach(function(k) {
+                    var r = k.role || 'Lainnya';
+                    if (!grouped[r]) grouped[r] = [];
+                    grouped[r].push(k);
+                });
+                Object.keys(grouped).forEach(function(grp) {
+                    var header = document.createElement('div');
+                    header.style.cssText = 'padding:6px 14px;font-size:.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;';
+                    header.textContent = roleLabel[grp] || grp;
+                    container.appendChild(header);
+                    grouped[grp].forEach(function(k) {
+                        var div = document.createElement('div');
+                        div.className = 'chat-item-dhika';
+                        div.dataset.akunId = k.id_akun;
+                        div.dataset.nama = k.nama;
+                        var icons = {'Guru BK':'chalkboard-teacher','Wali Kelas':'user-tie','Siswa':'user-graduate'};
+                        var ico = icons[k.role] || 'user';
+                        div.innerHTML = `
+                            <div class="chat-avatar-dhika"><i class="fas fa-${ico}"></i></div>
+                            <div class="chat-item-info-dhika">
+                                <div class="chat-item-name-dhika">${k.nama}</div>
+                                <div class="chat-item-preview-dhika">${k.role}</div>
+                            </div>`;
+                        div.addEventListener('click', function() {
+                            bukaChat(parseInt(k.id_akun), k.nama);
+                        });
+                        container.appendChild(div);
+                    });
+                });
+            }).catch(function() {
+                container.innerHTML += '<div style="padding:16px;text-align:center;color:#ef4444;font-size:.82rem;">Gagal memuat kontak</div>';
+            });
+    }
+}
 </script>
 {% endblock %}

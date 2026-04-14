@@ -1,0 +1,67 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Log Aktivitas - Admin{% endblock %}
+{% block style_dhika %}
+<style>
+.page-header-dhika{background:linear-gradient(135deg,#1e293b,#334155);border-radius:18px;padding:22px 26px;color:white;margin-bottom:20px;box-shadow:0 8px 24px rgba(30,41,59,.3)}
+.cl{background:white;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.07);overflow:hidden}
+.lr2{display:flex;align-items:flex-start;padding:11px 18px;border-bottom:1px solid #f8fafc;gap:12px;font-size:.845rem}
+.lr2:last-child{border-bottom:none}
+.ld{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#1e293b,#334155);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.ld i{color:white;font-size:.65rem}
+.lb2{flex:1;min-width:0}
+.lb2 .act{color:#1e293b;font-weight:500}
+.lb2 .meta{font-size:.72rem;color:#94a3b8;margin-top:2px}
+.rp{padding:2px 8px;border-radius:10px;font-size:.68rem;font-weight:600}
+.rs{background:#dbeafe;color:#1e40af}.rg{background:#d1fae5;color:#065f46}.rw{background:#fef3c7;color:#92400e}.rk{background:#f3e8ff;color:#6b21a8}.ra{background:#fee2e2;color:#991b1b}
+.fb{padding:12px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fb input,.fb select{padding:6px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.82rem;font-family:'Poppins',sans-serif;outline:none}
+.fb input:focus,.fb select:focus{border-color:#334155}
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div><h4 class="fw-bold mb-1"><i class="fas fa-history me-2"></i>Log Aktivitas</h4><p class="mb-0 opacity-75">200 aktivitas terakhir di seluruh sistem</p></div>
+            <a href="{{ url_for('dashboard_admin_dhika') }}" class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:.82rem;"><i class="fas fa-arrow-left me-1"></i>Dashboard</a>
+        </div>
+    </div>
+    <div class="cl" data-aos="fade-up">
+        <div class="fb">
+            <i class="fas fa-search" style="color:#94a3b8;font-size:.85rem;"></i>
+            <input type="text" id="sLog" placeholder="Cari username atau aktivitas..." style="flex:1;min-width:160px;">
+            <select id="fRole" style="background:#f8fafc;">
+                <option value="">Semua Role</option>
+                <option value="Siswa">Siswa</option>
+                <option value="Guru BK">Guru BK</option>
+                <option value="Wali Kelas">Wali Kelas</option>
+                <option value="Kesiswaan">Kesiswaan</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+        <div id="lc">
+            {% for l in log_list %}
+            <div class="lr2" data-username="{{ l.username|lower }}" data-aktivitas="{{ l.aktivitas|lower }}" data-role="{{ l.role }}">
+                <div class="ld"><i class="fas fa-circle"></i></div>
+                <div class="lb2">
+                    <div class="act">{{ l.aktivitas }}</div>
+                    <div class="meta">
+                        <span class="rp {% if l.role=='Siswa' %}rs{% elif l.role=='Guru BK' %}rg{% elif l.role=='Wali Kelas' %}rw{% elif l.role=='Kesiswaan' %}rk{% else %}ra{% endif %}">{{ l.role }}</span>
+                        &nbsp; @{{ l.username }} &nbsp;·&nbsp; {{ l.waktu.strftime('%d %b %Y %H:%M') if l.waktu else '-' }}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div style="text-align:center;padding:40px;color:#94a3b8;">Belum ada log aktivitas</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script_dhika %}
+<script>
+function fLog(){var q=document.getElementById('sLog').value.toLowerCase(),r=document.getElementById('fRole').value;document.querySelectorAll('.lr2').forEach(function(row){var mq=!q||(row.dataset.username+' '+row.dataset.aktivitas).includes(q),mr=!r||row.dataset.role===r;row.style.display=(mq&&mr)?'':'none'})}
+document.getElementById('sLog').addEventListener('input',fLog);
+document.getElementById('fRole').addEventListener('change',fLog);
+</script>
+{% endblock %}

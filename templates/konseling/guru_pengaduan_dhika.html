@@ -1,0 +1,226 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Pengaduan Siswa - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 18px; padding: 22px 26px; color: white;
+        margin-bottom: 20px; box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+    }
+    .card-pg-dhika {
+        background: white; border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 16px;
+    }
+    .card-pg-header-dhika {
+        padding: 14px 18px; border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .card-pg-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 0.875rem; }
+    .pengaduan-row-dhika {
+        padding: 14px 18px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: flex-start; gap: 12px;
+    }
+    .pengaduan-row-dhika:last-child { border-bottom: none; }
+    .pg-avatar-dhika {
+        width: 40px; height: 40px; min-width: 40px; border-radius: 11px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-weight: 700; font-size: 0.9rem;
+    }
+    .pg-body-dhika { flex: 1; min-width: 0; }
+    .pg-body-dhika .judul { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
+    .pg-body-dhika .meta { font-size: 0.77rem; color: #64748b; margin-top: 2px; }
+    .pg-body-dhika .desc { font-size: 0.82rem; color: #475569; margin-top: 5px;
+        background: #f8fafc; padding: 8px 10px; border-radius: 8px; border-left: 3px solid #10b981; }
+    .pill-pg-dhika {
+        padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; flex-shrink: 0;
+    }
+    .pill-baru { background: #fef3c7; color: #92400e; }
+    .pill-diproses { background: #dbeafe; color: #1e40af; }
+    .pill-selesai { background: #d1fae5; color: #065f46; }
+    .btn-panggil-dhika {
+        margin-top: 8px; padding: 5px 14px; background: linear-gradient(135deg, #10b981, #059669);
+        color: white; border: none; border-radius: 9px;
+        font-size: 0.78rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+        cursor: pointer; transition: all 0.2s;
+    }
+    .btn-panggil-dhika:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(16,185,129,0.4); }
+    .modal-panggil-dhika {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+        z-index: 1060; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-panggil-dhika.show { display: flex; }
+    .modal-box-pg-dhika {
+        background: white; border-radius: 18px; padding: 22px;
+        width: 100%; max-width: 420px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+    .modal-box-pg-dhika h6 { font-weight: 700; color: #1e293b; margin-bottom: 14px; }
+    .form-pg-dhika label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 4px; }
+    .form-pg-dhika input, .form-pg-dhika select, .form-pg-dhika textarea {
+        width: 100%; padding: 9px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.855rem; font-family: 'Poppins', sans-serif;
+        background: #f8fafc; transition: border 0.2s; margin-bottom: 12px;
+    }
+    .form-pg-dhika input:focus, .form-pg-dhika select:focus, .form-pg-dhika textarea:focus {
+        outline: none; border-color: #10b981; background: white;
+    }
+    .empty-pg-dhika { text-align: center; padding: 36px; color: #94a3b8; }
+    .empty-pg-dhika i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+    @media (max-width: 768px) {
+        .page-header-dhika { padding: 16px 18px; }
+        .page-header-dhika h4 { font-size: 1.05rem; }
+    }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-inbox me-2"></i>Pengaduan dari Kesiswaan</h4>
+                <p class="mb-0 opacity-75">Daftar siswa yang diadukan — tindak lanjut dengan memanggil siswa</p>
+            </div>
+            <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
+                <i class="fas fa-chalkboard-teacher me-1"></i>{{ session.nama }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card-pg-dhika" data-aos="fade-up">
+                <div class="card-pg-header-dhika">
+                    <h5><i class="fas fa-exclamation-circle me-2 text-warning"></i>Daftar Pengaduan</h5>
+                    <span class="pill-pg-dhika pill-baru">
+                        {{ pengaduan_list|selectattr('status','equalto','Baru')|list|length }} belum ditangani
+                    </span>
+                </div>
+                {% if pengaduan_list %}
+                    {% for p in pengaduan_list %}
+                    <div class="pengaduan-row-dhika">
+                        <div class="pg-avatar-dhika">
+                            {{ p.nama_siswa[0] }}{% if p.nama_siswa.split(' ')|length > 1 %}{{ p.nama_siswa.split(' ')[1][0] }}{% endif %}
+                        </div>
+                        <div class="pg-body-dhika">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                <div class="judul">{{ p.judul }}</div>
+                                <span class="pill-pg-dhika
+                                    {% if p.status == 'Baru' %}pill-baru
+                                    {% elif p.status == 'Diproses' %}pill-diproses
+                                    {% else %}pill-selesai{% endif %}">
+                                    {{ p.status }}
+                                </span>
+                            </div>
+                            <div class="meta">
+                                Siswa: <strong>{{ p.nama_siswa }}</strong>
+                                ({{ p.kelas }} {{ p.jurusan }} {{ p.rombel }})
+                                · Diadukan oleh: {{ p.nama_kesiswaan }}
+                                · {{ p.tanggal.strftime('%d %b %Y') if p.tanggal else '-' }}
+                            </div>
+                            <div class="desc">{{ p.deskripsi }}</div>
+                            {% if p.status != 'Selesai' %}
+                            <button class="btn-panggil-dhika"
+                                    onclick="bukaModalPanggil({{ p.id_pengaduan }}, {{ p.siswa_id }}, '{{ p.nama_siswa }}')">
+                                <i class="fas fa-phone-alt me-1"></i>Panggil Siswa
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-pg-dhika">
+                    <i class="fas fa-inbox"></i>
+                    <p>Belum ada pengaduan dari Kesiswaan</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card-pg-dhika" data-aos="fade-left">
+                <div class="card-pg-header-dhika">
+                    <h5><i class="fas fa-calendar-check me-2 text-primary"></i>Konseling Aktif</h5>
+                </div>
+                {% if konseling_aktif %}
+                    {% for k in konseling_aktif %}
+                    <div style="padding:12px 16px;border-bottom:1px solid #f8fafc;font-size:0.855rem;">
+                        <div style="font-weight:600;color:#1e293b;">{{ k.nama_siswa }}</div>
+                        <div style="font-size:0.77rem;color:#64748b;">
+                            {{ k.jenis }} · {{ k.tanggal|format_tanggal_dhika }}
+                            {% if k.jam_mulai %}· {{ k.jam_mulai }}{% endif %}
+                        </div>
+                        <span style="padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:600;
+                            {% if k.status=='Pending' %}background:#fef3c7;color:#92400e;
+                            {% else %}background:#d1fae5;color:#065f46;{% endif %}">
+                            {{ k.status }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-pg-dhika">
+                    <i class="fas fa-calendar-times"></i>
+                    <p style="font-size:0.85rem;">Tidak ada konseling aktif</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-panggil-dhika" id="modalPanggilDhika">
+    <div class="modal-box-pg-dhika">
+        <h6><i class="fas fa-phone-alt me-2 text-success"></i>Panggil Siswa untuk Konseling</h6>
+        <p style="font-size:0.82rem;color:#64748b;margin-bottom:14px;" id="panggilDescDhika"></p>
+        <form id="formPanggilDhika" method="POST" action="{{ url_for('guru_panggil_siswa_dhika') }}">
+            <input type="hidden" name="siswa_id_dhika" id="panggilSiswaIdDhika">
+            <input type="hidden" name="pengaduan_id_dhika" id="panggilPengaduanIdDhika">
+            <div class="form-pg-dhika">
+                <div>
+                    <label>Tanggal Pertemuan</label>
+                    <input type="date" name="tanggal_dhika"
+                           min="{{ now.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div>
+                    <label>Jam Mulai</label>
+                    <input type="time" name="jam_mulai_dhika" min="07:00" max="16:00" required>
+                </div>
+                <div>
+                    <label>Catatan untuk Siswa (opsional)</label>
+                    <textarea name="alasan_dhika" rows="3"
+                              placeholder="Contoh: Tolong hadir tepat waktu..."></textarea>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:4px;">
+                <button type="button" onclick="tutupModalPanggil()"
+                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="flex:1;padding:9px;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    <i class="fas fa-paper-plane me-1"></i>Buat Jadwal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script_dhika %}
+<script>
+    function bukaModalPanggil(pengaduanId, siswaId, namaSiswa) {
+        document.getElementById('panggilSiswaIdDhika').value = siswaId;
+        document.getElementById('panggilPengaduanIdDhika').value = pengaduanId;
+        document.getElementById('panggilDescDhika').textContent = 'Buat jadwal konseling offline untuk: ' + namaSiswa;
+        document.getElementById('modalPanggilDhika').classList.add('show');
+    }
+    function tutupModalPanggil() {
+        document.getElementById('modalPanggilDhika').classList.remove('show');
+    }
+    document.getElementById('modalPanggilDhika').addEventListener('click', function(e) {
+        if (e.target === this) tutupModalPanggil();
+    });
+</script>
+{% endblock %}
