@@ -107,6 +107,36 @@
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
     }
     .chat-item-time-dhika { font-size: 0.7rem; color: #94a3b8; flex-shrink: 0; }
+    .unread-badge-dhika {
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        margin-left: 6px;
+    }
+    .chat-item-role-dhika {
+        font-size: 0.68rem;
+        color: #94a3b8;
+        margin-top: 2px;
+    }
+    .chat-group-header-dhika {
+        padding: 8px 14px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: #f1f5f9;
+        margin-top: 8px;
+    }
+    .chat-group-header-dhika:first-of-type { margin-top: 0; }
 
     .chat-empty-list-dhika {
         text-align: center; padding: 40px 16px; color: #94a3b8;
@@ -236,7 +266,7 @@
     <div class="chat-page-header-dhika" data-aos="fade-down">
         <div>
             <h4><i class="fas fa-comments me-2"></i>Chat BK</h4>
-            <p>Berkomunikasi dengan {{ 'siswa' if session.role == 'Guru BK' else 'guru BK' }} secara langsung</p>
+            <p>Berkomunikasi langsung dengan staf sekolah dan siswa</p>
         </div>
         <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
             <i class="fas fa-user me-1"></i>{{ session.nama }}
@@ -257,26 +287,29 @@
             </div>
             <div class="chat-list-dhika" id="chatListDhika">
                 {% set role = session.get('role') %}
-                {% if role in ['Wali Kelas', 'Kesiswaan'] %}
-                    <div id="kontakExtraDhika">
-                        <div style="padding:10px 14px;font-size:.72rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;">
-                            Kontak Tersedia
-                        </div>
-                    </div>
-                {% elif kontak_list %}
+                {% if kontak_list and kontak_list|length > 0 %}
+                    <!-- Tampilkan kontak yang sudah ada -->
                     {% for kontak in kontak_list %}
                     <div class="chat-item-dhika"
                          data-akun-id="{{ kontak.akun_id }}"
-                         data-nama="{{ kontak.nama }}">
+                         data-nama="{{ kontak.nama }}"
+                         data-role="{{ kontak.role or 'Siswa' }}">
                         <div class="chat-avatar-dhika">
-                            {% if role == 'Siswa' %}
+                            {% if kontak.role == 'Guru BK' %}
                             <i class="fas fa-chalkboard-teacher"></i>
+                            {% elif kontak.role == 'Wali Kelas' %}
+                            <i class="fas fa-user-tie"></i>
+                            {% elif kontak.role == 'Kesiswaan' %}
+                            <i class="fas fa-id-card"></i>
+                            {% elif kontak.role == 'Admin' %}
+                            <i class="fas fa-cog"></i>
                             {% else %}
                             <i class="fas fa-user-graduate"></i>
                             {% endif %}
                         </div>
                         <div class="chat-item-info-dhika">
                             <div class="chat-item-name-dhika">{{ kontak.nama }}</div>
+                            <div class="chat-item-role-dhika">{{ kontak.role or 'Siswa' }}</div>
                             <div class="chat-item-preview-dhika">
                                 {% if kontak.pesan_terakhir %}
                                     {{ kontak.pesan_terakhir[:38] }}{% if kontak.pesan_terakhir|length > 38 %}...{% endif %}
@@ -285,24 +318,33 @@
                                 {% endif %}
                             </div>
                         </div>
-                        {% if kontak.waktu_terakhir %}
-                        <span class="chat-item-time-dhika">{{ kontak.waktu_terakhir.strftime('%H:%M') }}</span>
-                        {% endif %}
+                        <div style="display: flex; align-items: center;">
+                            {% if kontak.waktu_terakhir %}
+                            <span class="chat-item-time-dhika">{{ kontak.waktu_terakhir.strftime('%H:%M') }}</span>
+                            {% endif %}
+                            {% if kontak.unread_count and kontak.unread_count > 0 %}
+                            <div class="unread-badge-dhika" id="unreadDot_{{ kontak.akun_id }}">{{ kontak.unread_count }}</div>
+                            {% else %}
+                            <div class="unread-badge-dhika" id="unreadDot_{{ kontak.akun_id }}" style="display: none;"></div>
+                            {% endif %}
+                        </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="chat-empty-list-dhika">
+                    <div class="chat-empty-list-dhika" id="emptyKontakDhika">
                         <i class="fas fa-inbox"></i>
                         <p>Belum ada percakapan.<br>Mulai dari halaman konseling.</p>
                     </div>
                 {% endif %}
             </div>
+            <!-- Container untuk kontak tambahan (Wali Kelas/Kesiswaan) -->
+            <div id="kontakExtraDhika" class="chat-list-dhika" style="border-top: 1px solid #e8ecf0; margin-top: 5px;"></div>
         </div>
 
         <!-- Main Chat -->
         <div class="chat-main-dhika">
 
-            <!-- Empty state -->
+            <!-- Empty state (tampil jika belum pilih kontak) -->
             <div class="empty-chat-state-dhika" id="emptyChatDhika">
                 <div class="empty-icon-dhika">
                     <i class="fas fa-comment-alt"></i>
@@ -375,64 +417,75 @@
 let activeAkunId = null;
 const myAkunId = {{ session.get('id_akun') }};
 const myRole = "{{ session.get('role') }}";
+let lastWaktuSort = null;
+let isPolling = false;
+let audioNotif = null;
+let notifCounter = 0;
+let originalTitle = document.title;
 
+// ========== FITUR NOTIFIKASI SUARA ==========
+function initAudio() {
+    if (!audioNotif) {
+        audioNotif = new Audio('/static/notifikasi.mp3');
+        audioNotif.volume = 0.6;
+        audioNotif.preload = 'auto';
+    }
+}
+
+function playNotifSound() {
+    try {
+        initAudio();
+        audioNotif.currentTime = 0;
+        audioNotif.play().catch(e => console.log('Audio tidak bisa diputar:', e));
+    } catch(e) {}
+}
+
+// Kedipkan title tab saat ada pesan baru
+function blinkTitle() {
+    if (document.hidden) {
+        let interval = setInterval(() => {
+            if (!document.hidden) {
+                document.title = originalTitle;
+                clearInterval(interval);
+                notifCounter = 0;
+            } else {
+                if (notifCounter % 2 === 0) {
+                    document.title = '🔔 Pesan Baru!';
+                } else {
+                    document.title = originalTitle;
+                }
+                notifCounter++;
+            }
+        }, 800);
+    } else {
+        document.title = originalTitle;
+    }
+}
+
+// ========== FUNGSI CHAT ==========
 function bukaChat(akunId, nama) {
     activeAkunId = akunId;
     document.getElementById('activeChatNameDhika').textContent = nama;
-    const roleIcons = {
-        'Siswa': 'fas fa-chalkboard-teacher',
-        'Guru BK': 'fas fa-user-graduate',
-        'Wali Kelas': 'fas fa-user-graduate',
-        'Kesiswaan': 'fas fa-user-graduate',
-        'Admin': 'fas fa-user-graduate'
-    };
-    document.getElementById('activeChatIconDhika').className = roleIcons[myRole] || 'fas fa-user';
+    document.getElementById('activeChatIconDhika').className = 'fas fa-user';
     document.getElementById('emptyChatDhika').style.display = 'none';
     document.getElementById('activeChatDhika').style.display = 'flex';
-    document.querySelectorAll('.chat-item-dhika').forEach(el => el.classList.remove('active-dhika'));
-    var el = document.querySelector(`.chat-item-dhika[data-akun-id="${akunId}"]`);
-    if (el) el.classList.add('active-dhika');
-    muatPesan(akunId);
+    
+    // Update active class di sidebar
+    document.querySelectorAll('#chatListDhika .chat-item-dhika').forEach(el => el.classList.remove('active-dhika'));
+    let activeItem = document.querySelector(`#chatListDhika .chat-item-dhika[data-akun-id="${akunId}"]`);
+    if (activeItem) activeItem.classList.add('active-dhika');
+    
+    // Reset polling state
+    lastWaktuSort = null;
+    muatPesanPolling();
+    
+    // Tandai sudah dibaca
     fetch(`/chat/tandai-baca/${akunId}`, {method:'POST'})
         .then(() => {
-            var dot = document.getElementById(`unreadDot_${akunId}`);
+            let dot = document.getElementById(`unreadDot_${akunId}`);
             if (dot) dot.style.display = 'none';
-            fetch('/chat/unread').then(r=>r.json()).then(data => {
-                document.querySelectorAll('[id^="chatDot"]').forEach(function(d) {
-                    d.style.display = data.count > 0 ? 'inline-block' : 'none';
-                });
-            });
+            updateUnreadBadge();
         }).catch(()=>{});
-}
-
-function muatPesan(akunId) {
-    fetch(`/chat/pesan/${akunId}`)
-        .then(r => r.json())
-        .then(data => {
-            const box = document.getElementById('chatMessagesDhika');
-            box.innerHTML = '';
-            if (!data.length) {
-                box.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;font-size:0.82rem;">Belum ada pesan. Mulai percakapan!</div>';
-                return;
-            }
-            data.forEach(msg => {
-                const isSent = msg.pengirim_akun_id === myAkunId;
-                const div = document.createElement('div');
-                div.className = `msg-row-dhika ${isSent ? 'sent' : 'received'}`;
-                const iconSent = 'user';
-                const iconRecv = (myRole === 'Siswa') ? 'chalkboard-teacher' : 'user-graduate';
-                div.innerHTML = `
-                    <div class="msg-avatar-sm-dhika">
-                        <i class="fas fa-${isSent ? iconSent : iconRecv}"></i>
-                    </div>
-                    <div>
-                        <div class="msg-bubble-dhika">${escHtml(msg.pesan)}</div>
-                        <div class="msg-time-dhika">${msg.waktu}</div>
-                    </div>`;
-                box.appendChild(div);
-            });
-            box.scrollTop = box.scrollHeight;
-        }).catch(() => {});
 }
 
 function kirimPesan() {
@@ -445,7 +498,11 @@ function kirimPesan() {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ penerima_akun_id: activeAkunId, pesan: pesan })
     }).then(r => r.json()).then(data => {
-        if (data.ok) { input.value = ''; muatPesan(activeAkunId); }
+        if (data.ok) { 
+            input.value = ''; 
+            lastWaktuSort = null;
+            muatPesanPolling(); 
+        }
     }).catch(() => {});
 }
 
@@ -454,24 +511,99 @@ function handleEnter(e) {
 }
 
 function escHtml(str) {
+    if (!str) return '';
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-document.getElementById('searchChatDhika').addEventListener('input', function() {
-    const q = this.value.toLowerCase();
-    document.querySelectorAll('.chat-item-dhika').forEach(el => {
-        el.style.display = (el.dataset.nama || '').toLowerCase().includes(q) ? '' : 'none';
+// ========== POLLING REAL-TIME ==========
+function muatPesanPolling() {
+    if (!activeAkunId || isPolling) return;
+    isPolling = true;
+    
+    let url = '/chat/polling/' + activeAkunId;
+    if (lastWaktuSort) url += '?since=' + encodeURIComponent(lastWaktuSort);
+    
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            isPolling = false;
+            if (!data.length) return;
+            
+            const box = document.getElementById('chatMessagesDhika');
+            const isFirstLoad = !lastWaktuSort;
+            if (isFirstLoad) box.innerHTML = '';
+            
+            let hasNewMessage = false;
+            data.forEach(msg => {
+                if (!isFirstLoad) hasNewMessage = true;
+                const isSent = msg.pengirim_akun_id == myAkunId;
+                const div = document.createElement('div');
+                div.className = `msg-row-dhika ${isSent ? 'sent' : 'received'}`;
+                const iconRecv = (myRole == 'Siswa') ? 'chalkboard-teacher' : 'user-graduate';
+                div.innerHTML = `
+                    <div class="msg-avatar-sm-dhika">
+                        <i class="fas fa-${isSent ? 'user' : iconRecv}"></i>
+                    </div>
+                    <div>
+                        <div class="msg-bubble-dhika">${escHtml(msg.pesan)}</div>
+                        <div class="msg-time-dhika">${msg.waktu}</div>
+                    </div>`;
+                box.appendChild(div);
+                lastWaktuSort = msg.waktu_sort;
+            });
+            box.scrollTop = box.scrollHeight;
+            
+            // Jika ada pesan baru dan bukan dari diri sendiri
+            if (hasNewMessage) {
+                const lastMsg = data[data.length - 1];
+                if (lastMsg.pengirim_akun_id != myAkunId) {
+                    playNotifSound();
+                    blinkTitle();
+                    updateUnreadBadge();
+                }
+            }
+        })
+        .catch(() => { isPolling = false; });
+}
+
+function updateUnreadBadge() {
+    fetch('/chat/unread')
+        .then(r => r.json())
+        .then(data => {
+            const hasUnread = data.count > 0;
+            document.querySelectorAll('#chatDotBn, .bk-chat-dot-bn-dhika, .chat-dot-bn').forEach(el => {
+                if (el) el.style.display = hasUnread ? 'inline-block' : 'none';
+            });
+        })
+        .catch(() => {});
+}
+
+// Search chat
+const searchInput = document.getElementById('searchChatDhika');
+if (searchInput) {
+    searchInput.addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('#chatListDhika .chat-item-dhika').forEach(el => {
+            const nama = el.getAttribute('data-nama') || '';
+            el.style.display = nama.toLowerCase().includes(q) ? '' : 'none';
+        });
+        if (document.getElementById('kontakExtraDhika')) {
+            document.querySelectorAll('#kontakExtraDhika .chat-item-dhika').forEach(el => {
+                const nama = el.getAttribute('data-nama') || '';
+                el.style.display = nama.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
     });
-});
+}
 
-setInterval(() => { if (activeAkunId) muatPesan(activeAkunId); }, 5000);
-
-document.querySelectorAll('.chat-item-dhika').forEach(function(el) {
+// Event listener untuk klik item chat di kontak_list
+document.querySelectorAll('#chatListDhika .chat-item-dhika').forEach(function(el) {
     el.addEventListener('click', function() {
         bukaChat(parseInt(this.dataset.akunId), this.dataset.nama);
     });
 });
 
+// ========== KONTAK TAMBAHAN UNTUK WALI KELAS & KESISWAAN ==========
 if (myRole === 'Wali Kelas' || myRole === 'Kesiswaan') {
     var container = document.getElementById('kontakExtraDhika');
     if (container) {
@@ -479,10 +611,9 @@ if (myRole === 'Wali Kelas' || myRole === 'Kesiswaan') {
             .then(r => r.json())
             .then(data => {
                 if (!data.length) {
-                    container.innerHTML += '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:.82rem;">Belum ada kontak tersedia</div>';
                     return;
                 }
-                var roleLabel = {'Guru BK':'Guru BK','Wali Kelas':'Wali Kelas','Siswa':'Siswa'};
+                var roleLabel = {'Guru BK':'GURU BK', 'Wali Kelas':'WALI KELAS', 'Siswa':'SISWA', 'Kesiswaan':'KESISWAAN', 'Admin':'ADMIN'};
                 var grouped = {};
                 data.forEach(function(k) {
                     var r = k.role || 'Lainnya';
@@ -491,21 +622,22 @@ if (myRole === 'Wali Kelas' || myRole === 'Kesiswaan') {
                 });
                 Object.keys(grouped).forEach(function(grp) {
                     var header = document.createElement('div');
-                    header.style.cssText = 'padding:6px 14px;font-size:.7rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;';
+                    header.className = 'chat-group-header-dhika';
                     header.textContent = roleLabel[grp] || grp;
                     container.appendChild(header);
                     grouped[grp].forEach(function(k) {
                         var div = document.createElement('div');
                         div.className = 'chat-item-dhika';
-                        div.dataset.akunId = k.id_akun;
-                        div.dataset.nama = k.nama;
-                        var icons = {'Guru BK':'chalkboard-teacher','Wali Kelas':'user-tie','Siswa':'user-graduate'};
+                        div.setAttribute('data-akun-id', k.id_akun);
+                        div.setAttribute('data-nama', k.nama);
+                        var icons = {'Guru BK':'chalkboard-teacher', 'Wali Kelas':'user-tie', 'Siswa':'user-graduate', 'Kesiswaan':'id-card', 'Admin':'cog'};
                         var ico = icons[k.role] || 'user';
                         div.innerHTML = `
                             <div class="chat-avatar-dhika"><i class="fas fa-${ico}"></i></div>
                             <div class="chat-item-info-dhika">
-                                <div class="chat-item-name-dhika">${k.nama}</div>
-                                <div class="chat-item-preview-dhika">${k.role}</div>
+                                <div class="chat-item-name-dhika">${escHtml(k.nama)}</div>
+                                <div class="chat-item-role-dhika">${k.role || 'Siswa'}</div>
+                                <div class="chat-item-preview-dhika">Klik untuk mulai chat</div>
                             </div>`;
                         div.addEventListener('click', function() {
                             bukaChat(parseInt(k.id_akun), k.nama);
@@ -518,5 +650,30 @@ if (myRole === 'Wali Kelas' || myRole === 'Kesiswaan') {
             });
     }
 }
+
+// Start polling setiap 3 detik
+setInterval(() => {
+    if (activeAkunId) muatPesanPolling();
+}, 3000);
+
+// Update badge unread setiap 5 detik
+setInterval(() => {
+    updateUnreadBadge();
+}, 5000);
+
+// Initial load
+updateUnreadBadge();
+
+// Minta izin audio (butuh interaksi user dulu)
+setTimeout(() => {
+    let silentAudio = new Audio();
+    silentAudio.volume = 0;
+    silentAudio.play().then(() => {
+        console.log('Audio ready');
+        silentAudio.pause();
+    }).catch(() => {
+        console.log('Tap layar untuk aktifkan suara notifikasi');
+    });
+}, 1000);
 </script>
 {% endblock %}

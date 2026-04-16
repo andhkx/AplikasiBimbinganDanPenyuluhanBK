@@ -274,10 +274,10 @@
                                 </p>
                             </div>
                             <div class="col-md-4 text-end">
-                                <button type="button" class="btn btn-outline-primary action-btn-dhika mb-2 w-100" 
-                                        data-bs-toggle="modal" data-bs-target="#detailModal{{ konseling.id_konseling }}">
+                                <a href="{{ url_for('detail_konseling_siswa_dhika', id_konseling=konseling.id_konseling) }}" 
+                                   class="btn btn-outline-primary action-btn-dhika mb-2 w-100">
                                     <i class="fas fa-eye me-1"></i>Detail
-                                </button>
+                                </a>
                                 
                                 {% if konseling.status == 'Pending' %}
                                 <form action="{{ url_for('delete_konseling_dhika', id_konseling=konseling.id_konseling) }}" 
@@ -294,54 +294,6 @@
                     </div>
                     {% endfor %}
 
-    {% if konseling_list %}
-    {% for konseling in konseling_list %}
-    <div class="modal fade" id="detailModal{{ konseling.id_konseling }}" tabindex="-1" aria-modal="true" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header gradient-bg-dhika text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-info-circle me-2"></i>Detail Konseling #{{ konseling.id_konseling }}
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>ID Konseling:</strong> {{ konseling.id_konseling }}</p>
-                            <p><strong>Guru BK:</strong> {{ konseling.nama_guru }}</p>
-                            <p><strong>Jenis:</strong> {{ konseling.jenis }}</p>
-                            <p><strong>Status:</strong>
-                                <span class="badge-dhika bg-{{ konseling.status|status_badge_dhika }}">
-                                    {{ konseling.status|upper }}
-                                </span>
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Tanggal:</strong> {{ konseling.tanggal|format_tanggal_dhika }}</p>
-                            <p><strong>Waktu Mulai:</strong> {{ konseling.jam_mulai }}{% if konseling.jam_selesai %} - {{ konseling.jam_selesai }}{% endif %}</p>
-                            <p><strong>Diajukan pada:</strong> {{ konseling.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <p><strong>Alasan Konseling:</strong></p>
-                    <div class="bg-light p-3 rounded">{{ konseling.alasan|default('-', true) }}</div>
-                    {% if konseling.hasil %}
-                    <hr>
-                    <p><strong>Hasil Konseling:</strong></p>
-                    <div class="bg-light p-3 rounded">{{ konseling.hasil }}</div>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i>Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-    {% endif %}
                 {% else %}
                     <div class="empty-state-dhika">
                         <i class="fas fa-comments"></i>

@@ -429,8 +429,8 @@
 {% elif r == 'Guru BK' %}
     <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-dhika{% endif %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
     <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-dhika{% endif %}"><i class="fas fa-clipboard-list"></i> Konseling</a>
-    <a href="{{ url_for('pelanggaran_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active-dhika{% endif %}"><i class="fas fa-exclamation-triangle"></i> Pelanggaran</a>
     <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active-dhika{% endif %}"><i class="fas fa-inbox"></i> Pengaduan</a>
+    <a href="{{ url_for('pemanggilan_ortu_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pemanggilan_ortu_dhika' %}active-dhika{% endif %}"><i class="fas fa-phone-alt"></i> Panggil Ortu</a>
     <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
     <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-graduate"></i> Data Siswa</a>
     <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}"><i class="fas fa-file-alt"></i> Laporan</a>
@@ -440,6 +440,7 @@
     <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
 {% elif r == 'Kesiswaan' %}
     <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_kesiswaan_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-shield"></i> Dashboard</a>
+    <a href="{{ url_for('pelanggaran_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active-dhika{% endif %}"><i class="fas fa-exclamation-triangle"></i> Pelanggaran</a>
     <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active-dhika{% endif %}"><i class="fas fa-file-alt"></i> Laporan Pengaduan</a>
     <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-graduate"></i> Data Siswa</a>
     <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
@@ -485,23 +486,52 @@
         </div>
     </div>
 
-    <nav class="bk-topbar-dhika d-lg-none">
-        <button type="button" onclick="history.back()" class="bk-topbar-btn-dhika">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <a href="#" class="bk-topbar-brand-dhika">
-            <i class="fas fa-user-graduate me-1"></i>BK System
-        </a>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="bk-topbar-btn-dhika position-relative" id="btnNotifDhika" onclick="toggleNotifDhika()">
-                <i class="fas fa-bell"></i>
-                <span class="bk-notif-dot-dhika" id="notifDotDhika" style="display:none;"></span>
-            </button>
-            <button class="bk-topbar-btn-dhika" type="button" onclick="openMobileSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
+<nav class="bk-topbar-dhika d-lg-none">
+    <!-- Logo dan Teks (sebelah kiri) -->
+    <div class="d-flex align-items-center gap-2" style="flex: 1">
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Logo Sekolah"
+            style="width: 45px; height: 45px; object-fit: contain"
+            onerror="this.style.display = 'none'"
+        />
+        <div style="line-height: 1.2">
+            <div style="font-weight: 700; font-size: 0.9rem; color: white">
+                Skadaci BK
+            </div>
+            <div style="font-size: 0.7rem; color: rgba(255, 255, 255, 0.85)">
+                Bimbingan dan Konseling
+            </div>
+            <div style="font-size: 0.65rem; color: rgba(255, 255, 255, 0.7)">
+                SMK Negeri 2 Cimahi
+            </div>
         </div>
-    </nav>
+    </div>
+
+    <!-- Tombol kanan (notifikasi & hamburger) -->
+    <div class="d-flex align-items-center gap-2">
+        <button
+            type="button"
+            class="bk-topbar-btn-dhika position-relative"
+            id="btnNotifDhika"
+            onclick="toggleNotifDhika()"
+        >
+            <i class="fas fa-bell"></i>
+            <span
+                class="bk-notif-dot-dhika"
+                id="notifDotDhika"
+                style="display: none"
+            ></span>
+        </button>
+        <button
+            class="bk-topbar-btn-dhika"
+            type="button"
+            onclick="openMobileSidebar()"
+        >
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
 
     <div id="notifPopupDhika" class="bk-notif-popup-dhika" style="display:none;">
         <div class="bk-notif-header-dhika">
@@ -550,8 +580,8 @@
         <a href="{{ url_for('dashboard_guru_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active{% endif %}">
             <i class="fas fa-home"></i><span>Home</span>
         </a>
-        <a href="{{ url_for('pelanggaran_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active{% endif %}">
-            <i class="fas fa-exclamation-triangle"></i><span>Laporan</span>
+        <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active{% endif %}">
+            <i class="fas fa-inbox"></i><span>Pengaduan</span>
         </a>
         <a href="{{ url_for('konseling_guru_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active{% endif %}">
             <div class="bk-bn-center-icon-dhika"><i class="fas fa-clipboard-list"></i></div>
@@ -562,8 +592,8 @@
             <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;"></span>
             <span>Chat</span>
         </a>
-        <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active{% endif %}">
-            <i class="fas fa-inbox"></i><span>Pengaduan</span>
+        <a href="{{ url_for('laporan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_dhika' %}active{% endif %}">
+            <i class="fas fa-file-alt"></i><span>Laporan</span>
         </a>
     </nav>
 
@@ -584,13 +614,16 @@
         <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_kesiswaan_dhika' %}active{% endif %}">
             <i class="fas fa-home"></i><span>Home</span>
         </a>
-        <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active{% endif %}">
-            <i class="fas fa-file-alt"></i><span>Laporan</span>
+        <a href="{{ url_for('pelanggaran_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i><span>Pelanggaran</span>
         </a>
         <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}" style="position:relative;">
             <div class="bk-bn-center-icon-dhika"><i class="fas fa-comment-dots"></i></div>
             <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;position:absolute;top:4px;right:14px;"></span>
             <span>Chat</span>
+        </a>
+        <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active{% endif %}">
+            <i class="fas fa-file-alt"></i><span>Laporan</span>
         </a>
     </nav>
 

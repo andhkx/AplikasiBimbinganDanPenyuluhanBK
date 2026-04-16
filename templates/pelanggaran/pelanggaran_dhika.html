@@ -125,12 +125,6 @@
                 <span class="badge bg-white text-dark px-3 py-2" style="font-size:0.82rem;">
                     <i class="fas fa-chalkboard-teacher me-1"></i>{{ session.nama }}
                 </span>
-                <form action="{{ url_for('pelanggaran_reset_dhika') }}" method="POST"
-                      onsubmit="return confirm('Reset semua poin semester ini?')">
-                    <button type="submit" class="btn-reset-dhika">
-                        <i class="fas fa-redo me-1"></i>Reset Semester
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -142,7 +136,7 @@
                     <h5><i class="fas fa-plus-circle me-2 text-danger"></i>Input Pelanggaran</h5>
                 </div>
                 <div class="form-pel-dhika">
-                    <form action="{{ url_for('pelanggaran_input_dhika') }}" method="POST">
+                    <form action="{{ url_for('pelanggaran_input_dhika') }}" method="POST" enctype="multipart/form-data">
 
                         <div class="mb-2">
                             <label>Kelas</label>
@@ -188,11 +182,42 @@
                             <input type="date" name="tanggal_dhika" required>
                         </div>
 
-                        <div class="mb-4">
-                            <label>Keterangan (Opsional)</label>
-                            <textarea name="keterangan_dhika" rows="3" placeholder="Deskripsi kejadian..."></textarea>
+                        <div class="mb-3">
+                            <label>Keterangan Kejadian</label>
+                            <textarea name="keterangan_dhika" rows="2" placeholder="Deskripsi singkat kejadian..."></textarea>
                         </div>
-
+                        <div class="mb-3">
+                            <label>Tindakan Guru</label>
+                            <textarea name="tindakan_guru_dhika" rows="2" placeholder="Tindakan yang sudah diambil..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label>Tindak Lanjut</label>
+                            <textarea name="tindak_lanjut_dhika" rows="2" placeholder="Rencana tindak lanjut..."></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label>Foto Dokumentasi <span style="font-weight:400;color:#94a3b8;">(opsional, maks 5MB)</span></label>
+                            <div style="border:2px dashed #e2e8f0;border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:border .2s;background:#f8fafc;"
+                                 id="dropzoneDhika"
+                                 onclick="document.getElementById('fotoDhika').click()"
+                                 ondragover="event.preventDefault();this.style.borderColor='#8b5cf6'"
+                                 ondragleave="this.style.borderColor='#e2e8f0'"
+                                 ondrop="handleDropDhika(event)">
+                                <i class="fas fa-camera" style="font-size:1.5rem;color:#94a3b8;"></i>
+                                <div style="font-size:.8rem;color:#64748b;margin-top:6px;" id="dropzoneLabelDhika">
+                                    Klik atau drag foto ke sini
+                                </div>
+                                <input type="file" name="foto_dhika" id="fotoDhika"
+                                       accept="image/jpeg,image/png,image/webp" style="display:none;"
+                                       onchange="previewFotoDhika(this)">
+                            </div>
+                            <div id="fotoPreviewDhika" style="display:none;margin-top:8px;text-align:center;">
+                                <img id="fotoImgDhika" style="max-height:120px;border-radius:9px;border:1px solid #e2e8f0;">
+                                <button type="button" onclick="hapusFotoDhika()"
+                                        style="display:block;margin:6px auto 0;font-size:.75rem;color:#dc2626;background:none;border:none;cursor:pointer;">
+                                    <i class="fas fa-times me-1"></i>Hapus foto
+                                </button>
+                            </div>
+                        </div>
                         <button type="submit" class="btn-pel-dhika w-100">
                             <i class="fas fa-save me-2"></i>Simpan Pelanggaran
                         </button>
@@ -369,5 +394,36 @@
         }).catch(() => {});
 
     document.querySelector('input[name="tanggal_dhika"]').value = new Date().toISOString().split('T')[0];
+
+    function previewFotoDhika(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('fotoImgDhika').src = e.target.result;
+                document.getElementById('fotoPreviewDhika').style.display = 'block';
+                document.getElementById('dropzoneLabelDhika').textContent = input.files[0].name;
+                document.getElementById('dropzoneDhika').style.borderColor = '#8b5cf6';
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    function handleDropDhika(event) {
+        event.preventDefault();
+        document.getElementById('dropzoneDhika').style.borderColor = '#e2e8f0';
+        var file = event.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            var input = document.getElementById('fotoDhika');
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            previewFotoDhika(input);
+        }
+    }
+    function hapusFotoDhika() {
+        document.getElementById('fotoDhika').value = '';
+        document.getElementById('fotoPreviewDhika').style.display = 'none';
+        document.getElementById('dropzoneLabelDhika').textContent = 'Klik atau drag foto ke sini';
+        document.getElementById('dropzoneDhika').style.borderColor = '#e2e8f0';
+    }
 </script>
 {% endblock %}

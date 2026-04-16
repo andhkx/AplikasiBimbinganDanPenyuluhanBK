@@ -122,12 +122,25 @@
                                 · {{ p.tanggal.strftime('%d %b %Y') if p.tanggal else '-' }}
                             </div>
                             <div class="desc">{{ p.deskripsi }}</div>
-                            {% if p.status != 'Selesai' %}
-                            <button class="btn-panggil-dhika"
-                                    onclick="bukaModalPanggil({{ p.id_pengaduan }}, {{ p.siswa_id }}, '{{ p.nama_siswa }}')">
-                                <i class="fas fa-phone-alt me-1"></i>Panggil Siswa
-                            </button>
-                            {% endif %}
+                            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                                {% if p.status == 'Baru' %}
+                                <button class="btn-panggil-dhika" style="background:linear-gradient(135deg, #1d4ed8, #1e40af);"
+                                        onclick="prosesModalBuka({{ p.id_pengaduan }}, '{{ p.nama_siswa }}')">
+                                    <i class="fas fa-cog me-1"></i>Proses
+                                </button>
+                                {% elif p.status == 'Diproses' %}
+                                <button class="btn-panggil-dhika" style="background:linear-gradient(135deg, #059669, #047857);"
+                                        onclick="selesaiModalBuka({{ p.id_pengaduan }}, '{{ p.nama_siswa }}')">
+                                    <i class="fas fa-check me-1"></i>Selesaikan
+                                </button>
+                                {% endif %}
+                                {% if p.status != 'Selesai' %}
+                                <button class="btn-panggil-dhika"
+                                        onclick="bukaModalPanggil({{ p.id_pengaduan }}, {{ p.siswa_id }}, '{{ p.nama_siswa }}')">
+                                    <i class="fas fa-phone-alt me-1"></i>Panggil Siswa
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -207,6 +220,49 @@
         </form>
     </div>
 </div>
+
+<div class="modal-panggil-dhika" id="modalProsesDhika">
+    <div class="modal-box-pg-dhika">
+        <h6><i class="fas fa-cog me-2 text-primary"></i>Ubah Status ke Diproses</h6>
+        <p style="font-size:0.82rem;color:#64748b;margin-bottom:14px;" id="prosesDescDhika"></p>
+        <form id="formProsesDhika" method="POST">
+            <input type="hidden" name="status_dhika" value="Diproses">
+            <div style="display:flex;gap:10px;margin-top:4px;">
+                <button type="button" onclick="tutupProses()"
+                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="flex:1;padding:9px;background:linear-gradient(135deg,#1d4ed8,#1e40af);color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    <i class="fas fa-arrow-right me-1"></i>Lanjutkan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-panggil-dhika" id="modalSelesaiDhika">
+    <div class="modal-box-pg-dhika">
+        <h6><i class="fas fa-check-circle me-2 text-success"></i>Selesaikan Pengaduan</h6>
+        <p style="font-size:0.82rem;color:#64748b;margin-bottom:14px;" id="selesaiDescDhika"></p>
+        <form id="formSelesaiDhika" method="POST">
+            <input type="hidden" name="status_dhika" value="Selesai">
+            <textarea name="catatan_dhika" rows="4" placeholder="Tulis catatan penyelesaian pengaduan..."
+                      style="padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.82rem;resize:none;margin-bottom:10px;"></textarea>
+            <div style="display:flex;gap:10px;">
+                <button type="button" onclick="tutupSelesai()"
+                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="flex:1;padding:9px;background:linear-gradient(135deg,#059669,#047857);color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    <i class="fas fa-check me-1"></i>Selesaikan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
 {% block script_dhika %}
 <script>
@@ -219,8 +275,35 @@
     function tutupModalPanggil() {
         document.getElementById('modalPanggilDhika').classList.remove('show');
     }
+    
+    function prosesModalBuka(pengaduanId, namaSiswa) {
+        const form = document.getElementById('formProsesDhika');
+        form.action = '/pengaduan/update/' + pengaduanId;
+        document.getElementById('prosesDescDhika').textContent = 'Ubah status pengaduan ' + namaSiswa + ' menjadi Diproses?';
+        document.getElementById('modalProsesDhika').classList.add('show');
+    }
+    function tutupProses() {
+        document.getElementById('modalProsesDhika').classList.remove('show');
+    }
+    
+    function selesaiModalBuka(pengaduanId, namaSiswa) {
+        const form = document.getElementById('formSelesaiDhika');
+        form.action = '/pengaduan/update/' + pengaduanId;
+        document.getElementById('selesaiDescDhika').textContent = 'Selesaikan pengaduan ' + namaSiswa;
+        document.getElementById('modalSelesaiDhika').classList.add('show');
+    }
+    function tutupSelesai() {
+        document.getElementById('modalSelesaiDhika').classList.remove('show');
+    }
+    
     document.getElementById('modalPanggilDhika').addEventListener('click', function(e) {
         if (e.target === this) tutupModalPanggil();
+    });
+    document.getElementById('modalProsesDhika').addEventListener('click', function(e) {
+        if (e.target === this) tutupProses();
+    });
+    document.getElementById('modalSelesaiDhika').addEventListener('click', function(e) {
+        if (e.target === this) tutupSelesai();
     });
 </script>
 {% endblock %}

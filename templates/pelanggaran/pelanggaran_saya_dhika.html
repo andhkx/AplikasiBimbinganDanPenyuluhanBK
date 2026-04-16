@@ -149,31 +149,47 @@
             </div>
 
             <div class="scale-dhika" data-aos="fade-right" data-aos-delay="100">
-                <h6><i class="fas fa-info-circle me-2 text-primary"></i>Skala Poin</h6>
+                <h6><i class="fas fa-chart-pie me-2 text-primary"></i>Statistik Kategori</h6>
+                {% set ringan_count = riwayat|selectattr('kategori', 'equalto', 'Ringan')|list|length %}
+                {% set sedang_count = riwayat|selectattr('kategori', 'equalto', 'Sedang')|list|length %}
+                {% set berat_count = riwayat|selectattr('kategori', 'equalto', 'Berat')|list|length %}
+                
                 <div class="scale-item-dhika">
                     <div class="scale-dot-dhika" style="background:#10b981;"></div>
-                    <span class="range">0 – 50 poin</span>
-                    <span class="label" style="color:#10b981;">Aman</span>
+                    <span class="range">Pelanggaran Ringan</span>
+                    <span class="label" style="color:#10b981; font-size:1.1rem;">{{ ringan_count }}</span>
                 </div>
                 <div class="scale-item-dhika">
                     <div class="scale-dot-dhika" style="background:#f59e0b;"></div>
-                    <span class="range">51 – 100 poin</span>
-                    <span class="label" style="color:#b45309;">Peringatan</span>
-                </div>
-                <div class="scale-item-dhika">
-                    <div class="scale-dot-dhika" style="background:#f97316;"></div>
-                    <span class="range">101 – 150 poin</span>
-                    <span class="label" style="color:#9a3412;">SP1</span>
+                    <span class="range">Pelanggaran Sedang</span>
+                    <span class="label" style="color:#b45309; font-size:1.1rem;">{{ sedang_count }}</span>
                 </div>
                 <div class="scale-item-dhika">
                     <div class="scale-dot-dhika" style="background:#ef4444;"></div>
-                    <span class="range">151 – 200 poin</span>
-                    <span class="label" style="color:#991b1b;">SP2</span>
+                    <span class="range">Pelanggaran Berat</span>
+                    <span class="label" style="color:#991b1b; font-size:1.1rem;">{{ berat_count }}</span>
                 </div>
-                <div class="scale-item-dhika">
-                    <div class="scale-dot-dhika" style="background:#7f1d1d;"></div>
-                    <span class="range">&gt; 200 poin</span>
-                    <span class="label" style="color:#7f1d1d;">SP3</span>
+            </div>
+
+            <div class="scale-dhika" data-aos="fade-right" data-aos-delay="200">
+                <h6><i class="fas fa-lightbulb me-2 text-warning"></i>Tips Disiplin</h6>
+                <div style="font-size:0.82rem; line-height:1.6; color:#475569; space-y:8px;">
+                    <div style="margin-bottom:10px;">
+                        <i class="fas fa-check-circle" style="color:#10b981; margin-right:6px;"></i>
+                        Datang 15 menit sebelum jam pelajaran dimulai
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <i class="fas fa-check-circle" style="color:#10b981; margin-right:6px;"></i>
+                        Gunakan seragam sesuai ketentuan sekolah
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <i class="fas fa-check-circle" style="color:#10b981; margin-right:6px;"></i>
+                        Lakukan tugas tepat waktu sesuai jadwal
+                    </div>
+                    <div style="margin-bottom:0;">
+                        <i class="fas fa-check-circle" style="color:#10b981; margin-right:6px;"></i>
+                        Hormati guru dan teman sekolah
+                    </div>
                 </div>
             </div>
         </div>
