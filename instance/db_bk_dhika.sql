@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 14 Apr 2026 pada 04.06
+-- Waktu pembuatan: 17 Apr 2026 pada 02.35
 -- Versi server: 10.4.6-MariaDB
 -- Versi PHP: 7.3.10
 
@@ -112,7 +112,13 @@ INSERT INTO `chat_dhika` (`id_chat`, `pengirim_akun_id`, `penerima_akun_id`, `pe
 (25, 1, 4, 'ya', '2026-04-12 09:47:05', 1),
 (26, 8, 4, 'nak', '2026-04-12 11:12:43', 0),
 (27, 4, 1, 'bu', '2026-04-12 11:34:36', 1),
-(28, 7, 1, 'bu', '2026-04-12 11:36:24', 0);
+(28, 7, 1, 'bu', '2026-04-12 11:36:24', 0),
+(29, 4, 1, 'buuuuu', '2026-04-15 12:57:55', 1),
+(30, 1, 4, 'hai', '2026-04-15 12:59:16', 1),
+(31, 1, 4, 'oi', '2026-04-15 13:18:45', 1),
+(32, 1, 4, 'nak', '2026-04-15 13:48:51', 1),
+(33, 1, 4, 'jan begadang ya', '2026-04-15 13:49:12', 1),
+(34, 4, 1, 'siap bu', '2026-04-15 13:49:55', 1);
 
 -- --------------------------------------------------------
 
@@ -346,7 +352,19 @@ INSERT INTO `log_aktivitas_dhika` (`id_log`, `akun_id`, `aktivitas`, `waktu`) VA
 (137, 4, 'Logout dari sistem', '2026-04-12 11:34:51'),
 (138, 1, 'Login ke sistem', '2026-04-12 11:34:59'),
 (139, 1, 'Logout dari sistem', '2026-04-12 11:36:09'),
-(140, 7, 'Login ke sistem', '2026-04-12 11:36:15');
+(140, 7, 'Login ke sistem', '2026-04-12 11:36:15'),
+(141, 4, 'Login ke sistem', '2026-04-15 12:41:04'),
+(142, 4, 'Login ke sistem', '2026-04-15 12:57:37'),
+(143, 4, 'Logout dari sistem', '2026-04-15 12:58:03'),
+(144, 1, 'Login ke sistem', '2026-04-15 12:58:06'),
+(145, 1, 'Membuat pemanggilan orang tua siswa id 1', '2026-04-15 13:02:37'),
+(146, 1, 'Membuat pemanggilan orang tua siswa id 2', '2026-04-15 13:12:57'),
+(147, 4, 'Login ke sistem', '2026-04-15 13:47:15'),
+(148, 1, 'Login ke sistem', '2026-04-15 13:48:24'),
+(149, 4, 'Logout dari sistem', '2026-04-15 13:52:01'),
+(150, 1, 'Login ke sistem', '2026-04-15 13:52:03'),
+(151, 1, 'Logout dari sistem', '2026-04-15 13:52:53'),
+(152, 7, 'Login ke sistem', '2026-04-15 13:52:56');
 
 -- --------------------------------------------------------
 
@@ -376,6 +394,31 @@ INSERT INTO `pelanggaran_dhika` (`id_pelanggaran`, `nama_pelanggaran`, `kategori
 (9, 'Merokok', 'Berat'),
 (10, 'Membawa barang terlarang', 'Sangat Berat'),
 (11, 'Narkoba', 'Sangat Berat');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `pemanggilan_ortu_dhika`
+--
+
+CREATE TABLE `pemanggilan_ortu_dhika` (
+  `id_pemanggilan` int(11) NOT NULL,
+  `siswa_id` int(11) NOT NULL,
+  `guru_id` int(11) NOT NULL,
+  `tujuan` text NOT NULL,
+  `tanggal` date NOT NULL,
+  `status` enum('Dijadwalkan','Sudah Hadir','Tidak Hadir') DEFAULT 'Dijadwalkan',
+  `catatan` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data untuk tabel `pemanggilan_ortu_dhika`
+--
+
+INSERT INTO `pemanggilan_ortu_dhika` (`id_pemanggilan`, `siswa_id`, `guru_id`, `tujuan`, `tanggal`, `status`, `catatan`, `created_at`) VALUES
+(1, 1, 1, 'andhika tidak menaati peraturan sekolah', '2026-04-15', 'Sudah Hadir', 'orang tua andhika menyetujui surat perjanjian ', '2026-04-15 13:02:37'),
+(2, 2, 1, 'membahas prestasi fika yg mempunyai potensi besar untuk lebih berkembang', '2026-04-16', 'Dijadwalkan', NULL, '2026-04-15 13:12:57');
 
 -- --------------------------------------------------------
 
@@ -412,15 +455,18 @@ CREATE TABLE `riwayat_pelanggaran_dhika` (
   `siswa_id` int(11) NOT NULL,
   `pelanggaran_id` int(11) NOT NULL,
   `tanggal` date NOT NULL,
-  `keterangan` text DEFAULT NULL
+  `keterangan` text DEFAULT NULL,
+  `tindakan_guru` text DEFAULT NULL,
+  `tindak_lanjut` text DEFAULT NULL,
+  `foto_dokumentasi` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data untuk tabel `riwayat_pelanggaran_dhika`
 --
 
-INSERT INTO `riwayat_pelanggaran_dhika` (`id_riwayat`, `siswa_id`, `pelanggaran_id`, `tanggal`, `keterangan`) VALUES
-(1, 1, 3, '2026-03-30', '');
+INSERT INTO `riwayat_pelanggaran_dhika` (`id_riwayat`, `siswa_id`, `pelanggaran_id`, `tanggal`, `keterangan`, `tindakan_guru`, `tindak_lanjut`, `foto_dokumentasi`) VALUES
+(1, 1, 3, '2026-03-30', '', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -445,8 +491,8 @@ CREATE TABLE `siswa_dhika` (
 --
 
 INSERT INTO `siswa_dhika` (`id_siswa`, `akun_id`, `nis`, `nama`, `kelas`, `jurusan`, `rombel`, `email`, `no_ortu`) VALUES
-(1, 4, '10243252', 'Andhika Andriana Putra', 'XI', 'RPL', 'A', 'andhika@gmail.com', '+6281223530650'),
-(2, 5, '10245407', 'Fika Indah Lestari', 'XI', 'Kimia', 'A', 'fika@gmail.com', '+62895631922002'),
+(1, 4, '10243252', 'Andhika Andriana Putra', 'XI', 'RPL', 'A', 'andhika@gmail.com', '6281223530650'),
+(2, 5, '10245407', 'Fika Indah Lestari', 'XI', 'Kimia', 'A', 'fika@gmail.com', '62895631922002'),
 (11, 6, '10243249', 'Aditya Firmansyah Andira', 'XI', 'RPL', 'A', NULL, NULL);
 
 -- --------------------------------------------------------
@@ -535,6 +581,14 @@ ALTER TABLE `pelanggaran_dhika`
   ADD PRIMARY KEY (`id_pelanggaran`);
 
 --
+-- Indeks untuk tabel `pemanggilan_ortu_dhika`
+--
+ALTER TABLE `pemanggilan_ortu_dhika`
+  ADD PRIMARY KEY (`id_pemanggilan`),
+  ADD KEY `siswa_id` (`siswa_id`),
+  ADD KEY `guru_id` (`guru_id`);
+
+--
 -- Indeks untuk tabel `pengaduan_dhika`
 --
 ALTER TABLE `pengaduan_dhika`
@@ -585,7 +639,7 @@ ALTER TABLE `akun_dhika`
 -- AUTO_INCREMENT untuk tabel `chat_dhika`
 --
 ALTER TABLE `chat_dhika`
-  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_chat` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT untuk tabel `guru_dhika`
@@ -603,13 +657,19 @@ ALTER TABLE `kesiswaan_dhika`
 -- AUTO_INCREMENT untuk tabel `log_aktivitas_dhika`
 --
 ALTER TABLE `log_aktivitas_dhika`
-  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `id_log` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT untuk tabel `pelanggaran_dhika`
 --
 ALTER TABLE `pelanggaran_dhika`
   MODIFY `id_pelanggaran` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT untuk tabel `pemanggilan_ortu_dhika`
+--
+ALTER TABLE `pemanggilan_ortu_dhika`
+  MODIFY `id_pemanggilan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengaduan_dhika`
@@ -676,6 +736,13 @@ ALTER TABLE `konseling_dhika`
 --
 ALTER TABLE `log_aktivitas_dhika`
   ADD CONSTRAINT `log_aktivitas_dhika_ibfk_1` FOREIGN KEY (`akun_id`) REFERENCES `akun_dhika` (`id_akun`) ON DELETE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `pemanggilan_ortu_dhika`
+--
+ALTER TABLE `pemanggilan_ortu_dhika`
+  ADD CONSTRAINT `pemanggilan_ortu_dhika_ibfk_1` FOREIGN KEY (`siswa_id`) REFERENCES `siswa_dhika` (`id_siswa`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pemanggilan_ortu_dhika_ibfk_2` FOREIGN KEY (`guru_id`) REFERENCES `guru_dhika` (`id_guru`) ON DELETE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `pengaduan_dhika`
