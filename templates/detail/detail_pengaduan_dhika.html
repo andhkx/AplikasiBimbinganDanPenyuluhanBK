@@ -1,0 +1,99 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Detail Pengaduan - {{ pengaduan.judul }}{% endblock %}
+{% block style_dhika %}
+<style>
+    .detail-header-dhika {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: white;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 28px rgba(124, 58, 237, 0.24);
+    }
+    .detail-card-dhika {
+        background: white;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+        margin-bottom: 20px;
+    }
+    .detail-grid-dhika {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+    }
+    .info-box-dhika {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+    .info-box-dhika .label {
+        font-size: 0.76rem;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+    .info-box-dhika .value {
+        font-size: 0.92rem;
+        color: #1e293b;
+        font-weight: 600;
+    }
+    .text-block-dhika {
+        background: #f8fafc;
+        border-left: 4px solid #8b5cf6;
+        border-radius: 14px;
+        padding: 16px 18px;
+        color: #334155;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="detail-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-bullhorn me-2"></i>Detail Pengaduan</h4>
+                <p class="mb-0 opacity-75">{{ pengaduan.nama_siswa }} • {{ pengaduan.judul }}</p>
+            </div>
+            <a href="{{ back_url }}" class="badge bg-white text-dark text-decoration-none px-3 py-2" style="font-size:0.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>{{ back_label }}
+            </a>
+        </div>
+    </div>
+
+    <div class="detail-card-dhika" data-aos="fade-up">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h5 class="fw-bold mb-0" style="color:#7c3aed;"><i class="fas fa-circle-info me-2"></i>Informasi Pengaduan</h5>
+            <span class="badge
+                {% if pengaduan.status == 'Baru' %}bg-warning text-dark
+                {% elif pengaduan.status == 'Diproses' %}bg-primary text-white
+                {% else %}bg-success text-white{% endif %} px-3 py-2">
+                {{ pengaduan.status }}
+            </span>
+        </div>
+        <div class="detail-grid-dhika">
+            <div class="info-box-dhika"><div class="label">Siswa</div><div class="value">{{ pengaduan.nama_siswa }}</div></div>
+            <div class="info-box-dhika"><div class="label">Kelas</div><div class="value">{{ pengaduan.kelas }} {{ pengaduan.jurusan }} {{ pengaduan.rombel }}</div></div>
+            <div class="info-box-dhika"><div class="label">Judul</div><div class="value">{{ pengaduan.judul }}</div></div>
+            <div class="info-box-dhika"><div class="label">Pelapor</div><div class="value">{{ pengaduan.nama_kesiswaan }}</div></div>
+            <div class="info-box-dhika"><div class="label">Tanggal</div><div class="value">{{ pengaduan.tanggal|format_tanggal_dhika }}</div></div>
+            <div class="info-box-dhika"><div class="label">ID Pengaduan</div><div class="value">#{{ pengaduan.id_pengaduan }}</div></div>
+        </div>
+    </div>
+
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="80">
+        <h5 class="fw-bold mb-3" style="color:#7c3aed;"><i class="fas fa-file-lines me-2"></i>Deskripsi Pengaduan</h5>
+        <div class="text-block-dhika">{{ pengaduan.deskripsi or '-' }}</div>
+    </div>
+
+    {% if pengaduan.catatan %}
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="120">
+        <h5 class="fw-bold mb-3 text-success"><i class="fas fa-sticky-note me-2"></i>Catatan Tindak Lanjut</h5>
+        <div class="text-block-dhika" style="border-left-color:#10b981;">{{ pengaduan.catatan }}</div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

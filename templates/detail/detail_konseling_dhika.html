@@ -1,0 +1,211 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Detail Konseling - {{ konseling.id_konseling }}{% endblock %}
+{% block style_dhika %}
+<style>
+    .detail-header-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: white;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 28px rgba(16, 185, 129, 0.25);
+    }
+    .detail-card-dhika {
+        background: white;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+        margin-bottom: 20px;
+    }
+    .detail-grid-dhika {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+    }
+    .info-box-dhika {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+    .info-box-dhika .label {
+        font-size: 0.76rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 5px;
+    }
+    .info-box-dhika .value {
+        font-size: 0.92rem;
+        color: #1e293b;
+        font-weight: 600;
+    }
+    .text-block-dhika {
+        background: #f8fafc;
+        border-left: 4px solid #10b981;
+        border-radius: 14px;
+        padding: 16px 18px;
+        color: #334155;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+    .status-pill-dhika {
+        padding: 5px 14px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+    .photo-grid-dhika {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .photo-card-dhika {
+        width: 280px;
+        max-width: 100%;
+        flex-shrink: 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .photo-card-dhika img {
+        width: 100%;
+        height: 196px;
+        object-fit: cover;
+        display: block;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+    .photo-card-dhika img:hover { opacity: 0.88; }
+    .photo-card-dhika .caption {
+        padding: 10px 14px;
+        font-size: 0.82rem;
+        color: #475569;
+        font-weight: 600;
+        border-top: 1px solid #f1f5f9;
+    }
+    .foto-lightbox-dhika {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.88); z-index: 9999;
+        align-items: center; justify-content: center;
+        padding: 16px;
+    }
+    .foto-lightbox-dhika.show { display: flex; }
+    .foto-lightbox-dhika img {
+        max-width: 90vw; max-height: 88vh;
+        border-radius: 12px; object-fit: contain;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .foto-lightbox-dhika .close-btn {
+        position: fixed; top: 16px; right: 20px;
+        color: white; font-size: 1.8rem; cursor: pointer;
+        background: rgba(0,0,0,0.4); width: 40px; height: 40px;
+        border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; line-height: 1; border: none;
+    }
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="detail-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-comments me-2"></i>Detail Konseling</h4>
+                <p class="mb-0 opacity-75">{{ konseling.id_konseling }} • {{ konseling.nama_siswa }}</p>
+            </div>
+            <a href="{{ back_url }}" class="badge bg-white text-dark text-decoration-none px-3 py-2" style="font-size:0.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>{{ back_label }}
+            </a>
+        </div>
+    </div>
+
+    <div class="detail-card-dhika" data-aos="fade-up">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h5 class="fw-bold mb-0 text-success"><i class="fas fa-circle-info me-2"></i>Informasi Utama</h5>
+            <span class="status-pill-dhika
+                {% if konseling.status == 'Pending' %}bg-warning text-dark
+                {% elif konseling.status == 'Disetujui' %}bg-success text-white
+                {% elif konseling.status == 'Selesai' %}bg-primary text-white
+                {% else %}bg-danger text-white{% endif %}">
+                {{ konseling.status }}
+            </span>
+        </div>
+        <div class="detail-grid-dhika">
+            <div class="info-box-dhika"><div class="label">Siswa</div><div class="value">{{ konseling.nama_siswa }}</div></div>
+            <div class="info-box-dhika"><div class="label">Kelas</div><div class="value">{{ konseling.kelas }} {{ konseling.jurusan }} {{ konseling.rombel }}</div></div>
+            <div class="info-box-dhika"><div class="label">Guru BK</div><div class="value">{{ konseling.nama_guru }}</div></div>
+            <div class="info-box-dhika"><div class="label">Jenis</div><div class="value">{{ konseling.jenis }}</div></div>
+            <div class="info-box-dhika"><div class="label">Tanggal</div><div class="value">{{ konseling.tanggal|format_tanggal_dhika }}</div></div>
+            <div class="info-box-dhika"><div class="label">Jam</div><div class="value">{{ konseling.jam_mulai }}{% if konseling.jam_selesai %} - {{ konseling.jam_selesai }}{% endif %}</div></div>
+        </div>
+    </div>
+
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="80">
+        <h5 class="fw-bold mb-3 text-success"><i class="fas fa-file-lines me-2"></i>Alasan Konseling</h5>
+        <div class="text-block-dhika">{{ konseling.alasan or '-' }}</div>
+    </div>
+
+    {% if konseling.hasil %}
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="120">
+        <h5 class="fw-bold mb-3 text-primary"><i class="fas fa-clipboard-check me-2"></i>Hasil Konseling</h5>
+        <div class="text-block-dhika" style="border-left-color:#3b82f6;">{{ konseling.hasil }}</div>
+    </div>
+    {% endif %}
+
+    {% if konseling.tindak_lanjut %}
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="160">
+        <h5 class="fw-bold mb-3 text-warning"><i class="fas fa-route me-2"></i>Tindak Lanjut</h5>
+        <div class="text-block-dhika" style="border-left-color:#f59e0b;">{{ konseling.tindak_lanjut }}</div>
+    </div>
+    {% endif %}
+
+    {% if konseling.foto_surat or konseling.foto_dokumentasi %}
+    <div class="detail-card-dhika" data-aos="fade-up" data-aos-delay="200">
+        <h5 class="fw-bold mb-3 text-success"><i class="fas fa-images me-2"></i>Dokumentasi</h5>
+        <div class="photo-grid-dhika">
+            {% if konseling.foto_surat %}
+            <div class="photo-card-dhika">
+                <img src="{{ url_for('static', filename='uploads/pelanggaran/' ~ konseling.foto_surat) }}"
+                     alt="Foto Surat"
+                     onclick="bukaFotoDhika(this.src)">
+                <div class="caption"><i class="fas fa-file-alt me-1"></i>Dokumentasi Surat</div>
+            </div>
+            {% endif %}
+            {% if konseling.foto_dokumentasi %}
+            <div class="photo-card-dhika">
+                <img src="{{ url_for('static', filename='uploads/pelanggaran/' ~ konseling.foto_dokumentasi) }}"
+                     alt="Foto Dokumentasi"
+                     onclick="bukaFotoDhika(this.src)">
+                <div class="caption"><i class="fas fa-camera me-1"></i>Dokumentasi Foto</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="foto-lightbox-dhika" id="fotoLightboxDhika" onclick="tutupFotoDhika()">
+    <button class="close-btn" onclick="tutupFotoDhika()">&times;</button>
+    <img id="fotoLightboxImgDhika" src="" alt="Foto">
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+function bukaFotoDhika(src) {
+    document.getElementById('fotoLightboxImgDhika').src = src;
+    document.getElementById('fotoLightboxDhika').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function tutupFotoDhika() {
+    document.getElementById('fotoLightboxDhika').classList.remove('show');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') tutupFotoDhika();
+});
+</script>
+{% endblock %}

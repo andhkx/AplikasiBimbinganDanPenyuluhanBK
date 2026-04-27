@@ -1,0 +1,39 @@
+{% macro render_pagination_dhika(pagination, endpoint=None, extra_args={}) %}
+{% if pagination and pagination.total_pages > 1 %}
+<div class="pagination-dhika-wrap">
+    <div class="pagination-info-dhika">
+        Menampilkan {{ pagination.start_idx }}–{{ pagination.end_idx }}
+        dari <strong>{{ pagination.total }}</strong> data
+    </div>
+    <nav class="pagination-nav-dhika">
+        {% set ep = endpoint or request.endpoint %}
+        {% set args = request.args.to_dict() %}
+        {% if pagination.has_prev %}
+        <a class="pg-btn-dhika" href="{{ url_for(ep, page=1, **dict(args, **extra_args)) }}" title="Pertama"><i class="fas fa-angle-double-left"></i></a>
+        <a class="pg-btn-dhika" href="{{ url_for(ep, page=pagination.prev_page, **dict(args, **extra_args)) }}" title="Sebelumnya"><i class="fas fa-angle-left"></i></a>
+        {% else %}
+        <span class="pg-btn-dhika disabled"><i class="fas fa-angle-double-left"></i></span>
+        <span class="pg-btn-dhika disabled"><i class="fas fa-angle-left"></i></span>
+        {% endif %}
+        {% set start_p = [pagination.page - 2, 1] | max %}
+        {% set end_p = [pagination.page + 2, pagination.total_pages] | min %}
+        {% if start_p > 1 %}<span class="pg-btn-dhika disabled">…</span>{% endif %}
+        {% for p in range(start_p, end_p + 1) %}
+            {% if p == pagination.page %}
+            <span class="pg-btn-dhika active">{{ p }}</span>
+            {% else %}
+            <a class="pg-btn-dhika" href="{{ url_for(ep, page=p, **dict(args, **extra_args)) }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if end_p < pagination.total_pages %}<span class="pg-btn-dhika disabled">…</span>{% endif %}
+        {% if pagination.has_next %}
+        <a class="pg-btn-dhika" href="{{ url_for(ep, page=pagination.next_page, **dict(args, **extra_args)) }}" title="Berikutnya"><i class="fas fa-angle-right"></i></a>
+        <a class="pg-btn-dhika" href="{{ url_for(ep, page=pagination.total_pages, **dict(args, **extra_args)) }}" title="Terakhir"><i class="fas fa-angle-double-right"></i></a>
+        {% else %}
+        <span class="pg-btn-dhika disabled"><i class="fas fa-angle-right"></i></span>
+        <span class="pg-btn-dhika disabled"><i class="fas fa-angle-double-right"></i></span>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+{% endmacro %}

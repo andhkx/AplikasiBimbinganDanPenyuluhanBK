@@ -1,0 +1,254 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Statistik Saya - BK SMKN 2 Cimahi{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: white;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 30px rgba(102,126,234,0.3);
+    }
+
+    .stat-pill-dhika {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        text-align: center;
+        border-top: 4px solid;
+        transition: transform 0.2s;
+    }
+
+    .stat-pill-dhika:hover { transform: translateY(-4px); }
+    .stat-pill-dhika.total { border-color: #667eea; }
+    .stat-pill-dhika.pending { border-color: #f59e0b; }
+    .stat-pill-dhika.disetujui { border-color: #10b981; }
+    .stat-pill-dhika.selesai { border-color: #3b82f6; }
+    .stat-pill-dhika.dibatalkan { border-color: #ef4444; }
+
+    .stat-pill-dhika .num { font-size: 2.2rem; font-weight: 700; color: #1e293b; line-height: 1; }
+    .stat-pill-dhika .lbl { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+    .progress-section-dhika {
+        background: white;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        margin-bottom: 20px;
+    }
+
+    .progress-section-dhika h6 { font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+
+    .prog-row-dhika {
+        display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+
+    .prog-lbl-dhika { width: 90px; font-size: 0.82rem; color: #475569; }
+    .prog-bar-outer-dhika { flex: 1; height: 9px; background: #f1f5f9; border-radius: 9px; overflow: hidden; }
+    .prog-bar-inner-dhika { height: 100%; border-radius: 9px; transition: width 0.6s ease; }
+    .prog-count-dhika { font-size: 0.82rem; font-weight: 600; color: #1e293b; width: 20px; text-align: right; }
+
+    .riwayat-card-dhika {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        overflow: hidden;
+    }
+
+    .riwayat-header-dhika {
+        padding: 18px 22px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+
+    .riwayat-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; }
+
+    .konseling-item-dhika {
+        padding: 16px 22px;
+        border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: flex-start; gap: 14px;
+        transition: background 0.15s;
+    }
+
+    .konseling-item-dhika:hover { background: #f9fafc; }
+    .konseling-item-dhika:last-child { border-bottom: none; }
+
+    .item-icon-dhika {
+        width: 40px; height: 40px; min-width: 40px;
+        border-radius: 11px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; color: white;
+    }
+
+    .item-icon-dhika.Pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .item-icon-dhika.Disetujui { background: linear-gradient(135deg, #10b981, #059669); }
+    .item-icon-dhika.Selesai { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .item-icon-dhika.Dibatalkan { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+    .item-body-dhika { flex: 1; min-width: 0; }
+    .item-body-dhika .title { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+    .item-body-dhika .meta { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+    .item-badge-dhika {
+        padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; flex-shrink: 0;
+    }
+
+    .b-pending { background: #fef3c7; color: #92400e; }
+    .b-disetujui { background: #d1fae5; color: #065f46; }
+    .b-selesai { background: #dbeafe; color: #1e40af; }
+    .b-dibatalkan { background: #fee2e2; color: #991b1b; }
+
+    .empty-lap-dhika { text-align: center; padding: 48px; color: #94a3b8; }
+    .empty-lap-dhika i { font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 12px; }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-chart-bar me-2"></i>Statistik Konseling Saya</h4>
+                <p class="mb-0 opacity-75">Ringkasan dan riwayat lengkap konseling kamu</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4" data-aos="fade-up">
+        <div class="col-6 col-md">
+            <div class="stat-pill-dhika total">
+                <div class="num">{{ stats.total or 0 }}</div>
+                <div class="lbl">Total</div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="stat-pill-dhika pending">
+                <div class="num">{{ stats.pending or 0 }}</div>
+                <div class="lbl">Menunggu</div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="stat-pill-dhika disetujui">
+                <div class="num">{{ stats.disetujui or 0 }}</div>
+                <div class="lbl">Disetujui</div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="stat-pill-dhika selesai">
+                <div class="num">{{ stats.selesai or 0 }}</div>
+                <div class="lbl">Selesai</div>
+            </div>
+        </div>
+        <div class="col-6 col-md">
+            <div class="stat-pill-dhika dibatalkan">
+                <div class="num">{{ stats.dibatalkan or 0 }}</div>
+                <div class="lbl">Dibatalkan</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="progress-section-dhika" data-aos="fade-right">
+                <h6><i class="fas fa-chart-pie me-2 text-primary"></i>Sebaran Jenis</h6>
+                {% if jenis_stats %}
+                    {% set max_j = jenis_stats[0].jumlah %}
+                    {% for j in jenis_stats %}
+                    <div class="prog-row-dhika">
+                        <span class="prog-lbl-dhika">{{ j.jenis }}</span>
+                        <div class="prog-bar-outer-dhika">
+                            <div class="prog-bar-inner-dhika"
+                                 style="width:{{ (j.jumlah / max_j * 100)|int }}%;background:linear-gradient(90deg,#667eea,#764ba2);"></div>
+                        </div>
+                        <span class="prog-count-dhika">{{ j.jumlah }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted" style="font-size:0.85rem;">Belum ada data jenis konseling.</p>
+                {% endif %}
+            </div>
+
+            {% if stats.total and stats.total > 0 %}
+            <div class="progress-section-dhika" data-aos="fade-right" data-aos-delay="100">
+                <h6><i class="fas fa-tasks me-2 text-success"></i>Progres Status</h6>
+                {% set total = stats.total %}
+                {% for item in [
+                    ('Pending', stats.pending or 0, '#f59e0b'),
+                    ('Disetujui', stats.disetujui or 0, '#10b981'),
+                    ('Selesai', stats.selesai or 0, '#3b82f6'),
+                    ('Dibatalkan', stats.dibatalkan or 0, '#ef4444')
+                ] %}
+                <div class="prog-row-dhika">
+                    <span class="prog-lbl-dhika">{{ item[0] }}</span>
+                    <div class="prog-bar-outer-dhika">
+                        <div class="prog-bar-inner-dhika"
+                             style="width:{{ (item[1] / total * 100)|int }}%;background:{{ item[2] }};"></div>
+                    </div>
+                    <span class="prog-count-dhika">{{ item[1] }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="riwayat-card-dhika" data-aos="fade-left">
+                <div class="riwayat-header-dhika">
+                    <h5><i class="fas fa-history me-2 text-primary"></i>Riwayat Konseling</h5>
+                    <span class="badge bg-primary px-3 py-2">{{ laporan|length }} konseling</span>
+                </div>
+
+                {% if laporan %}
+                    {% for k in laporan %}
+                    <div class="konseling-item-dhika">
+                        <div class="item-icon-dhika {{ k.status }}">
+                            {% if k.status == 'Pending' %}<i class="fas fa-clock"></i>
+                            {% elif k.status == 'Disetujui' %}<i class="fas fa-calendar-check"></i>
+                            {% elif k.status == 'Selesai' %}<i class="fas fa-check-circle"></i>
+                            {% else %}<i class="fas fa-times-circle"></i>{% endif %}
+                        </div>
+                        <div class="item-body-dhika">
+                            <div class="title">{{ k.jenis }} — {{ k.nama_guru }}</div>
+                            <div class="meta">
+                                {{ k.tanggal|format_tanggal_dhika }} &nbsp;·&nbsp; {{ k.jam_mulai }} – {{ k.jam_selesai }}
+                            </div>
+                            {% if k.alasan %}
+                            <div class="meta" style="margin-top:3px;color:#94a3b8;">{{ k.alasan[:60] }}{% if k.alasan|length > 60 %}...{% endif %}</div>
+                            {% endif %}
+                            {% if k.hasil %}
+                            <div class="meta" style="margin-top:4px;color:#10b981;font-weight:500;">
+                                <i class="fas fa-check me-1"></i>{{ k.hasil[:60] }}{% if k.hasil|length > 60 %}...{% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <span class="item-badge-dhika
+                            {% if k.status == 'Pending' %}b-pending
+                            {% elif k.status == 'Disetujui' %}b-disetujui
+                            {% elif k.status == 'Selesai' %}b-selesai
+                            {% else %}b-dibatalkan{% endif %}">
+                            {{ k.status }}
+                        </span>
+                        <a href="{{ url_for('detail_konseling_dhika', id_konseling=k.id_konseling) }}"
+                           class="btn btn-outline-primary btn-sm" style="border-radius:8px;font-size:0.76rem;">
+                            <i class="fas fa-eye me-1"></i>Detail
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-lap-dhika">
+                    <i class="fas fa-chart-bar"></i>
+                    <p class="fw-semibold">Belum ada riwayat konseling</p>
+                    <small>Ajukan konseling pertamamu di halaman Konseling Saya</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title_dhika %}BK SMK Negeri 2 Cimahi{% endblock %}</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-dhika: #667eea;
+            --secondary-dhika: #764ba2;
+            --success-dhika: #10b981;
+            --info-dhika: #3b82f6;
+            --warning-dhika: #f59e0b;
+            --danger-dhika: #ef4444;
+            --light-dhika: #f8fafc;
+            --dark-dhika: #1e293b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .glass-card-dhika {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-bg-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+        }
+        
+        /* Desktop Horizontal Navbar */
+        .navbar-desktop-dhika {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 16px 30px;
+            display: none;
+        }
+
+        @media (min-width: 993px) {
+            .navbar-desktop-dhika {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 18px;
+            }
+        }
+
+        .navbar-brand-dhika {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            flex-shrink: 0;
+            min-width: 0;
+        }
+
+        .navbar-brand-dhika img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .navbar-brand-text-dhika {
+            line-height: 1.3;
+        }
+
+        .navbar-brand-title-dhika {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .navbar-brand-subtitle-dhika {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .navbar-nav-dhika {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            justify-content: flex-start;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 4px;
+            margin-bottom: -4px;
+        }
+
+        .navbar-nav-dhika::-webkit-scrollbar {
+            display: none;
+        }
+
+        .navbar-nav-link-dhika {
+            color: #475569;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.87rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .navbar-nav-link-dhika:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-dhika);
+        }
+
+        .navbar-nav-link-dhika.active-navbar-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            color: white;
+        }
+
+        .navbar-actions-dhika {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .navbar-profile-dhika {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .navbar-profile-dhika:hover {
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .navbar-profile-avatar-dhika {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .navbar-profile-avatar-dhika img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .navbar-profile-text-dhika {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .navbar-profile-name-dhika {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .navbar-profile-role-dhika {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .navbar-logout-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .navbar-logout-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .page-transition-dhika {
+            opacity: 0;
+            transform: scale(0.995);
+            transition: opacity 0.26s ease, transform 0.26s ease;
+            will-change: opacity;
+        }
+
+        .page-transition-dhika.page-ready-dhika {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .page-transition-dhika.page-leaving-dhika {
+            opacity: 0;
+            transform: scale(0.995);
+            pointer-events: none;
+        }
+
+        /* Mobile Topbar Navbar */
+        .bk-topbar-dhika {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (min-width: 993px) {
+            .bk-topbar-dhika {
+                display: none;
+            }
+        }
+        
+        .bk-topbar-brand-mobile-dhika {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .bk-topbar-brand-mobile-dhika img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .bk-topbar-brand-text-mobile-dhika {
+            line-height: 1.3;
+        }
+
+        .bk-topbar-brand-title-mobile-dhika {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .bk-topbar-brand-subtitle-mobile-dhika {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        .bk-topbar-actions-mobile-dhika {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        /* Sidebar Mobile Only */
+        .sidebar-dhika {
+            width: 90%;
+            max-width: 320px;
+            background: white;
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.15);
+            position: fixed;
+            top: 58px;
+            left: 50%;
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(102,126,234,0.3) transparent;
+            transform: translateX(-50%) translateY(-20px) scaleY(0.9);
+            opacity: 0;
+            visibility: hidden;
+            border-radius: 20px 20px 0 0;
+            max-height: 60vh;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-dhika {
+                transform: translateX(-50%) translateY(-20px) scaleY(0.9);
+                opacity: 0;
+                visibility: hidden;
+                top: 58px;
+            }
+        }
+
+        @media (min-width: 993px) {
+            .sidebar-dhika {
+                display: none !important;
+            }
+        }
+
+        .sidebar-dhika::-webkit-scrollbar { 
+            width: 6px; 
+        }
+
+        .sidebar-dhika::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-dhika::-webkit-scrollbar-thumb { 
+            background: rgba(102,126,234,0.3); 
+            border-radius: 3px; 
+        }
+
+        .sidebar-dhika::-webkit-scrollbar-thumb:hover { 
+            background: rgba(102,126,234,0.5); 
+        }
+
+        .sidebar-dhika.mobile-open { 
+            transform: translateX(-50%) translateY(0) scaleY(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .sidebar-dhika .p-4 {
+            padding: 24px !important;
+        }
+
+        .sidebar-dhika .nav {
+            gap: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-link-dhika {
+            color: #475569;
+            padding: 14px 20px;
+            margin: 4px 0;
+            border-radius: 10px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            background: none;
+        }
+        
+        .nav-link-dhika:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-dhika);
+            transform: none;
+        }
+
+        .nav-link-dhika.active-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            color: white;
+        }
+        
+        .nav-link-dhika i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .sidebar-mobile-logout-btn-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            width: 100%;
+            margin: 20px 0 0 0;
+        }
+
+        .sidebar-mobile-logout-btn-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .sidebar-mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 58px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .sidebar-mobile-overlay.show { 
+            display: block;
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        
+        .main-content-dhika {
+            margin-left: 0;
+            margin-right: 0;
+            padding: 30px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1), max-width 0.3s;
+        }
+
+        @media (min-width: 993px) {
+            .main-content-dhika {
+                margin-left: 0;
+                margin-right: 0;
+                margin-top: 0;
+                padding: 30px;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .main-content-dhika {
+                margin-left: 0;
+                margin-right: 0;
+                margin-top: 58px;
+                padding-bottom: 90px;
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+        
+        .stat-card-dhika {
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card-dhika:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card-dhika::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .stat-icon-dhika {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number-dhika {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label-dhika {
+            color: #6b7280;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .btn-dhika {
+            border-radius: 10px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            border: none;
+        }
+        
+        .btn-primary-dhika:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .table-dhika {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-dhika thead {
+            background: linear-gradient(135deg, var(--primary-dhika) 0%, var(--secondary-dhika) 100%);
+            color: white;
+        }
+        
+        .table-dhika th {
+            border: none;
+            padding: 15px;
+            font-weight: 500;
+        }
+        
+        .table-dhika td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+        
+        .badge-dhika {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .avatar-dhika {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .notification-badge-dhika {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger-dhika);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+        
+        .pagination-dhika-wrap {
+          display: flex; align-items: center; justify-content: space-between;
+          flex-wrap: wrap; gap: 10px; padding: 14px 20px;
+          border-top: 1px solid #f1f5f9; margin-top: 4px;
+        }
+        .pagination-info-dhika { font-size: .78rem; color: #64748b; }
+        .pagination-nav-dhika { display: flex; gap: 4px; flex-wrap: wrap; }
+        .pg-btn-dhika {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 32px; height: 32px; padding: 0 8px;
+            border-radius: 8px; font-size: .8rem; font-family: 'Poppins', sans-serif;
+            text-decoration: none; transition: all .15s;
+            border: 1.5px solid #e2e8f0; background: white; color: #475569;
+        }
+        .pg-btn-dhika:hover:not(.disabled):not(.active) {
+        background: #667eea; color: white; border-color: #667eea;
+        }
+        .pg-btn-dhika.active {
+            background: -webkit-linear-gradient(top left, #667eea, #764ba2);
+            background: -moz-linear-gradient(top left, #667eea, #764ba2);
+            background: -o-linear-gradient(top left, #667eea, #764ba2);
+            background: linear-gradient(to bottom right, #667eea, #764ba2);
+            color: white; border-color: #667eea; font-weight: 700;
+                }
+        .pg-btn-dhika.disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+        /* Fix modal z-index - lebih tinggi dari semua elemen */
+        .modal         { z-index: 1060 !important; }
+        .modal-backdrop{ z-index: 1059 !important; }
+        .modal-dialog  { z-index: 1061 !important; }
+        .modal-content { z-index: 1062 !important; position: relative; }
+        /* Pastikan elemen dalam modal bisa diklik */
+        .modal-body, .modal-footer, .modal-header {
+            position: relative;
+            z-index: 1063 !important;
+        }
+        .modal select, .modal textarea, .modal input,
+        .modal button, .modal .btn {
+            position: relative;
+            z-index: 1064 !important;
+            pointer-events: auto !important;
+        }
+        /* Fix backdrop offcanvas */
+        .offcanvas-backdrop { z-index: 1040 !important; }
+        @media (max-width: 480px) {
+            .main-content-dhika { padding: 12px; }
+            .page-header-dhika { padding: 16px 18px !important; border-radius: 14px !important; margin-bottom: 16px !important; }
+            .page-header-dhika h1, .page-header-dhika h4 { font-size: 1.15rem !important; margin-bottom: 4px !important; }
+            .page-header-dhika p { font-size: 0.78rem !important; }
+            .glass-card-dhika { padding: 14px !important; border-radius: 14px; }
+            .table th, .table td { font-size: 0.78rem !important; padding: 8px 6px !important; }
+            .badge { font-size: 0.7rem !important; }
+            h1 { font-size: 1.2rem !important; }
+            .navbar-desktop-dhika { display: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content-dhika { padding: 14px; }
+            .page-header-dhika { padding: 18px 20px; border-radius: 16px; }
+            .modal-dialog { margin: 8px; }
+            .modal-content { border-radius: 16px; }
+            .modal-body { padding: 16px; }
+            .form-control, .form-select { font-size: 0.875rem; }
+            h1 { font-size: 1.4rem; }
+            h4 { font-size: 1.1rem; }
+            .navbar-desktop-dhika { display: none !important; }
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content-dhika { padding-bottom: 90px; }
+            .navbar-desktop-dhika { display: none !important; }
+        }
+
+        @media (min-width: 992px) {
+            .main-content-dhika { margin-left: 0; padding-top: 30px; }
+            .navbar-desktop-dhika { display: flex !important; }
+        }
+
+        .bk-topbar-brand-dhika {
+            flex: 1;
+            color: #1e293b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .bk-topbar-btn-dhika {
+            background: rgba(102, 126, 234, 0.1);
+            border: none;
+            color: var(--primary-dhika);
+            border-radius: 10px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .bk-topbar-btn-dhika:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .bk-notif-dot-dhika {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 1.5px solid white;
+        }
+
+        .bk-notif-popup-dhika {
+            position: fixed;
+            top: 58px;
+            right: 10px;
+            left: 10px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: 1100;
+            overflow: hidden;
+            animation: popDown 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @media (min-width: 993px) {
+            .bk-notif-popup-dhika {
+                top: calc(50px + 16px);
+                right: 30px;
+                left: auto;
+                width: 360px;
+            }
+        }
+
+        @keyframes popDown {
+            from { opacity: 0; transform: translateY(-12px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .bk-notif-header-dhika {
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            color: white; padding: 14px 18px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 600; font-size: 0.9rem;
+        }
+
+        .bk-notif-list-dhika { max-height: 320px; overflow-y: auto; }
+
+        .bk-notif-item-dhika {
+            padding: 13px 16px; border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+
+        .bk-notif-item-dhika:last-child { border-bottom: none; }
+
+        .bk-notif-icon-dhika {
+            width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.75rem;
+        }
+
+        .bk-notif-text-dhika { font-size: 0.82rem; color: #1e293b; font-weight: 500; }
+        .bk-notif-time-dhika { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+        .bk-notif-loading-dhika { padding: 24px; text-align: center; color: #94a3b8; font-size: 0.85rem; }
+
+        .bk-bottomnav-dhika {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; z-index: 998;
+            display: flex; align-items: center;
+            padding: 6px 8px 10px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            border-top: 1px solid #f1f5f9;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
+
+        .bk-bn-item-dhika {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-decoration: none; color: #94a3b8;
+            font-size: 0.62rem; font-weight: 500;
+            padding: 4px 2px; gap: 3px; transition: color 0.2s;
+            min-width: 0;
+        }
+
+        .bk-bn-item-dhika i { font-size: 1.15rem; }
+        .bk-bn-item-dhika.active { color: var(--primary-dhika); }
+        .bk-bn-item-dhika.active i { color: var(--primary-dhika); }
+
+        .bk-bn-center-dhika { position: relative; }
+
+        .bk-bn-center-icon-dhika {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dhika), var(--secondary-dhika));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem;
+            box-shadow: 0 4px 14px rgba(102,126,234,0.5);
+            margin-top: -16px;
+        }
+
+        .bk-bn-center-dhika span { margin-top: 2px; }
+
+        @media (max-width: 991.98px) {
+            .main-content-dhika { padding-bottom: 80px; margin-left: 0; }
+        }
+
+        @media (min-width: 992px) {
+            .main-content-dhika { margin-left: 0; }
+        }
+    </style>
+    
+    {% block style_dhika %}{% endblock %}
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with message, category = get_flash_dhika() %}
+        {% if message %}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050">
+                <div class="toast show" role="alert">
+                    <div class="toast-header">
+                        <i class="bi bi-{{ 'check-circle-fill text-success' if category == 'success' else 'exclamation-triangle-fill text-danger' }} me-2"></i>
+                        <strong class="me-auto">BK System</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+{% macro nav_links_dhika(role) %}
+{% set r = role %}
+{% if r == 'Siswa' %}
+    <a href="{{ url_for('dashboard_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{{ url_for('konseling_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-comments"></i> Konseling</a>
+    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
+    <a href="{{ url_for('pelanggaran_saya_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pelanggaran_saya_dhika' %}active-dhika{% endif %}"><i class="fas fa-exclamation-triangle"></i> Pelanggaran</a>
+    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}"><i class="fas fa-chart-bar"></i> Statistik</a>
+{% elif r == 'Guru BK' %}
+    <a href="{{ url_for('dashboard_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-dhika{% endif %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="{{ url_for('konseling_guru_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-dhika{% endif %}"><i class="fas fa-clipboard-list"></i> Konseling</a>
+    <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active-dhika{% endif %}"><i class="fas fa-inbox"></i> Pengaduan</a>
+    <a href="{{ url_for('pemanggilan_ortu_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pemanggilan_ortu_dhika' %}active-dhika{% endif %}"><i class="fas fa-phone-alt"></i> Panggil Ortu</a>
+    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
+    <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-graduate"></i> Data Siswa</a>
+    <a href="{{ url_for('laporan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-dhika{% endif %}"><i class="fas fa-file-alt"></i> Laporan</a>
+    {% elif r == 'Wali Kelas' %}
+    <a href="{{ url_for('dashboard_walikelas_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_walikelas_dhika' %}active-dhika{% endif %}"><i class="fas fa-chalkboard"></i> Dashboard</a>
+    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
+    {% elif r == 'Kesiswaan' %}
+    <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_kesiswaan_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-shield"></i> Dashboard</a>
+    <a href="{{ url_for('pelanggaran_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active-dhika{% endif %}"><i class="fas fa-exclamation-triangle"></i> Pelanggaran</a>
+    <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active-dhika{% endif %}"><i class="fas fa-file-alt"></i> Laporan Pengaduan</a>
+    <a href="{{ url_for('data_siswa_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-graduate"></i> Data Siswa</a>
+    <a href="{{ url_for('chat_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-dhika{% endif %}"><i class="fas fa-comment-dots"></i> Chat</a>
+{% elif r == 'Admin' %}
+    <a href="{{ url_for('dashboard_admin_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'dashboard_admin_dhika' %}active-dhika{% endif %}"><i class="fas fa-cogs"></i> Dashboard</a>
+    <a href="{{ url_for('admin_manajemen_kelas_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'admin_manajemen_kelas_dhika' %}active-dhika{% endif %}"><i class="fas fa-school"></i> Manajemen Kelas</a>
+    <a href="{{ url_for('admin_log_aktivitas_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'admin_log_aktivitas_dhika' %}active-dhika{% endif %}"><i class="fas fa-history"></i> Log Aktivitas</a>
+{% endif %}
+<a href="{{ url_for('profile_dhika') }}" class="nav-link-dhika {% if request.endpoint == 'profile_dhika' %}active-dhika{% endif %}"><i class="fas fa-user-circle"></i> Profil</a>
+<a href="{{ url_for('logout_dhika') }}" class="sidebar-mobile-logout-btn-dhika"><i class="fas fa-sign-out-alt"></i> Logout</a>
+{% endmacro %}
+
+    <div class="sidebar-mobile-overlay" id="sidebarOverlayDhika" onclick="closeMobileSidebar()"></div>
+
+    <!-- Desktop Navbar Horizontal -->
+    <nav class="navbar-desktop-dhika" id="navbarDesktopDhika">
+        <!-- Brand -->
+        <a href="{{ url_for('dashboard_guru_dhika' if session.get('role') == 'Guru BK' else 'dashboard_siswa_dhika' if session.get('role') == 'Siswa' else 'dashboard_walikelas_dhika' if session.get('role') == 'Wali Kelas' else 'dashboard_kesiswaan_dhika' if session.get('role') == 'Kesiswaan' else 'dashboard_admin_dhika') }}" class="navbar-brand-dhika">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" onerror="this.style.display = 'none'">
+            <div class="navbar-brand-text-dhika">
+                <p class="navbar-brand-title-dhika">Skadaci BK</p>
+                <p class="navbar-brand-subtitle-dhika">SMK Negeri 2 Cimahi</p>
+            </div>
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="navbar-nav-dhika">
+            {% if session.get('role') == 'Siswa' %}
+                <a href="{{ url_for('dashboard_siswa_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active-navbar-dhika{% endif %}">Dashboard</a>
+                <a href="{{ url_for('konseling_siswa_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active-navbar-dhika{% endif %}">Konseling</a>
+                <a href="{{ url_for('chat_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-navbar-dhika{% endif %}">Chat</a>
+                <a href="{{ url_for('pelanggaran_saya_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'pelanggaran_saya_dhika' %}active-navbar-dhika{% endif %}">Pelanggaran</a>
+                <a href="{{ url_for('laporan_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-navbar-dhika{% endif %}">Statistik</a>
+            {% elif session.get('role') == 'Guru BK' %}
+                <a href="{{ url_for('dashboard_guru_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active-navbar-dhika{% endif %}">Dashboard</a>
+                <a href="{{ url_for('konseling_guru_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active-navbar-dhika{% endif %}">Konseling</a>
+                <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active-navbar-dhika{% endif %}">Pengaduan</a>
+                <a href="{{ url_for('pemanggilan_ortu_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'pemanggilan_ortu_dhika' %}active-navbar-dhika{% endif %}">Panggil Ortu</a>
+                <a href="{{ url_for('chat_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-navbar-dhika{% endif %}">Chat</a>
+                <a href="{{ url_for('data_siswa_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-navbar-dhika{% endif %}">Data Siswa</a>
+                <a href="{{ url_for('laporan_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'laporan_dhika' %}active-navbar-dhika{% endif %}">Laporan</a>
+            {% elif session.get('role') == 'Wali Kelas' %}
+                <a href="{{ url_for('dashboard_walikelas_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'dashboard_walikelas_dhika' %}active-navbar-dhika{% endif %}">Dashboard</a>
+                <a href="{{ url_for('chat_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-navbar-dhika{% endif %}">Chat</a>
+            {% elif session.get('role') == 'Kesiswaan' %}
+                <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'dashboard_kesiswaan_dhika' %}active-navbar-dhika{% endif %}">Dashboard</a>
+                <a href="{{ url_for('pelanggaran_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active-navbar-dhika{% endif %}">Pelanggaran</a>
+                <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active-navbar-dhika{% endif %}">Laporan Pengaduan</a>
+                <a href="{{ url_for('data_siswa_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'data_siswa_dhika' %}active-navbar-dhika{% endif %}">Data Siswa</a>
+                <a href="{{ url_for('chat_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'chat_dhika' %}active-navbar-dhika{% endif %}">Chat</a>
+            {% elif session.get('role') == 'Admin' %}
+                <a href="{{ url_for('dashboard_admin_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'dashboard_admin_dhika' %}active-navbar-dhika{% endif %}">Dashboard</a>
+                <a href="{{ url_for('admin_manajemen_kelas_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'admin_manajemen_kelas_dhika' %}active-navbar-dhika{% endif %}">Manajemen Kelas</a>
+                <a href="{{ url_for('admin_log_aktivitas_dhika') }}" class="navbar-nav-link-dhika {% if request.endpoint == 'admin_log_aktivitas_dhika' %}active-navbar-dhika{% endif %}">Log Aktivitas</a>
+            {% endif %}
+        </div>
+
+        <!-- Actions -->
+        <div class="navbar-actions-dhika">
+            <!-- Notification Button -->
+            <button class="bk-topbar-btn-dhika position-relative" id="btnNotifDesktopDhika" onclick="toggleNotifDhika()" type="button">
+                <i class="fas fa-bell"></i>
+                <span class="bk-notif-dot-dhika" id="notifDotDesktopDhika" style="display: none"></span>
+            </button>
+
+            <!-- Profile Dropdown -->
+            <a href="{{ url_for('profile_dhika') }}" class="navbar-profile-dhika text-decoration-none">
+                <div class="navbar-profile-avatar-dhika">
+                    {% if session.get('foto_profil') %}
+                        <img src="{{ url_for('static', filename='uploads/profile/' ~ session.get('foto_profil')) }}" alt="Foto Profil">
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+                </div>
+                <div class="navbar-profile-text-dhika">
+                    <p class="navbar-profile-name-dhika">{{ session.get('nama', 'User') }}</p>
+                    <p class="navbar-profile-role-dhika">{{ session.get('role', '') }}</p>
+                </div>
+            </a>
+
+            <!-- Logout Button -->
+            <a href="{{ url_for('logout_dhika') }}" class="navbar-logout-dhika">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Mobile -->
+    <div class="sidebar-dhika" id="sidebarDhika">
+        <div class="p-4 pb-5">
+            <nav class="nav flex-column">
+                {{ nav_links_dhika(session.get('role','')) }}
+            </nav>
+        </div>
+    </div>
+
+<nav class="bk-topbar-dhika d-lg-none">
+    <!-- Brand Logo & Text -->
+    <div class="bk-topbar-brand-mobile-dhika">
+        <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Logo Sekolah"
+            onerror="this.style.display = 'none'"
+        />
+        <div class="bk-topbar-brand-text-mobile-dhika">
+            <p class="bk-topbar-brand-title-mobile-dhika">Skadaci BK</p>
+            <p class="bk-topbar-brand-subtitle-mobile-dhika">SMK Negeri 2 Cimahi</p>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="bk-topbar-actions-mobile-dhika">
+        <!-- Bell Notification -->
+        <button
+            type="button"
+            class="bk-topbar-btn-dhika position-relative"
+            id="btnNotifMobileDhika"
+            onclick="toggleNotifDhika()"
+            title="Notifikasi"
+        >
+            <i class="fas fa-bell"></i>
+            <span
+                class="bk-notif-dot-dhika"
+                id="notifDotMobileDhika"
+                style="display: none"
+            ></span>
+        </button>
+        
+        <!-- Hamburger Menu -->
+        <button
+            class="bk-topbar-btn-dhika"
+            type="button"
+            onclick="openMobileSidebar()"
+            title="Menu"
+        >
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
+
+    <div id="notifPopupDhika" class="bk-notif-popup-dhika" style="display:none;">
+        <div class="bk-notif-header-dhika">
+            <span><i class="fas fa-bell me-2"></i>Notifikasi</span>
+            <button onclick="toggleNotifDhika()" style="background:none;border:none;color:#64748b;font-size:1.1rem;cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="notifListDhika" class="bk-notif-list-dhika">
+            <div class="bk-notif-loading-dhika">
+                <i class="fas fa-spinner fa-spin"></i> Memuat...
+            </div>
+        </div>
+    </div>
+
+
+
+
+    {% set role = session.get('role') %}
+    {% if session.get('logged_in') %}
+
+    {% if role == 'Siswa' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_siswa_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_siswa_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="{{ url_for('pelanggaran_saya_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_saya_dhika' %}active{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i><span>Laporan</span>
+        </a>
+        <a href="{{ url_for('konseling_siswa_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'konseling_siswa_dhika' %}active{% endif %}">
+            <div class="bk-bn-center-icon-dhika"><i class="fas fa-comments"></i></div>
+            <span>Konseling</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}" style="position:relative;">
+            <i class="fas fa-comment-dots"></i>
+            <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;"></span>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('laporan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_dhika' %}active{% endif %}">
+            <i class="fas fa-chart-bar"></i><span>Statistik</span>
+        </a>
+    </nav>
+
+    {% elif role == 'Guru BK' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_guru_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_guru_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="{{ url_for('guru_lihat_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'guru_lihat_pengaduan_dhika' %}active{% endif %}">
+            <i class="fas fa-inbox"></i><span>Pengaduan</span>
+        </a>
+        <a href="{{ url_for('konseling_guru_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'konseling_guru_dhika' %}active{% endif %}">
+            <div class="bk-bn-center-icon-dhika"><i class="fas fa-clipboard-list"></i></div>
+            <span>Konseling</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}" style="position:relative;">
+            <i class="fas fa-comment-dots"></i>
+            <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;"></span>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('laporan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_dhika' %}active{% endif %}">
+            <i class="fas fa-file-alt"></i><span>Laporan</span>
+        </a>
+    </nav>
+
+    {% elif role == 'Wali Kelas' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_walikelas_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_walikelas_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}" style="position:relative;">
+            <div class="bk-bn-center-icon-dhika"><i class="fas fa-comment-dots"></i></div>
+            <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;position:absolute;top:4px;right:20px;"></span>
+            <span>Chat</span>
+        </a>
+    </nav>
+
+    {% elif role == 'Kesiswaan' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_kesiswaan_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="{{ url_for('pelanggaran_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'pelanggaran_dhika' %}active{% endif %}">
+            <i class="fas fa-exclamation-triangle"></i><span>Pelanggaran</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}" style="position:relative;">
+            <div class="bk-bn-center-icon-dhika"><i class="fas fa-comment-dots"></i></div>
+            <span class="bk-chat-dot-bn-dhika" id="chatDotBn" style="display:none;position:absolute;top:4px;right:14px;"></span>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'laporan_pengaduan_dhika' %}active{% endif %}">
+            <i class="fas fa-file-alt"></i><span>Laporan</span>
+        </a>
+    </nav>
+
+    {% elif role == 'Admin' %}
+    <nav class="bk-bottomnav-dhika d-lg-none">
+        <a href="{{ url_for('dashboard_admin_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'dashboard_admin_dhika' %}active{% endif %}">
+            <i class="fas fa-home"></i><span>Home</span>
+        </a>
+        <a href="{{ url_for('admin_manajemen_kelas_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'admin_manajemen_kelas_dhika' %}active{% endif %}">
+            <i class="fas fa-school"></i><span>Kelas</span>
+        </a>
+        <a href="{{ url_for('chat_dhika') }}" class="bk-bn-item-dhika bk-bn-center-dhika {% if request.endpoint == 'chat_dhika' %}active{% endif %}">
+            <div class="bk-bn-center-icon-dhika"><i class="fas fa-comment-dots"></i></div>
+            <span>Chat</span>
+        </a>
+        <a href="{{ url_for('admin_log_aktivitas_dhika') }}" class="bk-bn-item-dhika {% if request.endpoint == 'admin_log_aktivitas_dhika' %}active{% endif %}">
+            <i class="fas fa-history"></i><span>Log</span>
+        </a>
+    </nav>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="main-content-dhika page-transition-dhika" id="pageTransitionDhika">
+        {% block content_dhika %}{% endblock %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        var sidebarCollapsed = false;
+        var mobileSidebarOpen = false;
+        var notifLoaded = false;
+        var pageLeavingDhika = false;
+
+        function toggleSidebarDhika() {
+            sidebarCollapsed = !sidebarCollapsed;
+            document.body.classList.toggle('sidebar-collapsed', sidebarCollapsed);
+            try { localStorage.setItem('bk_sidebar_col', sidebarCollapsed ? '1' : '0'); } catch(e){}
+        }
+
+        function openMobileSidebar() {
+            var sidebar = document.getElementById('sidebarDhika');
+            var overlay = document.getElementById('sidebarOverlayDhika');
+            if (sidebar) sidebar.classList.add('mobile-open');
+            if (overlay) overlay.classList.add('show');
+            mobileSidebarOpen = true;
+        }
+
+        function closeMobileSidebar() {
+            var sidebar = document.getElementById('sidebarDhika');
+            var overlay = document.getElementById('sidebarOverlayDhika');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('show');
+            mobileSidebarOpen = false;
+        }
+
+        (function() {
+            try {
+                if (localStorage.getItem('bk_sidebar_col') === '1') {
+                    sidebarCollapsed = true;
+                    document.body.classList.add('sidebar-collapsed');
+                }
+            } catch(e){}
+        })();
+
+        function toggleNotifDhika() {
+            var popup = document.getElementById('notifPopupDhika');
+            if (!popup) return;
+            if (popup.style.display === 'none' || popup.style.display === '') {
+                popup.style.display = 'block';
+                if (!notifLoaded) loadNotifDhika();
+            } else {
+                popup.style.display = 'none';
+            }
+        }
+
+        function getPageTransitionElDhika() {
+            return document.getElementById('pageTransitionDhika');
+        }
+
+        function enterPageDhika() {
+            var el = getPageTransitionElDhika();
+            if (!el) return;
+            el.classList.remove('page-leaving-dhika');
+            requestAnimationFrame(function() {
+                el.classList.add('page-ready-dhika');
+            });
+            if (window.AOS && typeof window.AOS.refreshHard === 'function') {
+                setTimeout(function() {
+                    window.AOS.refreshHard();
+                }, 60);
+            }
+            pageLeavingDhika = false;
+        }
+
+        function leavePageDhika(callback) {
+            if (pageLeavingDhika) return;
+            pageLeavingDhika = true;
+            var el = getPageTransitionElDhika();
+            if (!el) {
+                callback();
+                return;
+            }
+            el.classList.remove('page-ready-dhika');
+            el.classList.add('page-leaving-dhika');
+            setTimeout(callback, 180);
+        }
+
+        function shouldSkipPageTransitionDhika(target, href) {
+            if (!href || href.startsWith('#')) return true;
+            if (target.target === '_blank' || target.hasAttribute('download')) return true;
+            if (href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) return true;
+            return false;
+        }
+
+        function loadNotifDhika() {
+            fetch('/notifikasi')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    notifLoaded = true;
+                    var list = document.getElementById('notifListDhika');
+                    if (!list) return;
+                    if (!data.length) {
+                        list.innerHTML = '<div class="bk-notif-loading-dhika">Tidak ada notifikasi</div>';
+                        return;
+                    }
+                    var dot = document.getElementById('notifDotDhika');
+                    if (dot) dot.style.display = 'block';
+                    var dotDesktop = document.getElementById('notifDotDesktopDhika');
+                    if (dotDesktop) dotDesktop.style.display = 'block';
+                    var dotMobile = document.getElementById('notifDotMobileDhika');
+                    if (dotMobile) dotMobile.style.display = 'block';
+                    list.innerHTML = data.map(function(n) {
+                        return '<div class="bk-notif-item-dhika">'
+                            + '<div class="bk-notif-icon-dhika"><i class="fas fa-bell"></i></div>'
+                            + '<div><div class="bk-notif-text-dhika">' + n.aktivitas + '</div>'
+                            + '<div class="bk-notif-time-dhika">' + n.waktu + '</div></div>'
+                            + '</div>';
+                    }).join('');
+                })
+                .catch(function() {
+                    var list = document.getElementById('notifListDhika');
+                    if (list) list.innerHTML = '<div class="bk-notif-loading-dhika">Gagal memuat</div>';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            enterPageDhika();
+
+            document.querySelectorAll('a[href]').forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    var href = link.getAttribute('href');
+                    if (shouldSkipPageTransitionDhika(link, href)) return;
+                    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+                    var targetUrl = new URL(link.href, window.location.origin);
+                    if (targetUrl.origin !== window.location.origin) return;
+                    if (targetUrl.pathname === window.location.pathname && targetUrl.search === window.location.search) return;
+
+                    event.preventDefault();
+                    leavePageDhika(function() {
+                        window.location.href = link.href;
+                    });
+                });
+            });
+        });
+
+        window.addEventListener('pageshow', function() {
+            enterPageDhika();
+        });
+
+        document.addEventListener('click', function(e) {
+            var popup = document.getElementById('notifPopupDhika');
+            var btn = document.getElementById('btnNotifDhika');
+            var btnDesktop = document.getElementById('btnNotifDesktopDhika');
+            var btnMobile = document.getElementById('btnNotifMobileDhika');
+            if (popup && !popup.contains(e.target) && !btn?.contains(e.target) && !btnDesktop?.contains(e.target) && !btnMobile?.contains(e.target)) {
+                popup.style.display = 'none';
+            }
+        });
+
+        function checkUnreadChat() {
+            fetch('/chat/unread')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var show = data.count > 0;
+                    document.querySelectorAll('[id^="chatDot"]').forEach(function(d) {
+                        d.style.display = show ? 'inline-block' : 'none';
+                    });
+                }).catch(function(){});
+        }
+        checkUnreadChat();
+        setInterval(checkUnreadChat, 10000);
+        
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.hide();
+            });
+        }, 5000);
+
+    </script>
+    
+    <script>
+        document.addEventListener('hidden.bs.modal', function() {
+            if (!document.querySelector('.modal.show')) {
+                document.querySelectorAll('.modal-backdrop').forEach(function(el) { el.remove(); });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        });
+    </script>
+    {% block script_dhika %}{% endblock %}
+</body>
+</html>

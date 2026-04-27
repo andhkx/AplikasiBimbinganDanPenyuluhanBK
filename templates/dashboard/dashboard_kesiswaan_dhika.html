@@ -1,0 +1,462 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Dashboard Kesiswaan - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border-radius: 18px; padding: 24px 28px; color: white;
+        margin-bottom: 22px; box-shadow: 0 8px 24px rgba(139,92,246,0.3);
+    }
+    .card-ks-dhika {
+        background: white; border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px;
+    }
+    .card-ks-header-dhika {
+        padding: 14px 20px; border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .card-ks-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 0.875rem; }
+    .form-ks-dhika { padding: 18px 20px; }
+    .form-ks-dhika label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 5px; }
+    .form-ks-dhika select, .form-ks-dhika input, .form-ks-dhika textarea {
+        width: 100%; padding: 9px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.855rem; font-family: 'Poppins', sans-serif; background: #f8fafc; transition: border 0.2s;
+    }
+    .form-ks-dhika select:focus, .form-ks-dhika input:focus, .form-ks-dhika textarea:focus {
+        outline: none; border-color: #8b5cf6; background: white;
+        box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+    }
+    .btn-ks-dhika {
+        padding: 10px 20px; background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white; border: none; border-radius: 10px; font-size: 0.855rem;
+        font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; width: 100%; margin-top: 4px;
+        transition: all 0.2s;
+    }
+    .btn-ks-dhika:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+    .stat-ks-dhika {
+        background: white; border-radius: 13px; padding: 16px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06); text-align: center; border-top: 3px solid;
+    }
+    .stat-ks-dhika .num { font-size: 1.7rem; font-weight: 700; color: #1e293b; line-height: 1; }
+    .stat-ks-dhika .lbl { font-size: 0.75rem; color: #64748b; margin-top: 4px; }
+    .pengaduan-item-dhika {
+        padding: 14px 20px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: flex-start; gap: 12px;
+    }
+    .pengaduan-item-dhika:last-child { border-bottom: none; }
+    .pengaduan-icon-dhika {
+        width: 38px; height: 38px; min-width: 38px; border-radius: 10px;
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        display: flex; align-items: center; justify-content: center; color: white; font-size: 0.85rem;
+    }
+    .pengaduan-body-dhika { flex: 1; min-width: 0; }
+    .pengaduan-body-dhika .judul { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
+    .pengaduan-body-dhika .meta { font-size: 0.77rem; color: #64748b; margin-top: 2px; }
+    .status-pill-ks-dhika { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; flex-shrink: 0; }
+    .s-baru { background: #fef3c7; color: #92400e; }
+    .s-diproses { background: #dbeafe; color: #1e40af; }
+    .s-selesai { background: #d1fae5; color: #065f46; }
+    .quick-link-ks-dhika {
+        padding: 12px 14px; border-radius: 11px; text-decoration: none;
+        font-size: 0.855rem; font-weight: 600; display: flex; align-items: center; gap: 10px;
+        transition: all 0.2s;
+    }
+    .quick-link-ks-dhika:hover { transform: translateX(3px); filter: brightness(0.96); }
+    .modal-ks-dhika {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+        z-index: 1060; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-ks-dhika.show { display: flex; }
+    .modal-ks-box-dhika {
+        background: white; border-radius: 18px; padding: 22px; width: 100%; max-width: 420px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+    .empty-ks { text-align: center; padding: 36px; color: #94a3b8; }
+    .empty-ks i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+    .pel-badge-ks {
+        padding: 2px 9px; border-radius: 20px; font-size: 0.7rem; font-weight: 600;
+    }
+    .kat-ringan { background: #d1fae5; color: #065f46; }
+    .kat-sedang { background: #fef3c7; color: #92400e; }
+    .kat-berat { background: #fee2e2; color: #991b1b; }
+    .kat-sangat-berat { background: #fae8ff; color: #6b21a8; }
+    @media (max-width: 768px) {
+        .page-header-dhika { padding: 16px 18px; border-radius: 14px; }
+        .page-header-dhika h4 { font-size: 1rem; }
+        .form-ks-dhika { padding: 14px; }
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-user-shield me-2"></i>Dashboard Kesiswaan</h4>
+                <p class="mb-0 opacity-75">Pengaduan siswa & monitoring pelanggaran</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4" data-aos="fade-up">
+        <div class="col-6 col-md-3">
+            <div class="stat-ks-dhika" style="border-color:#8b5cf6;">
+                <div class="num">{{ pengaduan_list|length }}</div>
+                <div class="lbl">Total Pengaduan</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-ks-dhika" style="border-color:#f59e0b;">
+                <div class="num">{{ pengaduan_list|selectattr('status','equalto','Baru')|list|length }}</div>
+                <div class="lbl">Belum Ditangani</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-ks-dhika" style="border-color:#3b82f6;">
+                <div class="num">{{ pengaduan_list|selectattr('status','equalto','Diproses')|list|length }}</div>
+                <div class="lbl">Sedang Diproses</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-ks-dhika" style="border-color:#10b981;">
+                <div class="num">{{ pengaduan_list|selectattr('status','equalto','Selesai')|list|length }}</div>
+                <div class="lbl">Selesai</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-4 mb-4">
+
+            <div class="card-ks-dhika" data-aos="fade-right">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-bolt me-2 text-warning"></i>Akses Cepat</h5>
+                </div>
+                <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px;">
+                    <a href="{{ url_for('chat_dhika') }}" class="quick-link-ks-dhika" style="background:#f5f3ff;color:#6d28d9;">
+                        <i class="fas fa-comment-dots"></i> Chat dengan Guru BK / Wali Kelas
+                    </a>
+                    <a href="{{ url_for('pelanggaran_dhika') }}" class="quick-link-ks-dhika" style="background:#fef2f2;color:#dc2626;">
+                        <i class="fas fa-exclamation-triangle"></i> Input Pelanggaran Siswa
+                    </a>
+                    <a href="{{ url_for('data_siswa_dhika') }}" class="quick-link-ks-dhika" style="background:#f0fdf4;color:#065f46;">
+                        <i class="fas fa-user-graduate"></i> Lihat Data Siswa
+                    </a>
+                    <a href="{{ url_for('laporan_pengaduan_dhika') }}" class="quick-link-ks-dhika" style="background:#f0f9ff;color:#0284c7;">
+                        <i class="fas fa-file-alt"></i> Laporan Pengaduan
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-ks-dhika" data-aos="fade-right" data-aos-delay="100">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-plus-circle me-2" style="color:#8b5cf6;"></i>Buat Pengaduan</h5>
+                </div>
+                <div class="form-ks-dhika">
+                    <form action="{{ url_for('buat_pengaduan_dhika') }}" method="POST">
+                        <div class="mb-2">
+                            <label>Kelas</label>
+                            <select id="ksKelas" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Jurusan</label>
+                            <select id="ksJurusan" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih kelas dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Rombel</label>
+                            <select id="ksRombel" disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih jurusan dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Siswa</label>
+                            <select name="siswa_id_dhika" id="ksSiswa" required disabled style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                                <option value="" disabled selected>Pilih rombel dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Judul Pengaduan</label>
+                            <input type="text" name="judul_dhika" placeholder="Contoh: Sering Bolos" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Deskripsi</label>
+                            <textarea name="deskripsi_dhika" rows="3"
+                                      placeholder="Jelaskan detail permasalahan siswa..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-ks-dhika">
+                            <i class="fas fa-paper-plane me-2"></i>Kirim Pengaduan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-8 mb-4">
+
+            <div class="card-ks-dhika" data-aos="fade-left">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-list me-2" style="color:#8b5cf6;"></i>Daftar Pengaduan</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="status-pill-ks-dhika s-baru">
+                            {{ pengaduan_list|selectattr('status','equalto','Baru')|list|length }} baru
+                        </span>
+                        <input type="text" id="searchPengaduanDhika" placeholder="Cari siswa..."
+                               style="padding:5px 10px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:0.78rem;font-family:'Poppins',sans-serif;outline:none;width:140px;">
+                    </div>
+                </div>
+                {% if pengaduan_list %}
+                    {% for p in pengaduan_list %}
+                    <div class="pengaduan-item-dhika" data-nama="{{ p.nama_siswa|lower }}">
+                        <div class="pengaduan-icon-dhika"><i class="fas fa-exclamation"></i></div>
+                        <div class="pengaduan-body-dhika">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                <div class="judul">{{ p.judul }}</div>
+                                <span class="status-pill-ks-dhika
+                                    {% if p.status == 'Baru' %}s-baru
+                                    {% elif p.status == 'Diproses' %}s-diproses
+                                    {% else %}s-selesai{% endif %}">
+                                    {{ p.status }}
+                                </span>
+                            </div>
+                            <div class="meta">
+                                <i class="fas fa-user-graduate me-1"></i>
+                                <strong>{{ p.nama_siswa }}</strong>
+                                ({{ p.kelas }} {{ p.jurusan }} {{ p.rombel }})
+                                &nbsp;·&nbsp;
+                                {{ p.tanggal.strftime('%d %b %Y') if p.tanggal else '-' }}
+                            </div>
+                            {% if p.deskripsi %}
+                            <div class="meta" style="margin-top:4px;color:#475569;background:#f8fafc;padding:5px 8px;border-radius:7px;border-left:3px solid #8b5cf6;">
+                                {{ p.deskripsi[:100] }}{% if p.deskripsi|length > 100 %}...{% endif %}
+                            </div>
+                            {% endif %}
+                            {% if p.catatan %}
+                            <div class="meta" style="margin-top:4px;color:#10b981;">
+                                <i class="fas fa-check-circle me-1"></i>Catatan: {{ p.catatan[:60] }}
+                            </div>
+                            {% endif %}
+                            <a href="{{ url_for('detail_pengaduan_dhika', id_pengaduan=p.id_pengaduan) }}"
+                               style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 10px;border-radius:8px;background:#f5f3ff;color:#6d28d9;text-decoration:none;font-size:0.78rem;font-weight:600;">
+                                <i class="fas fa-eye"></i>Detail
+                            </a>
+                            {% if p.status != 'Selesai' %}
+                            <button onclick="bukaModalKs({{ p.id_pengaduan }}, '{{ p.judul|replace("'","\\'")|replace('"','&quot;') }}')"
+                                    style="margin-top:8px;padding:4px 12px;background:#f1f5f9;color:#475569;border:none;border-radius:8px;font-size:0.78rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;transition:all .15s;"
+                                    onmouseover="this.style.background='#8b5cf6';this.style.color='white'"
+                                    onmouseout="this.style.background='#f1f5f9';this.style.color='#475569'">
+                                <i class="fas fa-edit me-1"></i>Update Status
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-ks">
+                    <i class="fas fa-inbox"></i>
+                    <p>Belum ada pengaduan. Buat pengaduan di panel kiri.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-ks-dhika" data-aos="fade-left" data-aos-delay="100">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-phone-alt me-2 text-info"></i>Riwayat Pemanggilan Ortu</h5>
+                    <span class="badge bg-info px-3 py-2" style="font-size:0.78rem;">
+                        {{ panggilan_ortu_list|length }} total
+                    </span>
+                </div>
+                {% if panggilan_ortu_list %}
+                    {% for p in panggilan_ortu_list[:6] %}
+                    <div style="padding:14px 20px;border-bottom:1px solid #f8fafc;">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div style="min-width:0;">
+                                <div style="font-weight:600;color:#1e293b;">{{ p.nama_siswa }}</div>
+                                <div style="font-size:0.77rem;color:#64748b; margin-top:2px;">
+                                    {{ p.kelas }} {{ p.jurusan }} {{ p.rombel }} · {{ p.tanggal|format_tanggal_dhika }}
+                                </div>
+                                <div style="margin-top:3px;font-size:0.78rem;color:#0ea5e9;font-weight:600;">
+                                    <i class="fas fa-user-tie me-1"></i>Guru BK: {{ p.nama_guru_bk }}
+                                </div>
+                                <div style="margin-top:4px;font-size:0.78rem;color:#475569;background:#f0f9ff;padding:5px 8px;border-radius:6px;border-left:3px solid #0ea5e9;">
+                                    <strong>Tujuan:</strong> {{ p.tujuan }}
+                                </div>
+                                {% if p.catatan %}
+                                <div style="margin-top:4px;font-size:0.76rem;color:#10b981;">
+                                    <i class="fas fa-sticky-note me-1"></i><strong>Catatan:</strong> {{ p.catatan[:60] }}{% if p.catatan|length > 60 %}...{% endif %}
+                                </div>
+                                {% endif %}
+                                <a href="{{ url_for('detail_pemanggilan_ortu_dhika', id_pemanggilan=p.id_pemanggilan) }}"
+                                   style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:5px 10px;border-radius:8px;background:#eff6ff;color:#1d4ed8;text-decoration:none;font-size:0.76rem;font-weight:600;">
+                                    <i class="fas fa-eye"></i>Detail
+                                </a>
+                            </div>
+                            <span class="status-pill-ks-dhika" style="white-space:nowrap;
+                                {% if p.status=='Sudah Hadir' %}background:#d1fae5;color:#065f46;
+                                {% elif p.status=='Tidak Hadir' %}background:#fee2e2;color:#991b1b;
+                                {% else %}background:#dbeafe;color:#1e40af;{% endif %}">
+                                {{ p.status or 'Dijadwalkan' }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-ks">
+                    <i class="fas fa-phone-alt"></i>
+                    <p>Belum ada pemanggilan ortu.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if riwayat_pelanggaran_terbaru %}
+            <div class="card-ks-dhika" data-aos="fade-left" data-aos-delay="100">
+                <div class="card-ks-header-dhika">
+                    <h5><i class="fas fa-exclamation-triangle me-2 text-danger"></i>Pelanggaran Terbaru</h5>
+                    <a href="{{ url_for('pelanggaran_dhika') }}" style="font-size:0.78rem;color:#8b5cf6;font-weight:600;text-decoration:none;">
+                        Kelola <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                {% for r in riwayat_pelanggaran_terbaru %}
+                <div style="padding:11px 20px;border-bottom:1px solid #f8fafc;display:flex;align-items:center;gap:12px;font-size:0.845rem;">
+                    <div style="width:34px;height:34px;border-radius:9px;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="fas fa-exclamation" style="color:#dc2626;font-size:0.8rem;"></i>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;color:#1e293b;">{{ r.nama_siswa }}</div>
+                        <div style="font-size:0.77rem;color:#64748b;">
+                            {{ r.nama_pelanggaran }}
+                            &nbsp;·&nbsp; {{ r.kelas }} {{ r.jurusan }} {{ r.rombel }}
+                        </div>
+                        <a href="{{ url_for('detail_pelanggaran_riwayat_dhika', id_riwayat=r.id_riwayat) }}"
+                           style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 9px;border-radius:8px;background:#fef2f2;color:#dc2626;text-decoration:none;font-size:0.74rem;font-weight:600;">
+                            <i class="fas fa-eye"></i>Detail
+                        </a>
+                    </div>
+                    <div class="d-flex flex-column align-items-end gap-1">
+                        <span class="pel-badge-ks
+                            {% if r.kategori == 'Ringan' %}kat-ringan
+                            {% elif r.kategori == 'Sedang' %}kat-sedang
+                            {% elif r.kategori == 'Berat' %}kat-berat
+                            {% else %}kat-sangat-berat{% endif %}">
+                            {{ r.kategori }}
+                        </span>
+                        <span style="font-size:0.7rem;color:#94a3b8;">{{ r.tanggal|format_tanggal_dhika }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+<div class="modal-ks-dhika" id="modalKsDhika">
+    <div class="modal-ks-box-dhika">
+        <h6 style="font-weight:700;color:#1e293b;margin-bottom:4px;" id="modalKsTitleDhika">Update Status</h6>
+        <p style="font-size:0.82rem;color:#64748b;margin-bottom:16px;" id="modalKsDescDhika"></p>
+        <form id="formUpdateKsDhika" method="POST">
+            <div style="margin-bottom:12px;">
+                <label style="font-size:0.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Status</label>
+                <select name="status_dhika"
+                        style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                    <option value="Diproses">Diproses</option>
+                    <option value="Selesai">Selesai</option>
+                </select>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Catatan (opsional)</label>
+                <textarea name="catatan_dhika" rows="3"
+                          style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:0.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;resize:none;"
+                          placeholder="Tulis catatan tindak lanjut..."></textarea>
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button type="button" onclick="tutupModalKs()"
+                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="flex:1;padding:9px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+function initFilterSiswaDhika(prefix) {
+    var kelasEl = document.getElementById(prefix + 'Kelas');
+    var jurusanEl = document.getElementById(prefix + 'Jurusan');
+    var rombelEl = document.getElementById(prefix + 'Rombel');
+    var siswaEl = document.getElementById(prefix + 'Siswa');
+    var rombelMap = {
+        'RPL':['A','B'],'Animasi':['A','B'],'Mesin':['A','B'],
+        'DKV':['A','B','C'],'Kimia':['A','B','C'],'Meka':['A','B','C','D']
+    };
+    function reset(el, ph) { el.innerHTML='<option value="" disabled selected>'+ph+'</option>'; el.disabled=true; }
+    reset(jurusanEl,'Pilih kelas dulu'); reset(rombelEl,'Pilih jurusan dulu');
+    if(siswaEl) reset(siswaEl,'Pilih rombel dulu');
+    kelasEl.addEventListener('change', function() {
+        reset(jurusanEl,'-- Pilih Jurusan --'); jurusanEl.disabled=false;
+        reset(rombelEl,'Pilih jurusan dulu'); if(siswaEl) reset(siswaEl,'Pilih rombel dulu');
+        ['RPL','Animasi','DKV','Kimia','Mesin','Meka'].forEach(function(j){
+            var o=document.createElement('option'); o.value=j; o.textContent=j; jurusanEl.appendChild(o);
+        });
+    });
+    jurusanEl.addEventListener('change', function() {
+        reset(rombelEl,'-- Pilih Rombel --'); rombelEl.disabled=false;
+        if(siswaEl) reset(siswaEl,'Pilih rombel dulu');
+        (rombelMap[this.value]||[]).forEach(function(r){
+            var o=document.createElement('option'); o.value=r; o.textContent=r; rombelEl.appendChild(o);
+        });
+    });
+    if(siswaEl) rombelEl.addEventListener('change', function() {
+        var k=kelasEl.value, j=jurusanEl.value, r=this.value;
+        siswaEl.innerHTML='<option disabled selected>Memuat...</option>'; siswaEl.disabled=true;
+        fetch('/api/siswa-by-kelas?kelas='+k+'&jurusan='+j+'&rombel='+r)
+            .then(function(res){return res.json()})
+            .then(function(data){
+                siswaEl.innerHTML='<option value="" disabled selected>'+(data.length?'-- Pilih Siswa --':'Tidak ada siswa')+'</option>';
+                if(data.length){ siswaEl.disabled=false; data.forEach(function(s){var o=document.createElement('option');o.value=s.id_siswa;o.textContent=s.nama;siswaEl.appendChild(o);}); }
+            }).catch(function(){ siswaEl.innerHTML='<option>Gagal memuat</option>'; });
+    });
+}
+
+initFilterSiswaDhika('ks');
+
+document.getElementById('searchPengaduanDhika').addEventListener('input', function() {
+    var q = this.value.toLowerCase();
+    document.querySelectorAll('.pengaduan-item-dhika').forEach(function(el) {
+        el.style.display = (el.dataset.nama || '').includes(q) ? '' : 'none';
+    });
+});
+
+function bukaModalKs(id, judul) {
+    document.getElementById('modalKsTitleDhika').textContent = 'Update: ' + judul;
+    document.getElementById('formUpdateKsDhika').action = '/pengaduan/update/' + id;
+    document.getElementById('modalKsDhika').classList.add('show');
+}
+function tutupModalKs() {
+    document.getElementById('modalKsDhika').classList.remove('show');
+}
+document.getElementById('modalKsDhika').addEventListener('click', function(e) {
+    if (e.target === this) tutupModalKs();
+});
+</script>
+{% endblock %}

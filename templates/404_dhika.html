@@ -1,0 +1,328 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}404 - Halaman Tidak Ditemukan{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .error-container-dhika {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+    
+    .error-card-dhika {
+        background: white;
+        border-radius: 30px;
+        padding: 50px;
+        text-align: center;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        max-width: 600px;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .error-card-dhika::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ef4444, #dc2626, #991b1b);
+        background-size: 400% 400%;
+        animation: gradientErrorDhika 3s ease infinite;
+    }
+    
+    @keyframes gradientErrorDhika {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .error-icon-dhika {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        font-size: 48px;
+        color: #dc2626;
+        box-shadow: 0 10px 20px rgba(220, 38, 38, 0.1);
+    }
+    
+    .error-number-dhika {
+        font-size: 120px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .error-number-dhika::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border-radius: 2px;
+    }
+    
+    .error-title-dhika {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 15px;
+    }
+    
+    .error-message-dhika {
+        color: #64748b;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+    
+    .error-actions-dhika {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+    
+    .btn-error-dhika {
+        padding: 12px 30px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+    }
+    
+    .btn-error-primary-dhika {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+    }
+    
+    .btn-error-primary-dhika:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        color: white;
+    }
+    
+    .btn-error-secondary-dhika {
+        background: white;
+        color: #475569;
+        border: 2px solid #e2e8f0;
+    }
+    
+    .btn-error-secondary-dhika:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateY(-3px);
+        color: #475569;
+    }
+    
+    .error-search-dhika {
+        margin-top: 30px;
+        position: relative;
+    }
+    
+    .error-search-dhika i {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        z-index: 2;
+    }
+    
+    .error-search-dhika input {
+        width: 100%;
+        padding: 15px 20px 15px 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .error-search-dhika input:focus {
+        outline: none;
+        border-color: #ef4444;
+        box-shadow: 0 5px 15px rgba(239, 68, 68, 0.1);
+    }
+    
+    .error-links-dhika {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .error-links-dhika a {
+        color: #64748b;
+        text-decoration: none;
+        margin: 0 10px;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+    }
+    
+    .error-links-dhika a:hover {
+        color: #ef4444;
+        text-decoration: underline;
+    }
+    
+    .floating-elements-dhika {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: -1;
+    }
+    
+    .floating-element-dhika {
+        position: absolute;
+        font-size: 20px;
+        color: rgba(239, 68, 68, 0.1);
+        animation: floatElementDhika 15s linear infinite;
+    }
+    
+    @keyframes floatElementDhika {
+        0% { transform: translateY(100vh) rotate(0deg); }
+        100% { transform: translateY(-100px) rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="error-container-dhika">
+    <div class="error-card-dhika" data-aos="zoom-in">
+        <!-- Floating Elements -->
+        <div class="floating-elements-dhika">
+            {% for i in range(20) %}
+            <div class="floating-element-dhika" 
+                 style="left: {{ range(0, 100)|random }}%; 
+                        animation-delay: {{ range(0, 15)|random }}s;
+                        font-size: {{ range(20, 40)|random }}px;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Error Icon -->
+        <div class="error-icon-dhika">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        
+        <!-- Error Number -->
+        <div class="error-number-dhika">404</div>
+        
+        <!-- Error Title -->
+        <h1 class="error-title-dhika">Halaman Tidak Ditemukan</h1>
+        
+        <!-- Error Message -->
+        <p class="error-message-dhika">
+            Maaf, halaman yang Anda cari tidak ditemukan. 
+            Halaman mungkin telah dipindahkan, dihapus, atau Anda salah mengetik URL.
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="error-search-dhika">
+            <i class="fas fa-search"></i>
+            <input type="text" id="errorSearchDhika" placeholder="Cari halaman lain...">
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="error-actions-dhika">
+            <a href="{{ url_for('dashboard_siswa_dhika' if session.get('role') == 'siswa' else 'dashboard_guru_dhika') }}" 
+               class="btn-error-dhika btn-error-primary-dhika">
+                <i class="fas fa-home"></i> Kembali ke Dashboard
+            </a>
+            
+            <a href="javascript:history.back()" class="btn-error-dhika btn-error-secondary-dhika">
+                <i class="fas fa-arrow-left"></i> Kembali Sebelumnya
+            </a>
+            
+            <a href="{{ url_for('chat_dhika') }}" class="btn-error-dhika btn-error-secondary-dhika">
+                <i class="fas fa-question-circle"></i> Butuh Bantuan?
+            </a>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="error-links-dhika">
+            <span>Coba akses:</span>
+            {% if session.get('role') == 'siswa' %}
+            <a href="{{ url_for('konseling_siswa_dhika') }}">Konseling</a> •
+            <a href="{{ url_for('chat_dhika') }}">Chat</a> •
+            <a href="{{ url_for('laporan_dhika') }}">Laporan</a>
+            {% else %}
+            <a href="{{ url_for('data_siswa_dhika') }}">Data Siswa</a> •
+            <a href="{{ url_for('konseling_guru_dhika') }}">Konseling</a> •
+            <a href="{{ url_for('data_guru_dhika') }}">Data Guru</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('errorSearchDhika');
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const query = this.value.trim();
+            if (query) {
+                // In a real app, this would search within the site
+                Swal.fire({
+                    title: 'Mencari...',
+                    text: `Mencari "${query}" dalam sistem`,
+                    icon: 'info',
+                    timer: 1500
+                });
+            }
+        }
+    });
+    
+    // Animate elements
+    document.querySelectorAll('.floating-element-dhika').forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.5}s`;
+    });
+    
+    // Auto redirect after 30 seconds
+    setTimeout(() => {
+        const notification = document.createElement('div');
+        notification.className = 'position-fixed bottom-3 end-3 alert alert-info alert-dismissible fade show';
+        notification.style.zIndex = '1050';
+        notification.innerHTML = `
+            <i class="fas fa-info-circle me-2"></i>
+            Anda akan diarahkan ke Dashboard dalam 10 detik...
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            window.location.href = "{{ url_for('dashboard_siswa_dhika' if session.get('role') == 'siswa' else 'dashboard_guru_dhika') }}";
+        }, 10000);
+    }, 20000);
+</script>
+{% endblock %}

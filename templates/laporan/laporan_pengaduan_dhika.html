@@ -1,0 +1,86 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Laporan Pengaduan - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+.page-header-dhika{background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-radius:18px;padding:22px 26px;color:white;margin-bottom:20px;box-shadow:0 8px 24px rgba(139,92,246,.3)}
+.sc{background:white;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.07);text-align:center;border-top:4px solid}
+.sc .num{font-size:1.8rem;font-weight:700;color:#1e293b}.sc .lbl{font-size:.78rem;color:#64748b;margin-top:3px}
+.tc{background:white;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.07);overflow:hidden}
+.tch{padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.tch h5{font-weight:700;font-size:.875rem;color:#1e293b;margin:0}
+.pill{padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600}
+.pill-baru{background:#fef3c7;color:#92400e}.pill-diproses{background:#dbeafe;color:#1e40af}.pill-selesai{background:#d1fae5;color:#065f46}
+.export-btn-dhika{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;font-size:.82rem;font-weight:600;text-decoration:none;border:1px solid #e2e8f0;background:white;color:#334155}
+.export-btn-dhika:hover{background:#f8fafc;color:#1e293b}
+</style>
+{% endblock %}
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div><h4 class="fw-bold mb-1"><i class="fas fa-file-alt me-2"></i>Laporan Pengaduan</h4>
+            <p class="mb-0 opacity-75">Riwayat seluruh pengaduan yang pernah dibuat</p></div>
+            <a href="{{ url_for('dashboard_kesiswaan_dhika') }}" class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>Kembali</a>
+        </div>
+    </div>
+    <div class="row g-3 mb-4" data-aos="fade-up">
+        <div class="col-6 col-md-3"><div class="sc" style="border-color:#8b5cf6;"><div class="num">{{ stats.total or 0 }}</div><div class="lbl">Total</div></div></div>
+        <div class="col-6 col-md-3"><div class="sc" style="border-color:#f59e0b;"><div class="num">{{ stats.baru or 0 }}</div><div class="lbl">Baru</div></div></div>
+        <div class="col-6 col-md-3"><div class="sc" style="border-color:#3b82f6;"><div class="num">{{ stats.diproses or 0 }}</div><div class="lbl">Diproses</div></div></div>
+        <div class="col-6 col-md-3"><div class="sc" style="border-color:#10b981;"><div class="num">{{ stats.selesai or 0 }}</div><div class="lbl">Selesai</div></div></div>
+    </div>
+    <div class="tc" data-aos="fade-up">
+        <div class="tch">
+            <h5><i class="fas fa-list me-2" style="color:#8b5cf6;"></i>Semua Pengaduan</h5>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <a href="{{ url_for('export_laporan_pengaduan_dhika', filetype='pdf') }}" class="export-btn-dhika">
+                    <i class="fas fa-file-pdf text-danger"></i> PDF
+                </a>
+                <a href="{{ url_for('export_laporan_pengaduan_dhika', filetype='excel') }}" class="export-btn-dhika">
+                    <i class="fas fa-file-excel text-success"></i> Excel
+                </a>
+                <form method="GET" action="{{ url_for('laporan_pengaduan_dhika') }}" style="display:inline-flex;gap:6px;align-items:center;">
+                    <input type="text" name="q" value="{{ search or '' }}" placeholder="Cari siswa..."
+                           style="padding:6px 12px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:.82rem;font-family:'Poppins',sans-serif;outline:none;width:150px;">
+                    <button type="submit" style="padding:6px 10px;background:#8b5cf6;color:white;border:none;border-radius:9px;cursor:pointer;"><i class="fas fa-search"></i></button>
+                    {% if search %}<a href="{{ url_for('laporan_pengaduan_dhika') }}" style="padding:4px 8px;color:#ef4444;text-decoration:none;font-size:.9rem;font-weight:700;"><i class="fas fa-times"></i></a>{% endif %}
+                </form>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="tL">
+                <thead style="background:#f8fafc;">
+                    <tr>
+                        <th class="ps-4" style="font-size:.78rem;color:#64748b;font-weight:600;">Siswa</th>
+                        <th style="font-size:.78rem;color:#64748b;font-weight:600;">Judul</th>
+                        <th style="font-size:.78rem;color:#64748b;font-weight:600;">Status</th>
+                        <th style="font-size:.78rem;color:#64748b;font-weight:600;">Tanggal</th>
+                        <th style="font-size:.78rem;color:#64748b;font-weight:600;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pengaduan_list %}
+                    <tr class="lr" data-nama="{{ p.nama_siswa|lower }}">
+                        <td class="ps-4"><div style="font-weight:600;font-size:.875rem;">{{ p.nama_siswa }}</div><small class="text-muted">{{ p.kelas }} {{ p.jurusan }} {{ p.rombel }}</small></td>
+                        <td><div style="font-size:.855rem;font-weight:500;">{{ p.judul }}</div>{% if p.deskripsi %}<small class="text-muted">{{ p.deskripsi[:60] }}{% if p.deskripsi|length > 60 %}...{% endif %}</small>{% endif %}</td>
+                        <td><span class="pill pill-{{ p.status|lower }}">{{ p.status }}</span></td>
+                        <td style="font-size:.82rem;color:#64748b;">{{ p.tanggal.strftime('%d %b %Y') if p.tanggal else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('detail_pengaduan_dhika', id_pengaduan=p.id_pengaduan) }}"
+                               class="btn btn-outline-primary btn-sm" style="border-radius:8px;font-size:0.76rem;">
+                                <i class="fas fa-eye me-1"></i>Detail
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">Belum ada data pengaduan</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% from 'pagination_dhika.html' import render_pagination_dhika %}
+    {{ render_pagination_dhika(pagination) }}
+</div>
+{% endblock %}

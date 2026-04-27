@@ -1,0 +1,349 @@
+{% extends 'base_dhika.html' %}
+{% block title_dhika %}Pemanggilan Orang Tua - BK SMKN 2 Cimahi{% endblock %}
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 18px; padding: 22px 26px; color: white;
+        margin-bottom: 20px; box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+    }
+    .card-pm-dhika {
+        background: white; border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07); overflow: hidden; margin-bottom: 18px;
+    }
+    .card-pm-header-dhika {
+        padding: 14px 20px; border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .card-pm-header-dhika h5 { font-weight: 700; color: #1e293b; margin: 0; font-size: 0.875rem; }
+    .form-pm-dhika { padding: 18px 20px; }
+    .form-pm-dhika label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 5px; }
+    .form-pm-dhika select, .form-pm-dhika input, .form-pm-dhika textarea {
+        width: 100%; padding: 9px 12px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+        font-size: 0.855rem; font-family: 'Poppins', sans-serif; background: #f8fafc; transition: border 0.2s;
+    }
+    .form-pm-dhika select:focus, .form-pm-dhika input:focus, .form-pm-dhika textarea:focus {
+        outline: none; border-color: #10b981; background: white;
+        box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+    }
+    .form-pm-dhika select:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-pm-dhika {
+        padding: 10px 20px; background: linear-gradient(135deg, #10b981, #059669);
+        color: white; border: none; border-radius: 10px; font-size: 0.855rem;
+        font-weight: 600; font-family: 'Poppins', sans-serif; cursor: pointer; width: 100%; margin-top: 4px;
+        transition: all 0.2s;
+    }
+    .btn-pm-dhika:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+    .pm-item-dhika {
+        padding: 14px 20px; border-bottom: 1px solid #f8fafc;
+        display: flex; align-items: flex-start; gap: 12px;
+    }
+    .pm-item-dhika:last-child { border-bottom: none; }
+    .pm-avatar-dhika {
+        width: 40px; height: 40px; min-width: 40px; border-radius: 11px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;
+    }
+    .pm-body-dhika { flex: 1; min-width: 0; }
+    .pm-body-dhika .nama { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
+    .pm-body-dhika .meta { font-size: 0.77rem; color: #64748b; margin-top: 2px; }
+    .pm-body-dhika .tujuan { font-size: 0.82rem; color: #475569; margin-top: 5px;
+        background: #f0fdf4; padding: 6px 10px; border-radius: 8px; border-left: 3px solid #10b981; }
+    .status-pm-dhika { padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
+    .s-dijadwalkan { background: #dbeafe; color: #1e40af; }
+    .s-hadir { background: #d1fae5; color: #065f46; }
+    .s-tidak-hadir { background: #fee2e2; color: #991b1b; }
+    .btn-wa-dhika {
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 6px 14px; background: #25D366; color: white; border: none;
+        border-radius: 10px; font-size: 0.78rem; font-weight: 600;
+        font-family: 'Poppins', sans-serif; cursor: pointer; text-decoration: none;
+        transition: all 0.2s; margin-top: 8px;
+    }
+    .btn-wa-dhika:hover { background: #128C7E; color: white; transform: translateY(-1px); }
+    .btn-update-pm-dhika {
+        padding: 4px 12px; background: #f1f5f9; color: #475569; border: none;
+        border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+        font-family: 'Poppins', sans-serif; cursor: pointer; margin-top: 8px; margin-left: 6px;
+        transition: all 0.15s;
+    }
+    .btn-update-pm-dhika:hover { background: #10b981; color: white; }
+    .btn-detail-pm-dhika {
+        padding: 4px 12px; background: #eff6ff; color: #1d4ed8; border: none;
+        border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+        font-family: 'Poppins', sans-serif; cursor: pointer; text-decoration: none; margin-top: 8px;
+        transition: all 0.15s;
+    }
+    .btn-detail-pm-dhika:hover { background: #1d4ed8; color: white; }
+    .modal-pm-dhika {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+        z-index: 1060; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-pm-dhika.show { display: flex; }
+    .modal-pm-box-dhika {
+        background: white; border-radius: 18px; padding: 22px; width: 100%; max-width: 400px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+    .empty-pm { text-align: center; padding: 40px; color: #94a3b8; }
+    .empty-pm i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+    @media (max-width: 768px) {
+        .page-header-dhika { padding: 16px 18px; }
+        .page-header-dhika h4 { font-size: 1rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-phone-alt me-2"></i>Pemanggilan Orang Tua</h4>
+                <p class="mb-0 opacity-75">Jadwalkan & kirim notifikasi WhatsApp ke orang tua siswa</p>
+            </div>
+            <a href="{{ url_for('dashboard_guru_dhika') }}" class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card-pm-dhika" data-aos="fade-right">
+                <div class="card-pm-header-dhika">
+                    <h5><i class="fas fa-plus-circle me-2 text-success"></i>Buat Pemanggilan</h5>
+                </div>
+                <div class="form-pm-dhika">
+                    <form action="{{ url_for('buat_pemanggilan_ortu_dhika') }}" method="POST">
+                        <div class="mb-2">
+                            <label>Kelas</label>
+                            <select id="pmKelas" required>
+                                <option value="" disabled selected>-- Pilih Kelas --</option>
+                                <option value="X">X</option>
+                                <option value="XI">XI</option>
+                                <option value="XII">XII</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Jurusan</label>
+                            <select id="pmJurusan" disabled>
+                                <option value="" disabled selected>Pilih kelas dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label>Rombel</label>
+                            <select id="pmRombel" disabled>
+                                <option value="" disabled selected>Pilih jurusan dulu</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="siswaWrapperDhika">
+                            <label>Siswa</label>
+                            <select name="siswa_id_dhika" id="pmSiswa" required disabled>
+                                <option value="" disabled selected>Pilih rombel dulu</option>
+                            </select>
+                            <div id="infoOrtDhika" style="margin-top:6px;display:none;padding:8px 10px;background:#f0fdf4;border-radius:9px;border-left:3px solid #10b981;">
+                                <div style="font-size:.77rem;color:#065f46;font-weight:600;">
+                                    <i class="fas fa-phone me-1"></i><span id="noOrtuDhika"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Tujuan Pemanggilan</label>
+                            <textarea name="tujuan_dhika" rows="3"
+                                      placeholder="Contoh: Membahas masalah kehadiran siswa yang sering tidak hadir tanpa keterangan..." required></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label>Tanggal Pemanggilan</label>
+                            <input type="date" name="tanggal_dhika" required>
+                        </div>
+                        <button type="submit" class="btn-pm-dhika">
+                            <i class="fas fa-calendar-plus me-2"></i>Buat Jadwal
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="card-pm-dhika" data-aos="fade-left">
+                <div class="card-pm-header-dhika">
+                    <h5><i class="fas fa-list me-2 text-success"></i>Daftar Pemanggilan</h5>
+                    <span style="font-size:.78rem;color:#64748b;">{{ pemanggilan_list|length }} jadwal</span>
+                </div>
+                {% if pemanggilan_list %}
+                    {% for p in pemanggilan_list %}
+                    <div class="pm-item-dhika">
+                        <div class="pm-avatar-dhika">
+                            {{ p.nama_siswa[0] }}{% if p.nama_siswa.split(' ')|length > 1 %}{{ p.nama_siswa.split(' ')[1][0] }}{% endif %}
+                        </div>
+                        <div class="pm-body-dhika">
+                            <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                <div class="nama">{{ p.nama_siswa }}</div>
+                                <span class="status-pm-dhika
+                                    {% if p.status == 'Dijadwalkan' %}s-dijadwalkan
+                                    {% elif p.status == 'Sudah Hadir' %}s-hadir
+                                    {% else %}s-tidak-hadir{% endif %}">
+                                    {{ p.status }}
+                                </span>
+                            </div>
+                            <div class="meta">
+                                {{ p.kelas }} {{ p.jurusan }} {{ p.rombel }}
+                                &nbsp;·&nbsp; Tanggal: <strong>{{ p.tanggal|format_tanggal_dhika }}</strong>
+                            </div>
+                            <div class="tujuan">{{ p.tujuan }}</div>
+                            {% if p.catatan %}
+                            <div class="meta" style="margin-top:4px;color:#10b981;">
+                                <i class="fas fa-sticky-note me-1"></i>{{ p.catatan }}
+                            </div>
+                            {% endif %}
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <a href="{{ url_for('detail_pemanggilan_ortu_dhika', id_pemanggilan=p.id_pemanggilan) }}"
+                                   class="btn-detail-pm-dhika">
+                                    <i class="fas fa-eye me-1"></i>Detail
+                                </a>
+                                {% if p.no_ortu %}
+                                {% set no_clean = p.no_ortu|replace(' ','')|replace('-','')|replace('(','')| replace(')','') %}
+                                {% set no_wa = no_clean if no_clean.startswith('62') else '62' + no_clean[1:] if no_clean.startswith('0') else no_clean %}
+                                {% set pesan_wa = "Yth. Orang Tua " ~ p.nama_siswa ~ ", kami dari BK SMKN 2 Cimahi mengundang Bapak/Ibu hadir di Ruang BK SMK Negeri 2 Cimahi pada:\n\n📅 Tanggal: " ~ p.tanggal|format_tanggal_dhika ~ "\n🕒 Pukul: 09.00 WIB\n📍 Tempat: Ruang BK SMK Negeri 2 Cimahi\n📌 Pembahasan: " ~ p.tujuan ~ "\n\nKehadiran Bapak/Ibu sangat kami harapkan. Terima kasih." %}
+                                <a href="https://wa.me/{{ no_wa }}?text={{ pesan_wa|urlencode }}"
+                                   target="_blank" class="btn-wa-dhika">
+                                    <i class="fab fa-whatsapp" style="font-size:1rem;"></i> Chat WA Ortu
+                                </a>
+                                {% else %}
+                                <span style="font-size:.75rem;color:#f59e0b;padding:4px 0;">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> ortu tidak tersedia
+                                </span>
+                                {% endif %}
+                                <button class="btn-update-pm-dhika"
+                                        onclick="bukaModalPm({{ p.id_pemanggilan }}, '{{ p.nama_siswa }}')">
+                                    <i class="fas fa-edit me-1"></i>Update
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-pm">
+                    <i class="fas fa-phone-slash"></i>
+                    <p>Belum ada jadwal pemanggilan.<br>Buat jadwal di panel kiri.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-pm-dhika" id="modalPmDhika">
+    <div class="modal-pm-box-dhika">
+        <h6 style="font-weight:700;color:#1e293b;margin-bottom:4px;" id="modalPmTitleDhika">Update Status</h6>
+        <p style="font-size:.82rem;color:#64748b;margin-bottom:14px;" id="modalPmDescDhika"></p>
+        <form id="formUpdatePmDhika" method="POST" enctype="multipart/form-data">
+            <div style="margin-bottom:12px;">
+                <label style="font-size:.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Status Kehadiran</label>
+                <select name="status_dhika" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+                    <option value="Dijadwalkan">Dijadwalkan</option>
+                    <option value="Sudah Hadir">Sudah Hadir</option>
+                    <option value="Tidak Hadir">Tidak Hadir</option>
+                </select>
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Catatan</label>
+                <textarea name="catatan_dhika" rows="2"
+                          style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;resize:none;"
+                          placeholder="Catatan hasil pertemuan..."></textarea>
+            </div>
+            <div style="margin-bottom:12px;">
+                <label style="font-size:.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Foto Surat <span style="font-weight:400;color:#94a3b8;">(opsional)</span></label>
+                <input type="file" name="foto_surat_dhika" accept="image/jpeg,image/png,image/webp"
+                       style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+            </div>
+            <div style="margin-bottom:16px;">
+                <label style="font-size:.8rem;font-weight:600;color:#475569;display:block;margin-bottom:5px;">Foto Dokumentasi <span style="font-weight:400;color:#94a3b8;">(opsional)</span></label>
+                <input type="file" name="foto_dokumentasi_dhika" accept="image/jpeg,image/png,image/webp"
+                       style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.855rem;font-family:'Poppins',sans-serif;background:#f8fafc;">
+            </div>
+            <div style="display:flex;gap:10px;">
+                <button type="button" onclick="tutupModalPm()"
+                        style="flex:1;padding:9px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Batal
+                </button>
+                <button type="submit"
+                        style="flex:1;padding:9px;background:linear-gradient(135deg,#10b981,#059669);color:white;border:none;border-radius:10px;font-size:.82rem;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">
+                    Simpan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_dhika %}
+<script>
+var rombelMap = {
+    'RPL':['A','B'],'Animasi':['A','B'],'Mesin':['A','B'],
+    'DKV':['A','B','C'],'Kimia':['A','B','C'],'Meka':['A','B','C','D']
+};
+var siswaData = {};
+
+function resetSel(el, ph) { el.innerHTML='<option value="" disabled selected>'+ph+'</option>'; el.disabled=true; }
+
+(function() {
+    var k=document.getElementById('pmKelas');
+    var j=document.getElementById('pmJurusan');
+    var r=document.getElementById('pmRombel');
+    var s=document.getElementById('pmSiswa');
+    resetSel(j,'Pilih kelas dulu'); resetSel(r,'Pilih jurusan dulu'); resetSel(s,'Pilih rombel dulu');
+    k.addEventListener('change', function() {
+        resetSel(j,'-- Pilih Jurusan --'); j.disabled=false;
+        resetSel(r,'Pilih jurusan dulu'); resetSel(s,'Pilih rombel dulu');
+        ['RPL','Animasi','DKV','Kimia','Mesin','Meka'].forEach(function(jj){
+            var o=document.createElement('option'); o.value=jj; o.textContent=jj; j.appendChild(o);
+        });
+    });
+    j.addEventListener('change', function() {
+        resetSel(r,'-- Pilih Rombel --'); r.disabled=false; resetSel(s,'Pilih rombel dulu');
+        (rombelMap[this.value]||[]).forEach(function(rr){
+            var o=document.createElement('option'); o.value=rr; o.textContent=rr; r.appendChild(o);
+        });
+    });
+    r.addEventListener('change', function() {
+        resetSel(s,'Memuat...'); s.disabled=true;
+        document.getElementById('infoOrtDhika').style.display='none';
+        fetch('/api/siswa-by-kelas?kelas='+k.value+'&jurusan='+j.value+'&rombel='+this.value)
+            .then(function(res){return res.json()})
+            .then(function(data){
+                siswaData = {};
+                s.innerHTML='<option value="" disabled selected>'+(data.length?'-- Pilih Siswa --':'Tidak ada siswa')+'</option>';
+                if(data.length){ s.disabled=false; data.forEach(function(sw){ var o=document.createElement('option'); o.value=sw.id_siswa; o.textContent=sw.nama; s.appendChild(o); siswaData[sw.id_siswa]=sw; }); }
+            }).catch(function(){ s.innerHTML='<option>Gagal memuat</option>'; });
+    });
+    s.addEventListener('change', function() {
+        var sw = siswaData[this.value];
+        var info = document.getElementById('infoOrtDhika');
+        var noEl = document.getElementById('noOrtuDhika');
+        if (sw && sw.no_ortu) {
+            noEl.textContent = 'No. Ortu: ' + sw.no_ortu;
+            info.style.display = 'block';
+        } else {
+            noEl.textContent = 'No. ortu tidak tersedia';
+            info.style.display = 'block';
+            info.style.background = '#fef2f2';
+            info.style.borderLeftColor = '#ef4444';
+            noEl.style.color = '#dc2626';
+        }
+    });
+})();
+
+document.querySelector('input[name="tanggal_dhika"]').value = new Date().toISOString().split('T')[0];
+
+function bukaModalPm(id, nama) {
+    document.getElementById('modalPmTitleDhika').textContent = 'Update: ' + nama;
+    document.getElementById('formUpdatePmDhika').action = '/guru/pemanggilan-ortu/update/' + id;
+    document.getElementById('modalPmDhika').classList.add('show');
+}
+function tutupModalPm() { document.getElementById('modalPmDhika').classList.remove('show'); }
+document.getElementById('modalPmDhika').addEventListener('click', function(e) { if(e.target===this) tutupModalPm(); });
+</script>
+{% endblock %}

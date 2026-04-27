@@ -1,0 +1,157 @@
+{% extends 'base_dhika.html' %}
+
+{% block title_dhika %}Detail Pelanggaran - {{ siswa.nama }}{% endblock %}
+
+{% block style_dhika %}
+<style>
+    .page-header-dhika {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: white;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(239,68,68,0.3);
+    }
+
+    .info-card-dhika {
+        background: white;
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+        margin-bottom: 20px;
+    }
+
+    .info-card-dhika h6 { font-weight: 700; color: #1e293b; margin-bottom: 14px; font-size: 0.9rem; }
+
+    
+
+    
+    
+
+    
+    
+    
+
+    .status-big-dhika {
+        text-align: center; padding: 5px 18px;
+        border-radius: 20px; font-weight: 700;
+        font-size: 0.9rem; display: inline-block;
+    }
+
+    .notif-pel-dhika {
+        background: #fee2e2; border: 1px solid #fca5a5;
+        border-radius: 12px; padding: 14px 18px;
+        color: #991b1b; font-size: 0.875rem;
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .riwayat-item-dhika {
+        padding: 14px 0;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: flex-start; gap: 12px;
+    }
+
+    .riwayat-item-dhika:last-child { border-bottom: none; }
+
+    .kat-icon-dhika {
+        width: 38px; height: 38px; min-width: 38px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.9rem; color: white;
+    }
+
+    .kat-icon-dhika.Ringan { background: #10b981; }
+    .kat-icon-dhika.Sedang { background: #f59e0b; }
+    .kat-icon-dhika.Berat { background: #f97316; }
+    .kat-icon-dhika.Sangat\ Berat { background: #ef4444; }
+
+    .riwayat-body-dhika .title { font-weight: 600; font-size: 0.875rem; color: #1e293b; }
+    .riwayat-body-dhika .meta { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+
+    .poin-tag-dhika {
+        padding: 3px 10px; border-radius: 20px;
+        background: #fee2e2; color: #dc2626;
+        font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    }
+
+    .empty-dhika { text-align: center; padding: 40px; color: #94a3b8; }
+    .empty-dhika i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+</style>
+{% endblock %}
+
+{% block content_dhika %}
+<div class="container-fluid">
+
+    <div class="page-header-dhika" data-aos="fade-down">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1"><i class="fas fa-user-times me-2"></i>Detail Pelanggaran</h4>
+                <p class="mb-0 opacity-75">{{ siswa.nama }} — {{ siswa.kelas }}</p>
+            </div>
+            <a href="{{ url_for('pelanggaran_dhika') }}"
+               class="badge bg-white text-dark px-3 py-2 text-decoration-none" style="font-size:0.82rem;">
+                <i class="fas fa-arrow-left me-1"></i>Kembali
+            </a>
+        </div>
+    </div>
+
+    
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="info-card-dhika text-center" data-aos="fade-right">
+                <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                    <i class="fas fa-exclamation-triangle" style="color:white;font-size:1.8rem;"></i>
+                </div>
+                <div style="font-size:1.5rem;font-weight:700;color:#1e293b;">{{ riwayat|length }}</div>
+                <div style="font-size:0.82rem;color:#64748b;">Total Pelanggaran</div>
+                <hr>
+                <div class="text-start" style="font-size:0.85rem;">
+                    <p class="mb-1"><strong>Nama:</strong> {{ siswa.nama }}</p>
+                    <p class="mb-1"><strong>Kelas:</strong> {{ siswa.kelas }}</p>
+                    <p class="mb-1"><strong>Jurusan:</strong> {{ siswa.jurusan }}</p>
+                    <p class="mb-0"><strong>No. Ortu:</strong> {{ siswa.no_ortu or '-' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8 mb-4">
+            <div class="info-card-dhika" data-aos="fade-left">
+                <h6><i class="fas fa-history me-2 text-danger"></i>Riwayat Pelanggaran</h6>
+                {% if riwayat %}
+                    {% for r in riwayat %}
+                    <div class="riwayat-item-dhika">
+                        <div class="kat-icon-dhika {{ r.kategori }}">
+                            {% if r.kategori == 'Ringan' %}<i class="fas fa-info"></i>
+                            {% elif r.kategori == 'Sedang' %}<i class="fas fa-exclamation"></i>
+                            {% elif r.kategori == 'Berat' %}<i class="fas fa-exclamation-triangle"></i>
+                            {% else %}<i class="fas fa-skull-crossbones"></i>{% endif %}
+                        </div>
+                        <div class="riwayat-body-dhika flex-grow-1">
+                            <div class="title">{{ r.nama_pelanggaran }}</div>
+                            <div class="meta">
+                                {{ r.tanggal|format_tanggal_dhika }}
+                                {% if r.keterangan %}
+                                &nbsp;·&nbsp; {{ r.keterangan[:60] }}{% if r.keterangan|length > 60 %}...{% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <span class="poin-tag-dhika">+{{ r.poin }}</span>
+                        <a href="{{ url_for('detail_pelanggaran_riwayat_dhika', id_riwayat=r.id_riwayat) }}"
+                           class="btn btn-outline-danger btn-sm" style="border-radius:8px;font-size:0.76rem;">
+                            <i class="fas fa-eye me-1"></i>Detail
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-dhika">
+                    <i class="fas fa-clipboard-check"></i>
+                    <p>Belum ada riwayat pelanggaran</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
